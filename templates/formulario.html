@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário de Doação</title>
+    <script>
+        function atualizarFormulario() {
+            const tipo = document.querySelector('input[name="tipo"]:checked').value;
+            document.getElementById('form-cesta').style.display = tipo === 'cesta' ? 'block' : 'none';
+            document.getElementById('form-monetaria').style.display = tipo === 'monetaria' ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <h1>Formulário de Doação</h1>
+
+    <form method="POST">
+        <p>
+            <label><input type="radio" name="tipo" value="cesta" onclick="atualizarFormulario()" required> Cesta Básica</label>
+            <label><input type="radio" name="tipo" value="monetaria" onclick="atualizarFormulario()"> Doação Monetária</label>
+        </p>
+
+        <p><label>Nome: <input type="text" name="nome" required></label></p>
+        <p><label>Telefone: <input type="text" name="telefone" required></label></p>
+        <p><label>Endereço: <input type="text" name="endereco" required></label></p>
+
+        <div id="form-cesta" style="display:none;">
+            <p><label>Onde irá deixar a cesta: <input type="text" name="local_entrega"></label></p>
+            <p><label>Data de entrega: <input type="date" name="data_entrega"></label></p>
+        </div>
+
+        <div id="form-monetaria" style="display:none;">
+            <p><label>Valor da doação (R$): <input type="number" name="valor" step="0.01"></label></p>
+        </div>
+
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>

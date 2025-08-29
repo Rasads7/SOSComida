@@ -71,6 +71,29 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+@app.route('/formulario', methods=['GET', 'POST'])
+@login_required  
+def formulario():
+    if request.method == 'GET':
+        return render_template('formulario.html')
+    
+    elif request.method == 'POST':
+        tipo = request.form['tipo']
+        nome = request.form['nome']
+        telefone = request.form['telefone']
+        endereco = request.form['endereco']
+
+        if tipo == 'cesta':
+            local_entrega = request.form['local_entrega']
+            data_entrega = request.form['data_entrega']
+            return f'Cesta Básica registrada para {nome}'
+
+        elif tipo == 'monetaria':
+            valor = request.form['valor']
+            return f'Doação monetária de R${valor} registrada para {nome}'
+
+        return 'Tipo de doação inválido'
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
