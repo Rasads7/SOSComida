@@ -28,6 +28,12 @@ def home():
     print(current_user)
     return render_template('home.html')
 
+@app.route('/campanhas')
+@login_required
+def campanhas():
+    return render_template('campanhas.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
