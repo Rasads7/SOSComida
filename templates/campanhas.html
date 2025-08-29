@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campanhas - SOS Comida</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<header>
+<nav class="navbar navbar-expand-lg navbar-light" id="barranav">
+    <a class="navbar-brand" href="{{ url_for('home') }}"><img src="logo.png" alt="SOS Comida" id="logo-navbar"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item active"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Pesquisar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('campanhas') }}">Campanhas</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">Perfil</a></li>
+        </ul>
+    </div>
+</nav>
+</header>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Campanhas Ativas</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Pão e Justiça – Gotham</h5>
+                    <p class="card-text">Após uma onda de crimes que deixou centenas desabrigados em Gotham, estamos arrecadando alimentos não perecíveis para garantir que ninguém durma com fome nas sombras da cidade.</p>
+                    <a href="#" class="btn btn-primary">Ver Detalhes</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Mesa de Esperança – Metrópolis</h5>
+                    <p class="card-text">Depois do recente ataque que deixou vários bairros de Metrópolis em ruínas, estamos organizando a coleta de cestas básicas para apoiar as famílias afetadas e devolver um pouco da esperança que a cidade carrega em seu símbolo.</p>
+                    <a href="#" class="btn btn-primary">Ver Detalhes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
