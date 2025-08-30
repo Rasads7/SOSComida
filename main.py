@@ -94,6 +94,21 @@ def formulario():
 
         return 'Tipo de doação inválido'
 
+@app.route('/receber', methods=['GET', 'POST'])
+@login_required  
+def receber():
+    if request.method == 'GET':
+        return render_template('receber.html')
+    
+    elif request.method == 'POST':
+        nome = request.form['nome']
+        telefone = request.form['telefone']
+        endereco = request.form['endereco']
+        qtd_pessoas = request.form['qtd_pessoas']
+        necessidades = request.form['necessidades']
+
+        return f'Cadastro para receber doação: {nome}, {telefone}, {endereco}, {qtd_pessoas} pessoas. Necessidades: {necessidades}'
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

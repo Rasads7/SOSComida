@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulário para Receber Doação</title>
+</head>
+<body>
+    <h1>Formulário para Receber Doação</h1>
+
+    <form method="POST">
+        <p><label>Nome: <input type="text" name="nome" required></label></p>
+        <p><label>Telefone: <input type="text" name="telefone" required></label></p>
+        <p><label>Endereço: <input type="text" name="endereco" required></label></p>
+        <p><label>Quantas pessoas moram na casa: <input type="number" name="qtd_pessoas" min="1" required></label></p>
+        <p><label>Necessidades principais: <textarea name="necessidades" rows="4" cols="40" required></textarea></label></p>
+
+        <button type="submit">Enviar</button>
+    </form>
+</body>
+</html>
