@@ -16,21 +16,21 @@
 
     <form method="POST">
         <p>
-            <label><input type="radio" name="tipo" value="cesta" onclick="atualizarFormulario()" required> Cesta Básica</label>
-            <label><input type="radio" name="tipo" value="monetaria" onclick="atualizarFormulario()"> Doação Monetária</label>
+            <label><input type="radio" name="tipo" value="cestaFormDoar" onclick="atualizarFormulario()" required> Cesta Básica</label>
+            <label><input type="radio" name="tipo" value="monetariaFormDoar" onclick="atualizarFormulario()"> Doação Monetária</label>
         </p>
 
-        <p><label>Nome: <input type="text" name="nome" required></label></p>
-        <p><label>Telefone: <input type="text" name="telefone" required></label></p>
-        <p><label>Endereço: <input type="text" name="endereco" required></label></p>
+        <p><label>Nome: <input type="text" name="nomeFormDoar" required></label></p>
+        <p><label>Telefone: <input type="text" name="telefoneFormDoar" required></label></p>
+        <p><label>Endereço: <input type="text" name="enderecoFormDoar" required></label></p>
 
         <div id="form-cesta" style="display:none;">
-            <p><label>Onde irá deixar a cesta: <input type="text" name="local_entrega"></label></p>
-            <p><label>Data de entrega: <input type="date" name="data_entrega"></label></p>
+            <p><label>Onde irá deixar a cesta: <input type="text" name="local_entregaFormDoar"></label></p>
+            <p><label>Data de entrega: <input type="date" name="data_entregaFormDoar"></label></p>
         </div>
 
         <div id="form-monetaria" style="display:none;">
-            <p><label>Valor da doação (R$): <input type="number" name="valor" step="0.01"></label></p>
+            <p><label>Valor da doação (R$): <input type="number" name="valorFormDoar" step="0.01"></label></p>
         </div>
 
         <button type="submit">Enviar</button>
