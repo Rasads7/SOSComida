@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOSComida</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+</head>
+
+<header>
+
+    <nav class="navbar navbar-expand-lg navbar-light" id="barranav">
+        <a class="navbar-brand" href="{{ url_for('home') }}"><img src="{{url_for('static', filename='logo.png')}}" alt="SOS Comida" id="logo-navbar"></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+<div class="collapse navbar-collapse" id="navbarNav">
+  
+    <ul class="navbar-nav mx-auto">
+    <li class="nav-item active">
+      <a class="nav-link" href="{{ url_for('home') }}">Home<span class="sr-only">(current)</span></a>
+    </li>
+  </ul>
+  
+</ul>
+
+  
+</div>
+
+    </nav>
+
+</header>
+
+<body>
+
+    <h1>SOS Comida</h1>
+
+    <hr>
+
+    <h3>O SOS Comida é uma plataforma dedicada a conectar pessoas que desejam doar alimentos com aquelas que precisam. 
+        Nosso objetivo é facilitar a comunicação e a logística das doações, tornando mais rápido e seguro o processo de ajudar quem precisa. 
+        Com apenas alguns cliques, você pode cadastrar doações e realizar campanhas, contribuindo para reduzir o desperdício de alimentos e ajudar a transformar vidas. 
+        Junte-se a nós e faça a diferença!
+    </h3>
+
+    <hr>
+    
+    <div class="botoes-doacao">
+
+            <a class="btn-doacao" href="{{ url_for('login') }}">Fazer Login</a>
+ 
+            <a class="btn-doacao" href="{{ url_for('registrar') }}">Registre-se</a>
+
+    </div>
+
+</body>
+
+<include src="footer.html"></include>
+
+<!-- Adicionando Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Se você quiser adicionar seu próprio script -->
+<script src="script.js"></script>
+
+</html>
