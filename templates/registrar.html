@@ -1,16 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar</title>
+    <title>Registrar - SOS Comida</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <form action="" method="post">
-        Nome: <input type="text" name="NomeFormRegistrar" required><br>
-        Email: <input type="email" name="EmailFormRegistrar" required><br>
-        Senha: <input type="password" name="SenhaFormRegistrar" required><br>
-        <input type="submit" value="Cadastrar">
-    </form>
+
+<nav class="navbar navbar-expand-lg navbar-light" id="barranav">
+    <a class="navbar-brand" href="{{ url_for('home') }}">
+        <img src="{{url_for('static', filename='logo.png')}}" alt="SOS Comida" id="logo-navbar">
+    </a>
+</nav>
+
+<div class="page-center">
+    <div class="auth-card">
+        <h3 class="auth-title">Registrar</h3>
+        <form method="post">
+            <div class="form-group">
+                <label>Nome:</label>
+                <input type="text" class="form-control" name="NomeFormRegistrar" required>
+            </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" class="form-control" name="EmailFormRegistrar" required>
+            </div>
+            <div class="form-group">
+                <label>Senha:</label>
+                <input type="password" class="form-control" name="SenhaFormRegistrar" required>
+            </div>
+            <button type="submit" class="btn btn-block btn-auth-submit">Cadastrar</button>
+        </form>
+        <p class="text-center mt-3">Já tem conta? <a href="{{ url_for('login') }}">Faça login</a></p>
+    </div>
+</div>
+
 </body>
 </html>
