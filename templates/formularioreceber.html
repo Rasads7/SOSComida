@@ -1,20 +1,1146 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <title>Formulário para Receber Doação</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário para Receber Doação - SOS Comida</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background: #f8f9fa;
+        }
+
+        /* Header e Navegação */
+        .navbar {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(44, 85, 48, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            font-size: 2rem;
+            color: #ffd700;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><rect fill="%23f0f8f0" width="1200" height="300"/><circle fill="%23e8f5e8" cx="200" cy="80" r="50"/><circle fill="%23d4edda" cx="800" cy="150" r="70"/><circle fill="%23c3e6cb" cx="1000" cy="60" r="35"/></svg>');
+            background-size: cover;
+            background-position: center;
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="rgba(255,215,0,0.1)" cx="20" cy="20" r="2"/><circle fill="rgba(255,215,0,0.1)" cx="80" cy="80" r="2"/><circle fill="rgba(255,215,0,0.1)" cx="40" cy="60" r="1"/><circle fill="rgba(255,215,0,0.1)" cx="90" cy="30" r="1.5"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .main-content {
+            padding: 4rem 0;
+        }
+
+        /* Formulário */
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #ffd700;
+        }
+
+        .form-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .form-body {
+            padding: 2.5rem;
+        }
+
+        .form-step {
+            margin-bottom: 2rem;
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #17a2b8;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Campos do Formulário */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #17a2b8;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #17a2b8;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        }
+
+        .form-input:invalid {
+            border-color: #dc3545;
+        }
+
+        .form-input:valid {
+            border-color: #28a745;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Seção de Necessidades */
+        .needs-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .needs-section h4 {
+            color: #17a2b8;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .needs-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .need-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .need-option:hover {
+            background: rgba(23, 162, 184, 0.1);
+        }
+
+        .need-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #17a2b8;
+        }
+
+        .need-option label {
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #333;
+        }
+
+        /* Informações Adicionais */
+        .info-section {
+            background: linear-gradient(135deg, rgba(23, 162, 184, 0.1), rgba(19, 132, 150, 0.1));
+            border: 1px solid rgba(23, 162, 184, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-title {
+            color: #17a2b8;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-text {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Botão de Envio */
+        .submit-section {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(23, 162, 184, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c5530;
+            color: white;
+            padding: 2rem 0 1rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #2c5530;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                gap: 1rem;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .form-body {
+                padding: 1.5rem;
+            }
+
+            .form-header {
+                padding: 1.5rem;
+            }
+
+            .form-header h2 {
+                font-size: 1.6rem;
+            }
+
+            .needs-options {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .hero-content {
+                padding: 0 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .submit-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .need-option {
+                padding: 0.8rem;
+            }
+        }
+
+        /* Animações */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scroll suave */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Estados de loading */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Validação visual */
+        .form-group.error .form-input {
+            border-color: #dc3545;
+            background-color: rgba(220, 53, 69, 0.05);
+        }
+
+        .form-group.success .form-input {
+            border-color: #28a745;
+            background-color: rgba(40, 167, 69, 0.05);
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        /* Indicador de progresso */
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .progress-step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 0.5rem;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+        }
+
+        .progress-step.active {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+        }
+
+        .progress-step.completed {
+            background: #28a745;
+            color: white;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 20px;
+            height: 2px;
+            background: #e9ecef;
+            transform: translateY(-50%);
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.completed::after {
+            background: #28a745;
+        }
+
+        /* Contador de caracteres */
+        .char-counter {
+            text-align: right;
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+        .char-counter.warning {
+            color: #ffc107;
+        }
+
+        .char-counter.danger {
+            color: #dc3545;
+        }
+
+        /* Dicas visuais */
+        .form-tip {
+            background: rgba(23, 162, 184, 0.1);
+            border-left: 3px solid #17a2b8;
+            padding: 0.8rem;
+            margin-top: 0.5rem;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Ícones nos campos */
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #17a2b8;
+            z-index: 2;
+        }
+
+        .input-with-icon .form-input {
+            padding-left: 2.5rem;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Formulário para Receber Doação</h1>
+    <!-- Navegação -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-heart"></i>
+                SOS Comida
+            </a>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="#" class="nav-link">Home</a></li>
+                <li><a href="#" class="nav-link">Pesquisar</a></li>
+                <li><a href="#" class="nav-link">Campanhas</a></li>
+                <li><a href="#" class="nav-link">Perfil</a></li>
+                <li><a href="#" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a></li>
+            </ul>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
 
-    <form method="POST">
-        <p><label>Nome: <input type="text" name="nomeFormReceber" required></label></p>
-        <p><label>Telefone: <input type="text" name="telefoneFormReceber" required></label></p>
-        <p><label>Endereço: <input type="text" name="enderecoFormReceber" required></label></p>
-        <p><label>Quantas pessoas moram na casa: <input type="number" name="qtd_pessoasFormReceber" min="1" required></label></p>
-        <p><label>Necessidades principais: <textarea name="necessidadesFormReceber" rows="4" cols="40" required></textarea></label></p>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Solicitar Ajuda</h1>
+            <p class="hero-description">
+                Estamos aqui para ajudar. Preencha o formulário abaixo com suas informações e necessidades para que possamos conectá-lo com doadores em sua região.
+            </p>
+        </div>
+    </section>
 
-        <button type="submit">Enviar</button>
-    </form>
+    <!-- Conteúdo Principal -->
+    <section class="main-content">
+        <div class="container">
+            <!-- Informações Importantes -->
+            <div class="info-section fade-in">
+                <h3 class="info-title">
+                    <i class="fas fa-shield-alt"></i>
+                    Informações Importantes
+                </h3>
+                <p class="info-text">
+                    Seus dados pessoais são protegidos e utilizados apenas para coordenar a entrega de doações. 
+                    Todas as solicitações passam por um processo de verificação para garantir que a ajuda chegue a quem realmente precisa.
+                </p>
+            </div>
+
+            <!-- Formulário -->
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Formulário para Receber Doação</h2>
+                    <p>Preencha seus dados para que possamos ajudá-lo</p>
+                </div>
+
+                <div class="form-body">
+                    <!-- Indicador de Progresso -->
+                    <div class="progress-indicator">
+                        <div class="progress-step active">1</div>
+                        <div class="progress-step">2</div>
+                        <div class="progress-step">3</div>
+                    </div>
+
+                    <form method="POST" id="receive-form">
+                        <!-- Passo 1: Dados Pessoais -->
+                        <div class="form-step">
+                            <h3 class="step-title">
+                                <span class="step-number">1</span>
+                                Dados Pessoais
+                            </h3>
+
+                            <div class="form-group">
+                                <label for="nome" class="form-label">
+                                    <i class="fas fa-user"></i>
+                                    Nome Completo
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-user input-icon"></i>
+                                    <input type="text" name="nomeFormReceber" id="nome" class="form-input" required placeholder="Digite seu nome completo">
+                                </div>
+                                <div class="error-message">Por favor, digite seu nome completo</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="telefone" class="form-label">
+                                    <i class="fas fa-phone"></i>
+                                    Telefone
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-phone input-icon"></i>
+                                    <input type="tel" name="telefoneFormReceber" id="telefone" class="form-input" required placeholder="(11) 99999-9999">
+                                </div>
+                                <div class="error-message">Por favor, digite um telefone válido</div>
+                                <div class="form-tip">
+                                    <i class="fas fa-info-circle"></i>
+                                    Utilizaremos este número para entrar em contato sobre as doações disponíveis.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="endereco" class="form-label">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Endereço Completo
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-map-marker-alt input-icon"></i>
+                                    <input type="text" name="enderecoFormReceber" id="endereco" class="form-input" required placeholder="Rua, número, bairro, cidade, CEP">
+                                </div>
+                                <div class="error-message">Por favor, digite seu endereço completo</div>
+                                <div class="form-tip">
+                                    <i class="fas fa-info-circle"></i>
+                                    Endereço completo nos ajuda a encontrar doadores próximos à sua localização.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Passo 2: Informações Familiares -->
+                        <div class="form-step">
+                            <h3 class="step-title">
+                                <span class="step-number">2</span>
+                                Informações Familiares
+                            </h3>
+
+                            <div class="form-group">
+                                <label for="qtd-pessoas" class="form-label">
+                                    <i class="fas fa-users"></i>
+                                    Quantas pessoas moram na casa?
+                                </label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-users input-icon"></i>
+                                    <input type="number" name="qtd_pessoasFormReceber" id="qtd-pessoas" class="form-input" min="1" required placeholder="Ex: 4">
+                                </div>
+                                <div class="error-message">Por favor, informe quantas pessoas moram na casa</div>
+                                <div class="form-tip">
+                                    <i class="fas fa-info-circle"></i>
+                                    Esta informação nos ajuda a dimensionar adequadamente as doações necessárias.
+                                </div>
+                            </div>
+
+                            <!-- Composição Familiar -->
+                            <div class="needs-section">
+                                <h4>
+                                    <i class="fas fa-home"></i>
+                                    Composição Familiar (Opcional)
+                                </h4>
+                                <div class="needs-options">
+                                    <div class="need-option">
+                                        <input type="checkbox" id="criancas" name="composicao[]" value="criancas">
+                                        <label for="criancas">Crianças (0-12 anos)</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="adolescentes" name="composicao[]" value="adolescentes">
+                                        <label for="adolescentes">Adolescentes (13-17 anos)</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="idosos" name="composicao[]" value="idosos">
+                                        <label for="idosos">Idosos (60+ anos)</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="gestante" name="composicao[]" value="gestante">
+                                        <label for="gestante">Gestante</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="deficiencia" name="composicao[]" value="deficiencia">
+                                        <label for="deficiencia">Pessoa com deficiência</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="doenca" name="composicao[]" value="doenca">
+                                        <label for="doenca">Pessoa com doença crônica</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Passo 3: Necessidades -->
+                        <div class="form-step">
+                            <h3 class="step-title">
+                                <span class="step-number">3</span>
+                                Suas Necessidades
+                            </h3>
+
+                            <!-- Tipos de Necessidades -->
+                            <div class="needs-section">
+                                <h4>
+                                    <i class="fas fa-list-check"></i>
+                                    Principais Necessidades
+                                </h4>
+                                <div class="needs-options">
+                                    <div class="need-option">
+                                        <input type="checkbox" id="alimentos" name="tipos_necessidades[]" value="alimentos">
+                                        <label for="alimentos">Alimentos básicos</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="higiene" name="tipos_necessidades[]" value="higiene">
+                                        <label for="higiene">Produtos de higiene</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="limpeza" name="tipos_necessidades[]" value="limpeza">
+                                        <label for="limpeza">Produtos de limpeza</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="roupas" name="tipos_necessidades[]" value="roupas">
+                                        <label for="roupas">Roupas e calçados</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="medicamentos" name="tipos_necessidades[]" value="medicamentos">
+                                        <label for="medicamentos">Medicamentos</label>
+                                    </div>
+                                    <div class="need-option">
+                                        <input type="checkbox" id="outros" name="tipos_necessidades[]" value="outros">
+                                        <label for="outros">Outros</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="necessidades" class="form-label">
+                                    <i class="fas fa-comment-alt"></i>
+                                    Descreva suas necessidades principais
+                                </label>
+                                <textarea name="necessidadesFormReceber" id="necessidades" class="form-input form-textarea" required placeholder="Descreva detalhadamente suas necessidades principais, situação atual e qualquer informação relevante que possa ajudar os doadores a entenderem melhor como podem ajudar..."></textarea>
+                                <div class="char-counter" id="char-counter">0 / 500 caracteres</div>
+                                <div class="error-message">Por favor, descreva suas necessidades</div>
+                                <div class="form-tip">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Seja específico sobre suas necessidades. Isso ajuda os doadores a entenderem melhor como podem ajudar.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botão de Envio -->
+                        <div class="submit-section">
+                            <button type="submit" class="submit-btn" id="submit-btn">
+                                <i class="fas fa-paper-plane"></i>
+                                Enviar Solicitação
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 SOS Comida. Conectando corações, alimentando vidas.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navegação móvel
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Animação de fade-in
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Atualizar indicador de progresso
+        function updateProgressIndicator() {
+            const steps = document.querySelectorAll('.progress-step');
+            const nome = document.getElementById('nome').value;
+            const telefone = document.getElementById('telefone').value;
+            const endereco = document.getElementById('endereco').value;
+            const qtdPessoas = document.getElementById('qtd-pessoas').value;
+            const necessidades = document.getElementById('necessidades').value;
+            
+            // Reset all steps
+            steps.forEach(step => {
+                step.classList.remove('active', 'completed');
+            });
+            
+            // Step 1
+            if (nome && telefone && endereco) {
+                steps[0].classList.add('completed');
+                steps[1].classList.add('active');
+                
+                // Step 2
+                if (qtdPessoas) {
+                    steps[1].classList.add('completed');
+                    steps[2].classList.add('active');
+                    
+                    // Step 3
+                    if (necessidades) {
+                        steps[2].classList.add('completed');
+                    }
+                }
+            } else {
+                steps[0].classList.add('active');
+            }
+        }
+
+        // Validação em tempo real
+        const formInputs = document.querySelectorAll('.form-input');
+        
+        formInputs.forEach(input => {
+            input.addEventListener('blur', validateField);
+            input.addEventListener('input', function() {
+                clearError.call(this);
+                updateProgressIndicator();
+            });
+        });
+
+        function validateField(e) {
+            const field = e.target;
+            const formGroup = field.closest('.form-group');
+            
+            if (field.hasAttribute('required') && !field.value.trim()) {
+                formGroup.classList.add('error');
+                formGroup.classList.remove('success');
+            } else if (field.value.trim()) {
+                formGroup.classList.add('success');
+                formGroup.classList.remove('error');
+            }
+        }
+
+        function clearError() {
+            const field = this;
+            const formGroup = field.closest('.form-group');
+            
+            if (field.value.trim()) {
+                formGroup.classList.remove('error');
+            }
+        }
+
+        // Contador de caracteres para textarea
+        const necessidadesTextarea = document.getElementById('necessidades');
+        const charCounter = document.getElementById('char-counter');
+
+        necessidadesTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            const maxLength = 500;
+            
+            charCounter.textContent = `${length} / ${maxLength} caracteres`;
+            
+            if (length > maxLength * 0.9) {
+                charCounter.classList.add('warning');
+            } else {
+                charCounter.classList.remove('warning');
+            }
+            
+            if (length > maxLength) {
+                charCounter.classList.add('danger');
+                this.value = this.value.substring(0, maxLength);
+            } else {
+                charCounter.classList.remove('danger');
+            }
+        });
+
+        // Validação do formulário
+        const form = document.getElementById('receive-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validar todos os campos obrigatórios
+            let isValid = true;
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                const formGroup = field.closest('.form-group');
+                if (!field.value.trim()) {
+                    formGroup.classList.add('error');
+                    isValid = false;
+                } else {
+                    formGroup.classList.add('success');
+                }
+            });
+
+            // Validação específica para número de pessoas
+            const qtdPessoas = document.getElementById('qtd-pessoas');
+            if (qtdPessoas.value && parseInt(qtdPessoas.value) < 1) {
+                qtdPessoas.closest('.form-group').classList.add('error');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Simular envio do formulário
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
+                submitBtn.disabled = true;
+                
+                setTimeout(() => {
+                    alert('Solicitação enviada com sucesso! Entraremos em contato em breve para conectá-lo com doadores em sua região.');
+                    form.reset();
+                    document.querySelectorAll('.form-group').forEach(group => {
+                        group.classList.remove('success', 'error');
+                    });
+                    
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Solicitação';
+                    submitBtn.disabled = false;
+                    
+                    // Reset progress indicator
+                    updateProgressIndicator();
+                    
+                    // Reset char counter
+                    charCounter.textContent = '0 / 500 caracteres';
+                    charCounter.classList.remove('warning', 'danger');
+                }, 2000);
+            } else {
+                // Scroll para o primeiro erro
+                const firstError = form.querySelector('.form-group.error');
+                if (firstError) {
+                    firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+
+        // Fechar menu móvel ao clicar em um link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Máscara para telefone
+        const telefoneInput = document.getElementById('telefone');
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            value = value.replace(/(\d{2})(\d)/, '($1) $2');
+            value = value.replace(/(\d{5})(\d)/, '$1-$2');
+            e.target.value = value;
+        });
+
+        // Preloader simples
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Smooth scroll para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Inicializar indicador de progresso
+        updateProgressIndicator();
+    </script>
 </body>
+
 </html>
+
