@@ -1,39 +1,163 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Formulário de Doação - SOS Comida</title>
-    <script>
-        function atualizarFormulario() {
-            const tipo = document.querySelector('input[name="tipo"]:checked').value;
-            document.getElementById('form-cesta').style.display = tipo === 'cesta' ? 'block' : 'none';
-            document.getElementById('form-monetaria').style.display = tipo === 'monetaria' ? 'block' : 'none';
-        }
-    </script>
+  <meta charset="UTF-8">
+  <title>Formulário de Doação - SOS Comida</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
+<header>
+  <nav class="navbar navbar-expand-lg navbar-light" id="barranav">
+    <a class="navbar-brand" href="{{ url_for('home') }}">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="SOS Comida" id="logo-navbar">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="">Pesquisar</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('campanhas') }}">Campanhas</a></li>
+        <li class="nav-item"><a class="nav-link" href="">Perfil</a></li>
+      </ul>
+
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link btn-auth" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
 <body>
+  <div class="container py-4">
     <h1>Formulário de Doação</h1>
+    <hr>
 
-    <form method="POST">
-        <p>
-            <label><input type="radio" name="tipo" value="cestaFormDoar" onclick="atualizarFormulario()" required> Cesta Básica</label>
-            <label><input type="radio" name="tipo" value="monetariaFormDoar" onclick="atualizarFormulario()"> Doação Monetária</label>
-        </p>
+    <div class="auth-card bg-white mx-auto">
+      <form method="POST">
+        <fieldset class="mb-4">
+          <legend class="auth-title">Tipo de doação</legend>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" id="doacaoCesta" type="radio" name="tipoFormDoar" value="cesta" onclick="atualizarFormulario()" required>
+            <label class="form-check-label" for="doacaoCesta">Cesta Básica</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" id="doacaoMonetaria" type="radio" name="tipoFormDoar" value="monetaria" onclick="atualizarFormulario()">
+            <label class="form-check-label" for="doacaoMonetaria">Doação Monetária</label>
+          </div>
+        </fieldset>
 
-        <p><label>Nome: <input type="text" name="nomeFormDoar" required></label></p>
-        <p><label>Telefone: <input type="text" name="telefoneFormDoar" required></label></p>
-        <p><label>Endereço: <input type="text" name="enderecoFormDoar" required></label></p>
+        <fieldset class="mb-4">
+          <legend class="auth-title">Dados do doador</legend>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="nomeFormDoar">Nome</label>
+              <input type="text" class="form-control" id="nomeFormDoar" name="nomeFormDoar" required>
+            </div>
+            <div class="form-group col-md-6">
+              <label for="telefoneFormDoar">Telefone</label>
+              <input type="text" class="form-control" id="telefoneFormDoar" name="telefoneFormDoar" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="enderecoFormDoar">Endereço</label>
+            <input type="text" class="form-control" id="enderecoFormDoar" name="enderecoFormDoar" required>
+          </div>
+        </fieldset>
 
-        <div id="form-cesta" style="display:none;">
-            <p><label>Onde irá deixar a cesta: <input type="text" name="local_entregaFormDoar"></label></p>
-            <p><label>Data de entrega: <input type="date" name="data_entregaFormDoar"></label></p>
-        </div>
+        <fieldset id="form-cesta" class="mb-4" style="display:none;">
+          <legend class="auth-title">Detalhes da Cesta Básica</legend>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="local_entregaFormDoar">Onde irá deixar a cesta</label>
+              <input type="text" class="form-control" id="local_entregaFormDoar" name="local_entregaFormDoar">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="data_entregaFormDoar">Data de entrega</label>
+              <input type="date" class="form-control" id="data_entregaFormDoar" name="data_entregaFormDoar">
+            </div>
+            <div class="form-group col-md-3">
+              <label for="qtd_cestasFormDoar">Quantidade de cestas</label>
+              <input type="number" class="form-control" id="qtd_cestasFormDoar" name="qtd_cestasFormDoar" min="1" value="1" required>
+            </div>
+          </div>
+        </fieldset>
 
-        <div id="form-monetaria" style="display:none;">
-            <p><label>Valor da doação (R$): <input type="number" name="valorFormDoar" step="0.01"></label></p>
-        </div>
+        <fieldset id="form-monetaria" class="mb-4" style="display:none;">
+          <legend class="auth-title">Detalhes da Doação Monetária</legend>
 
-        <button type="submit">Enviar</button>
-    </form>
+          <div class="mb-3">
+            <strong>Valor da doação:</strong><br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" id="val20" type="radio" name="valor_predefinido" value="20" onclick="mostrarOutroValor(false)">
+              <label class="form-check-label" for="val20">R$20</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" id="val50" type="radio" name="valor_predefinido" value="50" onclick="mostrarOutroValor(false)">
+              <label class="form-check-label" for="val50">R$50</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" id="val100" type="radio" name="valor_predefinido" value="100" onclick="mostrarOutroValor(false)">
+              <label class="form-check-label" for="val100">R$100</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" id="valOutro" type="radio" name="valor_predefinido" value="outro" onclick="mostrarOutroValor(true)">
+              <label class="form-check-label" for="valOutro">Outros</label>
+            </div>
+          </div>
+
+          <div id="outro-valor" class="form-group" style="display:none;">
+            <label for="valorFormDoar">Digite o valor</label>
+            <input type="number" class="form-control" id="valorFormDoar" name="valorFormDoar" step="0.01" min="1">
+          </div>
+
+          <div class="mt-3">
+            <strong>Forma de pagamento:</strong><br>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" id="pgPix" type="radio" name="forma_pagamentoFormDoar" value="pix" required>
+              <label class="form-check-label" for="pgPix">PIX</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn btn-auth-submit btn-block">Enviar</button>
+      </form>
+    </div>
+  </div>
+
+  <include src="footer.html"></include>
+
+  <script>
+    function atualizarFormulario() {
+      const tipo = document.querySelector('input[name="tipoFormDoar"]:checked')?.value;
+      document.getElementById('form-cesta').style.display     = (tipo === 'cesta') ? 'block' : 'none';
+      document.getElementById('form-monetaria').style.display = (tipo === 'monetaria') ? 'block' : 'none';
+    }
+    function mostrarOutroValor(exibir) {
+      const outro = document.getElementById('outro-valor');
+      outro.style.display = exibir ? 'block' : 'none';
+      if (!exibir) {
+        const campo = document.getElementById('valorFormDoar');
+        if (campo) campo.value = '';
+      }
+    }
+    window.addEventListener('DOMContentLoaded', () => atualizarFormulario());
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

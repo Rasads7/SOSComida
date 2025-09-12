@@ -80,22 +80,49 @@ def formulariodoar():
     if request.method == 'GET':
         return render_template('formulariodoar.html')
     
-    elif request.method == 'POST':
-        tipo = request.form['tipoFormDoar']
-        nome = request.form['nomeFormDoar']
-        telefone = request.form['telefoneFormDoar']
-        endereco = request.form['enderecoFormDoar']
+    tipo = request.form['tipoFormDoar']
+    nome = request.form['nomeFormDoar']
+    telefone = request.form['telefoneFormDoar']
+    endereco = request.form['enderecoFormDoar']
 
-        if tipo == 'cesta':
-            local_entrega = request.form['local_entregaFormDoar']
-            data_entrega = request.form['data_entregaFormDoar']
-            return f'Cesta Básica registrada para {nome}'
+    if tipo == 'cesta':
+        local_entrega = request.form.get('local_entregaFormDoar', '')
+        data_entrega = request.form.get('data_entregaFormDoar', '')
+        qtd_cestas = request.form.get('qtd_cestasFormDoar', '1')
+        return (
+            f'Cesta(s) registrada(s) para {nome}. '
+            f'Quantidade: {qtd_cestas}. '
+            f'Entrega em: {local_entrega} na data {data_entrega}.'
+        )
 
-        elif tipo == 'monetaria':
-            valor = request.form['valorFormDoar']
-            return f'Doação monetária de R${valor} registrada para {nome}'
+    elif tipo == 'monetaria':
+        valor_predefinido = request.form['valor_predefinido']
+        forma_pagamento = request.form['forma_pagamentoFormDoar']
 
-        return 'Tipo de doação inválido'
+        if valor_predefinido == 'outro':
+            valor = request.form.get('valorFormDoar', '0')
+        else:
+            valor = valor_predefinido
+
+        if forma_pagamento == 'pix':
+            return f'Doação monetária via PIX de R${valor} registrada para {nome}.'
+        elif forma_pagamento == 'cartao':
+            nome_cartao = request.form['nome_cartaoFormDoar']
+            numero_cartao = request.form['numero_cartaoFormDoar']
+            validade_cartao = request.form['validade_cartaoFormDoar']
+            cvv_cartao = request.form['cvv_cartaoFormDoar']
+            final_cartao = numero_cartao[-4:] if len(numero_cartao) >= 4 else '****'
+            return (
+                f'Doação monetária via Cartão de R${valor} registrada para {nome}. '
+                f'Cartão final {final_cartao}.'
+            )
+
+
+        return 'Forma de pagamento inválida'
+
+    return 'Tipo de doação inválido'
+
+
 
 @app.route('/formularioreceber', methods=['GET', 'POST'])
 @login_required  
