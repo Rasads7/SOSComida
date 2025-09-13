@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from models import Usuario
+from models import Usuario, Campanha
 from db import db
 import hashlib
 
@@ -138,6 +138,27 @@ def formularioreceber():
         necessidades = request.form['necessidadesFormReceber']
 
         return f'Cadastro para receber doação: {nome}, {telefone}, {endereco}, {qtd_pessoas} pessoas. Necessidades: {necessidades}'
+
+@app.route('/solicitar_campanha', methods=['GET', 'POST'])
+@login_required
+def solicitar_campanha():
+    if request.method == 'GET':
+        return render_template('solicitar_campanha.html')
+    
+    elif request.method == 'POST':
+        titulo = request.form['titulo']
+        descricao = request.form['descricao']
+
+        nova_campanha = Campanha(
+            titulo=titulo,
+            descricao=descricao,
+            criador_id=current_user.id
+        )
+
+        db.session.add(nova_campanha)
+        db.session.commit()
+
+        return redirect(url_for('campanhas'))
 
 if __name__ == '__main__':
     with app.app_context():
