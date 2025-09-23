@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Formulário de Doação - SOS Comida</title>
+  <title>Nova Doação - SOS Comida</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -25,14 +25,20 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('home') }}">Home</a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="">Pesquisar</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('campanhas') }}">Campanhas</a></li>
-        <li class="nav-item"><a class="nav-link" href="">Perfil</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('pesquisar') }}">Pesquisar</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('campanhas') }}">Campanhas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="">Perfil</a>
+        </li>
       </ul>
 
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link btn-auth" href="{{ url_for('logout') }}">Logout</a>
+          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
         </li>
       </ul>
     </div>
@@ -41,19 +47,20 @@
 
 <body>
   <div class="container py-4">
-    <h1>Formulário de Doação</h1>
+    <h1>Sua Ajuda Transforma Vidas</h1>
     <hr>
 
     <div class="auth-card bg-white mx-auto">
       <form method="POST">
+
         <fieldset class="mb-4">
           <legend class="auth-title">Tipo de doação</legend>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" id="doacaoCesta" type="radio" name="tipoFormDoar" value="cesta" onclick="atualizarFormulario()" required>
+            <input class="form-check-input" id="doacaoCesta" type="radio" name="tipoFormDoar" value="cesta" required>
             <label class="form-check-label" for="doacaoCesta">Cesta Básica</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" id="doacaoMonetaria" type="radio" name="tipoFormDoar" value="monetaria" onclick="atualizarFormulario()">
+            <input class="form-check-input" id="doacaoMonetaria" type="radio" name="tipoFormDoar" value="monetaria">
             <label class="form-check-label" for="doacaoMonetaria">Doação Monetária</label>
           </div>
         </fieldset>
@@ -89,14 +96,13 @@
             </div>
             <div class="form-group col-md-3">
               <label for="qtd_cestasFormDoar">Quantidade de cestas</label>
-              <input type="number" class="form-control" id="qtd_cestasFormDoar" name="qtd_cestasFormDoar" min="1" value="1" required>
+              <input type="number" class="form-control" id="qtd_cestasFormDoar" name="qtd_cestasFormDoar" min="1" value="1">
             </div>
           </div>
         </fieldset>
 
         <fieldset id="form-monetaria" class="mb-4" style="display:none;">
           <legend class="auth-title">Detalhes da Doação Monetária</legend>
-
           <div class="mb-3">
             <strong>Valor da doação:</strong><br>
             <div class="form-check form-check-inline">
@@ -136,28 +142,58 @@
     </div>
   </div>
 
-  <include src="footer.html"></include>
-
   <script>
     function atualizarFormulario() {
       const tipo = document.querySelector('input[name="tipoFormDoar"]:checked')?.value;
       document.getElementById('form-cesta').style.display     = (tipo === 'cesta') ? 'block' : 'none';
       document.getElementById('form-monetaria').style.display = (tipo === 'monetaria') ? 'block' : 'none';
-    }
-    function mostrarOutroValor(exibir) {
-      const outro = document.getElementById('outro-valor');
-      outro.style.display = exibir ? 'block' : 'none';
-      if (!exibir) {
-        const campo = document.getElementById('valorFormDoar');
-        if (campo) campo.value = '';
+
+      document.querySelectorAll('#form-cesta input, #form-cesta select, #form-cesta textarea')
+        .forEach(i => i.required = (tipo === 'cesta'));
+
+      document.querySelectorAll('input[name="valor_predefinido"]').forEach(r => r.required = (tipo === 'monetaria'));
+      document.querySelectorAll('input[name="forma_pagamentoFormDoar"]').forEach(r => r.required = (tipo === 'monetaria'));
+
+      const outroInput = document.getElementById('valorFormDoar');
+      if (tipo === 'monetaria' && document.getElementById('valOutro') && document.getElementById('valOutro').checked) {
+        outroInput.required = true;
+      } else {
+        outroInput.required = false;
       }
     }
-    window.addEventListener('DOMContentLoaded', () => atualizarFormulario());
+
+    function mostrarOutroValor(exibir) {
+      const outroDiv = document.getElementById('outro-valor');
+      const outroInput = document.getElementById('valorFormDoar');
+      outroDiv.style.display = exibir ? 'block' : 'none';
+      if (!exibir) {
+        outroInput.value = '';
+        outroInput.required = false;
+      } else {
+        outroInput.required = true;
+      }
+    }
+
+    document.querySelectorAll('input[name="tipoFormDoar"]').forEach(el =>
+      el.addEventListener('change', atualizarFormulario)
+    );
+
+    document.querySelectorAll('input[name="valor_predefinido"]').forEach(el =>
+      el.addEventListener('change', (e) => {
+        mostrarOutroValor(e.target.value === 'outro');
+        atualizarFormulario();
+      })
+    );
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const valOutroChecked = document.getElementById('valOutro') && document.getElementById('valOutro').checked;
+      mostrarOutroValor(valOutroChecked);
+      atualizarFormulario();
+    });
   </script>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="script.js"></script>
 </body>
 </html>

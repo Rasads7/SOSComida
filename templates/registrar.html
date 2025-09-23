@@ -34,7 +34,14 @@
             <button type="submit" class="btn btn-block btn-auth-submit">Cadastrar</button>
         </form>
         <p class="text-center mt-3">Já tem conta? <a href="{{ url_for('login') }}">Faça login</a></p>
+        <br>
+
+        {% if erroregistrar %}
+        <div class="alert alert-danger">{{ erroregistrar }}</div>
+        {% endif %}
+        
     </div>
+
 </div>
 
 </body>

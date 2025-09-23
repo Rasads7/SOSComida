@@ -20,14 +20,14 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mx-auto">
             <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">Pesquisar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('pesquisar') }}">Pesquisar</a></li>
             <li class="nav-item active"><a class="nav-link" href="{{ url_for('campanhas') }}">Campanhas</a></li>
             <li class="nav-item"><a class="nav-link" href="#">Perfil</a></li>
         </ul>
         
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-                <a class="nav-link btn-auth" href="{{ url_for('logout') }}">Logout</a>
+                <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
             </li>
         </ul>
     </div>
@@ -35,31 +35,10 @@
 </header>
 
 <div class="container mt-5">
-    <h2 class="mb-4">Campanhas Ativas</h2>
     <div class="botoes-doacao">
-    <a href="{{ url_for('solicitar_campanha') }}" class="btn-doacao">Solicitar Nova Campanha</a>
+    <a href="{{ url_for('solicitarcampanha') }}" class="btn-doacao">Solicitar Nova Campanha</a>   
 </div>
-
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Pão e Justiça – Gotham</h5>
-                    <p class="card-text">Após uma onda de crimes que deixou centenas desabrigados em Gotham, estamos arrecadando alimentos não perecíveis para garantir que ninguém durma com fome nas sombras da cidade.</p>
-                    <a href="#" class="btn btn-primary">Ver Detalhes</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h5 class="card-title">Mesa de Esperança – Metrópolis</h5>
-                    <p class="card-text">Depois do recente ataque que deixou vários bairros de Metrópolis em ruínas, estamos organizando a coleta de cestas básicas para apoiar as famílias afetadas e devolver um pouco da esperança que a cidade carrega em seu símbolo.</p>
-                    <a href="#" class="btn btn-primary">Ver Detalhes</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h2 class="mb-4">Campanhas Ativas</h2> 
 </div>
 
 </body>

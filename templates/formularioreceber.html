@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Formulário para Receber Doação - SOS Comida</title>
+  <title>NovoPedido - SOS Comida</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -25,14 +25,20 @@
         <li class="nav-item">
           <a class="nav-link" href="{{ url_for('home') }}">Home</a>
         </li>
-        <li class="nav-item"><a class="nav-link" href="">Pesquisar</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('campanhas') }}">Campanhas</a></li>
-        <li class="nav-item"><a class="nav-link" href="">Perfil</a></li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('pesquisar') }}">Pesquisar</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('campanhas') }}">Campanhas</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="">Perfil</a>
+        </li>
       </ul>
 
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link btn-auth" href="{{ url_for('logout') }}">Logout</a>
+          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
         </li>
       </ul>
     </div>
@@ -41,7 +47,7 @@
 
 <body>
   <div class="container py-4">
-    <h1>Formulário para Receber Doação</h1>
+    <h1>Conte Conosco</h1>
     <hr>
 
     <div class="auth-card bg-white mx-auto">
