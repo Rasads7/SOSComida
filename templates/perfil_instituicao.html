@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - SOS Comida</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        /* Header e Navegação (Estilos do seu template base) */
+        .navbar {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(44, 85, 48, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            color: #FFE07A;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white !important;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 224, 122, 0.2);
+            color: #FFE07A !important;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: #FFE07A;
+            color: #2c5530 !important;
+            font-weight: 600;
+        }
+
+        .btn-auth {
+            background: #FFE07A;
+            color: #2c5530 !important;
+            font-weight: 600;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 2px solid #FFE07A;
+        }
+
+        .btn-auth:hover {
+            background: transparent;
+            color: #FFE07A !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 224, 122, 0.3);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Buttons */
+        .btn {
+            border-radius: 25px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 85, 48, 0.3);
+        }
+
+        .btn-secondary {
+            background: #FFE07A;
+            color: #2c5530;
+            border: none;
+        }
+
+        .btn-secondary:hover {
+            background: #e6ca68;
+            color: #2c5530;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 224, 122, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+
+
+        /* Alerts */
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #2c5530;
+                flex-direction: column;
+                padding: 2rem 0;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .main-content {
+                margin-top: 80px;
+            }
+        }
+        
+        /* Estilos do perfil de instituição */
+        .hero {
+            background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9));
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            padding-top: 80px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c5530;
+            margin: 3rem 0 2rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #ffd700;
+            display: inline-block;
+        }
+
+        .solicitacoes-grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .solicitacao-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .solicitacao-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .card-header.status-pendente::after, .card-header.status-delegada::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #ffc107;
+        }
+        
+        .card-header.status-aceita::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #28a745;
+        }
+
+        .card-header.status-recusada::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #dc3545;
+        }
+
+        .card-header.status-entregue::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #0d6efd;
+        }
+        
+        .card-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pendente, .status-delegada {
+            background: rgba(255, 193, 7, 0.9);
+            color: #856404;
+        }
+        
+        .status-aceita {
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+        }
+        
+        .status-recusada {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+        }
+        
+        .status-entregue {
+            background: rgba(13, 110, 253, 0.9);
+            color: white;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .acoes-delegacao {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .acoes-delegacao .btn {
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #2c5530;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #4a7c59;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .solicitacoes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .acoes-delegacao {
+                flex-direction: column;
+            }
+            
+            .acoes-delegacao .btn {
+                flex-grow: 1;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="SOS Comida">
+                SOS Comida
+            </a>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Início
+                </a></li>
+                
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('campanhas') }}" class="nav-link {% if request.endpoint == 'campanhas' %}active{% endif %}">
+                        <i class="fas fa-heart"></i> Campanhas
+                    </a></li>
+                    <li><a href="{{ url_for('formulariodoar') }}" class="nav-link {% if request.endpoint == 'formulariodoar' %}active{% endif %}">
+                        <i class="fas fa-gift"></i> Doar
+                    </a></li>
+                    <li><a href="{{ url_for('formularioreceber') }}" class="nav-link {% if request.endpoint == 'formularioreceber' %}active{% endif %}">
+                        <i class="fas fa-hand-holding-heart"></i> Receber
+                    </a></li>
+                    <li><a href="{{ url_for('minhas_solicitacoes') }}" class="nav-link {% if request.endpoint == 'minhas_solicitacoes' %}active{% endif %}">
+                        <i class="fas fa-list"></i> Minhas Solicitações
+                    </a></li>
+                    {% if current_user.tipo == 'moderador' %}
+                        <li><a href="{{ url_for('moderacao') }}" class="nav-link {% if request.endpoint == 'moderacao' %}active{% endif %}">
+                            <i class="fas fa-cogs"></i> Moderação
+                        </a></li>
+                        <li><a href="{{ url_for('criar_campanha') }}" class="nav-link {% if request.endpoint == 'criar_campanha' %}active{% endif %}">
+                            <i class="fas fa-plus"></i> Nova Campanha
+                        </a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('perfil') }}" class="nav-link {% if request.endpoint == 'perfil' %}active{% endif %}">
+                        <i class="fas fa-user"></i> Perfil
+                    </a></li>
+                    <li><a href="{{ url_for('logout') }}" class="nav-link btn-auth">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" class="nav-link btn-auth">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </a></li>
+                    <li><a href="{{ url_for('registrar') }}" class="nav-link btn-auth">
+                        <i class="fas fa-user-plus"></i> Cadastrar
+                    </a></li>
+                {% endif %}
+            </ul>
+            
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="main-content" style="margin-top: 120px; padding-top: 0;">
+                <div class="container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+        <section class="hero">
+            <div class="hero-content">
+                <h1><i class="fas fa-building"></i> Meu Perfil de Instituição</h1>
+                <p class="hero-description">
+                    Bem-vindo, {{ usuario.instituicao_nome }}! Gerencie as solicitações delegadas a você pela equipe de moderação.
+                </p>
+            </div>
+        </section>
+
+        <div class="container">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i>
+                Métricas de Impacto
+            </h2>
+            <div class="stat-cards-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                    <div class="stat-value">{{ projetos_ajudados }}</div>
+                    <div class="stat-label">Projetos Ajudados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-basket"></i></div>
+                    <div class="stat-value">{{ total_cestas }}</div>
+                    <div class="stat-label">Cestas Entregues</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-weight-hanging"></i></div>
+                    <div class="stat-value">{{ "%.2f"|format(total_kg) }} kg</div>
+                    <div class="stat-label">Alimentos Entregues</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                    <div class="stat-value">R$ {{ "%.2f"|format(total_monetario) }}</div>
+                    <div class="stat-label">Valor doado</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">
+                <i class="fas fa-share-square"></i>
+                Solicitações Delegadas (Pendentes)
+            </h2>
+
+            <div class="solicitacoes-grid">
+                {% if delegacoes_pendentes %}
+                    {% for delegacao in delegacoes_pendentes %}
+                        <div class="solicitacao-card">
+                            <div class="card-header status-delegada">
+                                <div class="card-status status-delegada">
+                                    Delegada
+                                </div>
+                                <h3 class="card-title">
+                                    {% if delegacao.doacao %}
+                                        <i class="fas fa-gift"></i> Doação
+                                    {% else %}
+                                        <i class="fas fa-hand-holding-heart"></i> Recebimento
+                                    {% endif %}
+                                </h3>
+                                <p class="card-subtitle">
+                                    <i class="fas fa-hashtag"></i>
+                                    ID da Delegação: {{ delegacao.id }} • Delegado por: {{ delegacao.moderador.nome }}
+                                </p>
+                            </div>
+                            
+                            <div class="card-body">
+                                {% if delegacao.doacao %}
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Tipo de Doação</span>
+                                            <span class="info-value">{{ delegacao.doacao.tipo|title }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Doador</span>
+                                            <span class="info-value">{{ delegacao.doacao.nome_doador }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Telefone</span>
+                                            <span class="info-value">{{ delegacao.doacao.telefone }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Endereço</span>
+                                            <span class="info-value">{{ delegacao.doacao.endereco }}</span>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Nome</span>
+                                            <span class="info-value">{{ delegacao.recebimento.nome }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Telefone</span>
+                                            <span class="info-value">{{ delegacao.recebimento.telefone }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Endereço</span>
+                                            <span class="info-value">{{ delegacao.recebimento.endereco }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Necessidades</span>
+                                            <span class="info-value">{{ delegacao.recebimento.necessidades }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                
+                                <div class="acoes-delegacao">
+                                    <a href="{{ url_for('aceitar_delegacao', delegacao_id=delegacao.id) }}" class="btn btn-success">
+                                        <i class="fas fa-check"></i> Aceitar
+                                    </a>
+                                    <a href="{{ url_for('recusar_delegacao', delegacao_id=delegacao.id) }}" class="btn btn-danger">
+                                        <i class="fas fa-times"></i> Recusar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <h3>Nenhuma solicitação pendente no momento</h3>
+                        <p>Quando houver novas delegações, elas aparecerão aqui.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <h2 class="section-title">
+                <i class="fas fa-check-circle"></i>
+                Solicitações Aceitas
+            </h2>
+            <div class="solicitacoes-grid">
+                {% if delegacoes_aceitas %}
+                    {% for delegacao in delegacoes_aceitas %}
+                        <div class="solicitacao-card">
+                            <div class="card-header status-aceita">
+                                <div class="card-status status-aceita">
+                                    Aceita
+                                </div>
+                                <h3 class="card-title">
+                                    {% if delegacao.doacao %}
+                                        <i class="fas fa-gift"></i> Doação
+                                    {% else %}
+                                        <i class="fas fa-hand-holding-heart"></i> Recebimento
+                                    {% endif %}
+                                </h3>
+                                <p class="card-subtitle">
+                                    <i class="fas fa-hashtag"></i>
+                                    ID da Delegação: {{ delegacao.id }} • Aceita em: {{ delegacao.data_delegacao.strftime('%d/%m/%Y') }}
+                                </p>
+                            </div>
+                            
+                            <div class="card-body">
+                                {% if delegacao.doacao %}
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Doador</span>
+                                            <span class="info-value">{{ delegacao.doacao.nome_doador }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Endereço</span>
+                                            <span class="info-value">{{ delegacao.doacao.endereco }}</span>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Nome</span>
+                                            <span class="info-value">{{ delegacao.recebimento.nome }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Endereço</span>
+                                            <span class="info-value">{{ delegacao.recebimento.endereco }}</span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                <div class="alert alert-success mt-3">
+                                    <i class="fas fa-info-circle"></i> Esta solicitação foi aceita por sua instituição.
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-box-open"></i>
+                        <h3>Nenhuma solicitação aceita ainda</h3>
+                        <p>Após aceitar uma delegação, ela aparecerá aqui.</p>
+                    </div>
+                {% endif %}
+            </div>
+            
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 SOS Comida. Todos os direitos reservados.</p>
+            <p>Juntos contra a fome, unidos pela solidariedade.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
+            });
+        });
+    </script>
+</body>
+</html>
