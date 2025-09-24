@@ -1,44 +1,815 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - SOS Comida</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% extends "base.html" %}
+
+{% block title %}SOS Comida - Login{% endblock %}
+
+{% block extra_css %}
+.auth-section {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+.auth-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 900px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 500px;
+}
+
+.auth-visual {
+    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: white;
+    padding: 3rem;
+    text-align: center;
+}
+
+.auth-visual h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.auth-visual p {
+    opacity: 0.9;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.visual-icon {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 224, 122, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #FFE07A;
+    margin-bottom: 2rem;
+}
+
+.auth-form {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c5530;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.auth-subtitle {
+    color: #666;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #2c5530;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #2c5530;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
+}
+
+.btn-auth {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(44, 85, 48, 0.3);
+}
+
+.auth-link {
+    text-align: center;
+    color: #666;
+}
+
+.auth-link a {
+    color: #2c5530;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-link a:hover {
+    color: #4a7c59;
+    text-decoration: underline;
+}
+
+.input-icon {
+    position: relative;
+}
+
+.input-icon i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #666;
+}
+
+.input-icon .form-control {
+    padding-left: 3rem;
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        grid-template-columns: 1fr;
+        margin: 1rem;
+    }
+    
+    .auth-visual {
+        padding: 2rem;
+    }
+    
+    .auth-form {
+        padding: 2rem;
+    }
+    
+    .auth-visual h2 {
+        font-size: 1.5rem;
+    }
+    
+    .visual-icon {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-container">
+            <div class="auth-visual">
+                <div class="visual-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h2>Bem-vindo de volta!</h2>
+                <p>
+                    Entre na sua conta e continue fazendo a diferença na vida de quem mais precisa. 
+                    Sua solidariedade transforma vidas!
+                </p>
+            </div>
+            
+            <div class="auth-form">
+                <h1 class="auth-title">Entrar</h1>
+                <p class="auth-subtitle">Acesse sua conta do SOS Comida</p>
+                
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="EmailFormLogin" class="form-label">
+                            <i class="fas fa-envelope"></i> E-mail
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input 
+                                type="email" 
+                                class="form-control" 
+                                id="EmailFormLogin" 
+                                name="EmailFormLogin" 
+                                placeholder="Digite seu e-mail"
+                                required
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="SenhaFormLogin" class="form-label">
+                            <i class="fas fa-lock"></i> Senha
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-lock"></i>
+                            <input 
+                                type="password" 
+                                class="form-control" 
+                                id="SenhaFormLogin" 
+                                name="SenhaFormLogin" 
+                                placeholder="Digite sua senha"
+                                required
+                            >
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-auth">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Entrar
+                    </button>
+                </form>
+                
+                <div class="auth-link">
+                    <p>Ainda não tem uma conta? 
+                        <a href="{{ url_for('registrar') }}">Cadastre-se aqui</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            min-height: 100vh;
+        }
+
+        /* Header e Navegação */
+        .navbar {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(44, 85, 48, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            font-size: 2rem;
+            color: #ffd700;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #ffd700;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Container principal */
+        .page-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 100px 2rem 2rem;
+            position: relative;
+        }
+
+        .page-center::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="rgba(255,215,0,0.1)" cx="20" cy="20" r="2"/><circle fill="rgba(255,215,0,0.1)" cx="80" cy="80" r="2"/><circle fill="rgba(255,215,0,0.1)" cx="40" cy="60" r="1"/><circle fill="rgba(255,215,0,0.1)" cx="90" cy="30" r="1.5"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Card de autenticação */
+        .auth-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            border-radius: 20px 20px 0 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2c5530;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .auth-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            border-radius: 2px;
+        }
+
+        /* Formulário */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c5530;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #4a7c59;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: #4a7c59;
+            background: white;
+        }
+
+        /* Botão de submit */
+        .btn-auth-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .btn-auth-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-auth-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-auth-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(44, 85, 48, 0.3);
+        }
+
+        .btn-auth-submit:active {
+            transform: translateY(-1px);
+        }
+
+        /* Link de registro */
+        .auth-card p {
+            text-align: center;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .auth-card a {
+            color: #4a7c59;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .auth-card a:hover {
+            color: #2c5530;
+            text-decoration: underline;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #2c5530;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .auth-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .auth-title {
+                font-size: 1.8rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-center {
+                padding: 100px 1rem 1rem;
+            }
+
+            .auth-card {
+                padding: 1.5rem;
+            }
+
+            .auth-title {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Animações adicionais */
+        .form-group {
+            animation: fadeInUp 1s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.2s; }
+        .form-group:nth-child(2) { animation-delay: 0.4s; }
+        .btn-auth-submit { 
+            animation: fadeInUp 1s ease-out 0.6s both; 
+        }
+        .auth-card p { 
+            animation: fadeInUp 1s ease-out 0.8s both; 
+        }
+
+        /* Scroll suave */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Efeitos de loading */
+        .btn-auth-submit.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn-auth-submit.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Navegação -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <i class="fas fa-heart"></i>
+                SOS Comida
+            </a>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="{{ url_for('home') }}#inicio" class="nav-link">Início</a></li>
+                <li><a href="{{ url_for('home') }}#sobre" class="nav-link">Sobre</a></li>
+                <li><a href="{{ url_for('home') }}#como-funciona" class="nav-link">Como Funciona</a></li>
+                <li><a href="{{ url_for('home') }}#contato" class="nav-link">Contato</a></li>
+            </ul>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
 
-<nav class="navbar navbar-expand-lg navbar-light" id="barranav">
-    <a class="navbar-brand" href="{{ url_for('home') }}">
-        <img src="{{url_for('static', filename='logo.png')}}" alt="SOS Comida" id="logo-navbar">
-    </a>
-</nav>
-
-<div class="page-center">
-    <div class="auth-card">
-        <h3 class="auth-title">Login</h3>
-        <form method="post">
-            <div class="form-group">
-                <label>Email:</label>
-                <input type="email" class="form-control" name="EmailFormLogin" required>
-            </div>
-            <div class="form-group">
-                <label>Senha:</label>
-                <input type="password" class="form-control" name="SenhaFormLogin" required>
-            </div>
-            <button type="submit" class="btn btn-block btn-auth-submit">Entrar</button>
-        </form>
-        <p class="text-center mt-3">Ainda não tem conta? <a href="{{ url_for('registrar') }}">Cadastre-se</a></p>
-        <br>
-    
-    {% if errologin %}
-    <div class="alert alert-danger">{{ errologin }}</div>
-    {% endif %}
-    
+    <!-- Área de Login -->
+    <div class="page-center">
+        <div class="auth-card">
+            <h3 class="auth-title">
+                <i class="fas fa-sign-in-alt" style="color: #ffd700; margin-right: 0.5rem;"></i>
+                Login
+            </h3>
+            <form method="post" id="loginForm">
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope" style="margin-right: 0.5rem; color: #4a7c59;"></i>
+                        Email:
+                    </label>
+                    <input type="email" class="form-control" name="EmailFormLogin" id="email" required 
+                           placeholder="Digite seu email">
+                </div>
+                <div class="form-group">
+                    <label for="senha">
+                        <i class="fas fa-lock" style="margin-right: 0.5rem; color: #4a7c59;"></i>
+                        Senha:
+                    </label>
+                    <input type="password" class="form-control" name="SenhaFormLogin" id="senha" required 
+                           placeholder="Digite sua senha">
+                </div>
+                <button type="submit" class="btn btn-block btn-auth-submit" id="submitBtn">
+                    <i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>
+                    Entrar
+                </button>
+            </form>
+            <p class="mt-3">
+                Ainda não tem conta? 
+                <a href="{{ url_for('registrar') }}">
+                    <i class="fas fa-user-plus" style="margin-right: 0.3rem;"></i>
+                    Cadastre-se
+                </a>
+            </p>
+            <p class="mt-2">
+                <a href="#" style="font-size: 0.9rem; color: #666;">
+                    <i class="fas fa-key" style="margin-right: 0.3rem;"></i>
+                    Esqueceu sua senha?
+                </a>
+            </p>
+        </div>
     </div>
 
-</div>
+    <script>
+        // Navegação móvel
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
 
+        mobileMenuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Fechar menu móvel ao clicar em um link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Efeito de loading no formulário
+        const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        loginForm.addEventListener('submit', function(e) {
+            // Adicionar efeito de loading
+            submitBtn.classList.add('loading');
+            submitBtn.innerHTML = 'Entrando...';
+            
+            // Simular delay (remover em produção)
+            // setTimeout(() => {
+            //     submitBtn.classList.remove('loading');
+            //     submitBtn.innerHTML = '<i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>Entrar';
+            // }, 2000);
+        });
+
+        // Validação em tempo real
+        const emailInput = document.getElementById('email');
+        const senhaInput = document.getElementById('senha');
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        emailInput.addEventListener('blur', function() {
+            if (this.value && !validateEmail(this.value)) {
+                this.style.borderColor = '#dc3545';
+                this.style.boxShadow = '0 0 0 3px rgba(220, 53, 69, 0.1)';
+            } else {
+                this.style.borderColor = '#4a7c59';
+                this.style.boxShadow = '0 0 0 3px rgba(74, 124, 89, 0.1)';
+            }
+        });
+
+        senhaInput.addEventListener('blur', function() {
+            if (this.value && this.value.length < 6) {
+                this.style.borderColor = '#dc3545';
+                this.style.boxShadow = '0 0 0 3px rgba(220, 53, 69, 0.1)';
+            } else {
+                this.style.borderColor = '#4a7c59';
+                this.style.boxShadow = '0 0 0 3px rgba(74, 124, 89, 0.1)';
+            }
+        });
+
+        // Preloader simples
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 0.5s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Efeito de digitação nos placeholders
+        function typeWriter(element, text, speed = 100) {
+            let i = 0;
+            element.placeholder = '';
+            
+            function type() {
+                if (i < text.length) {
+                    element.placeholder += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+            type();
+        }
+
+        // Aplicar efeito de digitação aos placeholders após carregamento
+        setTimeout(() => {
+            typeWriter(emailInput, 'Digite seu email', 80);
+            setTimeout(() => {
+                typeWriter(senhaInput, 'Digite sua senha', 80);
+            }, 1000);
+        }, 1500);
+    </script>
 </body>
+
 </html>
+
