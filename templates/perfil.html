@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - SOS Comida</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        /* Header e Navegação */
+        .navbar {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(44, 85, 48, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            color: #FFE07A;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white !important;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 224, 122, 0.2);
+            color: #FFE07A !important;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: #FFE07A;
+            color: #2c5530 !important;
+            font-weight: 600;
+        }
+
+        .btn-auth {
+            background: #FFE07A;
+            color: #2c5530 !important;
+            font-weight: 600;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 2px solid #FFE07A;
+        }
+
+        .btn-auth:hover {
+            background: transparent;
+            color: #FFE07A !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 224, 122, 0.3);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: none;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 85, 48, 0.3);
+        }
+
+        .btn-secondary {
+            background: #FFE07A;
+            color: #2c5530;
+            border: none;
+            border-radius: 25px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #e6ca68;
+            color: #2c5530;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 224, 122, 0.3);
+        }
+
+        /* Alerts */
+        .alert {
+            border-radius: 10px;
+            border: none;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #2c5530;
+                flex-direction: column;
+                padding: 2rem 0;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .main-content {
+                margin-top: 80px;
+            }
+        }
+
+        /* Estilos do template 'perfil' */
+        
+        .hero {
+            background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9));
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            padding-top: 80px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .profile-sidebar {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .profile-avatar {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-circle {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2c5530;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .profile-type {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #2c5530;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+        }
+
+        .profile-menu {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .profile-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-menu a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            color: #666;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-menu a:hover,
+        .profile-menu a.active {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            text-decoration: none;
+        }
+
+        .profile-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-header {
+            border-bottom: 2px solid #f8f9fa;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c5530;
+            margin-bottom: 0.5rem;
+        }
+
+        .content-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            padding: 0.8rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #2c5530;
+            box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .user-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #2c5530;
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c5530;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(44, 85, 48, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #2c5530;
+            border: 2px solid #2c5530;
+        }
+
+        .btn-secondary:hover {
+            background: #2c5530;
+            color: white;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .profile-sidebar {
+                position: static;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="SOS Comida">
+                SOS Comida
+            </a>
+            
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="{{ url_for('home') }}" class="nav-link {% if request.endpoint == 'home' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Início
+                </a></li>
+                
+                {% if current_user.is_authenticated %}
+                    <li><a href="{{ url_for('campanhas') }}" class="nav-link {% if request.endpoint == 'campanhas' %}active{% endif %}">
+                        <i class="fas fa-heart"></i> Campanhas
+                    </a></li>
+                    <li><a href="{{ url_for('formulariodoar') }}" class="nav-link {% if request.endpoint == 'formulariodoar' %}active{% endif %}">
+                        <i class="fas fa-gift"></i> Doar
+                    </a></li>
+                    <li><a href="{{ url_for('formularioreceber') }}" class="nav-link {% if request.endpoint == 'formularioreceber' %}active{% endif %}">
+                        <i class="fas fa-hand-holding-heart"></i> Receber
+                    </a></li>
+                    <li><a href="{{ url_for('minhas_solicitacoes') }}" class="nav-link {% if request.endpoint == 'minhas_solicitacoes' %}active{% endif %}">
+                        <i class="fas fa-list"></i> Minhas Solicitações
+                    </a></li>
+                    {% if current_user.tipo == 'moderador' %}
+                        <li><a href="{{ url_for('moderacao') }}" class="nav-link {% if request.endpoint == 'moderacao' %}active{% endif %}">
+                            <i class="fas fa-cogs"></i> Moderação
+                        </a></li>
+                        <li><a href="{{ url_for('criar_campanha') }}" class="nav-link {% if request.endpoint == 'criar_campanha' %}active{% endif %}">
+                            <i class="fas fa-plus"></i> Nova Campanha
+                        </a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('perfil') }}" class="nav-link {% if request.endpoint == 'perfil' %}active{% endif %}">
+                        <i class="fas fa-user"></i> Perfil
+                    </a></li>
+                    <li><a href="{{ url_for('logout') }}" class="nav-link btn-auth">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}" class="nav-link btn-auth">
+                        <i class="fas fa-sign-in-alt"></i> Entrar
+                    </a></li>
+                    <li><a href="{{ url_for('registrar') }}" class="nav-link btn-auth">
+                        <i class="fas fa-user-plus"></i> Cadastrar
+                    </a></li>
+                {% endif %}
+            </ul>
+            
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="main-content" style="margin-top: 120px; padding-top: 0;">
+                <div class="container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+        <section class="hero">
+            <div class="hero-content">
+                <h1><i class="fas fa-user-circle"></i> Meu Perfil</h1>
+                <p class="hero-description">
+                    Gerencie suas informações pessoais e acompanhe sua atividade na plataforma.
+                </p>
+            </div>
+        </section>
+        
+        <div class="container">
+            <div class="profile-layout">
+                <aside class="profile-sidebar">
+                    <div class="profile-avatar">
+                        <div class="avatar-circle">
+                            {{ usuario.nome[0].upper() if usuario else 'U' }}
+                        </div>
+                        <h3 class="profile-name">{{ usuario.nome if usuario else 'Usuário' }}</h3>
+                        <p class="profile-email">{{ usuario.email if usuario else 'email@exemplo.com' }}</p>
+                        <span class="profile-type">Usuário</span>
+                    </div>
+
+                    <ul class="profile-menu">
+                        <li><a href="#" class="active"><i class="fas fa-user"></i> Informações Pessoais</a></li>
+                        <li><a href="{{ url_for('minhas_solicitacoes') }}"><i class="fas fa-list"></i> Minhas Solicitações</a></li>
+                        <li><a href="{{ url_for('campanhas') }}"><i class="fas fa-heart"></i> Campanhas</a></li>
+                        <li><a href="#"><i class="fas fa-bell"></i> Notificações</a></li>
+                        <li><a href="#"><i class="fas fa-shield-alt"></i> Privacidade</a></li>
+                        <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                    </ul>
+                </aside>
+
+                <div class="profile-content">
+                    <div class="content-header">
+                        <h2 class="content-title">Informações Pessoais</h2>
+                        <p class="content-subtitle">Mantenha seus dados atualizados para uma melhor experiência</p>
+                    </div>
+
+                    <div class="user-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                            <div class="stat-value">{{ usuario.doacoes|length if usuario else 0 }}</div>
+                            <div class="stat-label">Doações Realizadas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                            <div class="stat-value">{{ usuario.recebimentos|length if usuario else 0 }}</div>
+                            <div class="stat-label">Solicitações de Ajuda</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-value">{{ usuario.voluntariados|length if usuario else 0 }}</div>
+                            <div class="stat-label">Voluntariados</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar"></i>
+                            </div>
+                            <div class="stat-value">{{ usuario.data_criacao.strftime('%m/%Y') if usuario else '--' }}</div>
+                            <div class="stat-label">Membro desde</div>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="#">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="nome">Nome Completo</label>
+                                <input type="text" id="nome" name="nome" class="form-input"
+                                       value="{{ usuario.nome if usuario else '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="email">E-mail</label>
+                                <input type="email" id="email" name="email" class="form-input"
+                                       value="{{ usuario.email if usuario else '' }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="telefone">Telefone</label>
+                                <input type="tel" id="telefone" name="telefone" class="form-input"
+                                       placeholder="(11) 99999-9999">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="cidade">Cidade</label>
+                                <input type="text" id="cidade" name="cidade" class="form-input"
+                                       placeholder="São Paulo, SP">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bio">Sobre você</label>
+                            <textarea id="bio" name="bio" class="form-input form-textarea"
+                                      placeholder="Conte um pouco sobre você e sua motivação para ajudar..."></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Salvar Alterações
+                            </button>
+                            <button type="button" class="btn btn-secondary">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 SOS Comida. Todos os direitos reservados.</p>
+            <p>Juntos contra a fome, unidos pela solidariedade.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
+            });
+        });
+    </script>
+</body>
+</html>
