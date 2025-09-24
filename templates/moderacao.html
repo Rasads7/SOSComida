@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderação - SOS Comida</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        /* Header e Navegação */
+        .navbar {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(44, 85, 48, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            color: #FFE07A;
+        }
+
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: white !important;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 224, 122, 0.2);
+            color: #FFE07A !important;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: #FFE07A;
+            color: #2c5530 !important;
+            font-weight: 600;
+        }
+
+        .btn-auth {
+            background: #FFE07A;
+            color: #2c5530 !important;
+            font-weight: 600;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            border: 2px solid #FFE07A;
+        }
+
+        .btn-auth:hover {
+            background: transparent;
+            color: #FFE07A !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 224, 122, 0.3);
+        }
+        
+        .logout-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(220, 53, 69, 0.3);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><rect fill="%23f0f8f0" width="1200" height="300"/><circle fill="%23e8f5e8" cx="200" cy="80" r="50"/><circle fill="%23d4edda" cx="800" cy="150" r="70"/><circle fill="%23c3e6cb" cx="1000" cy="60" r="35"/></svg>');
+            background-size: cover;
+            background-position: center;
+            min-height: 40vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="rgba(255,215,0,0.1)" cx="20" cy="20" r="2"/><circle fill="rgba(255,215,0,0.1)" cx="80" cy="80" r="2"/><circle fill="rgba(255,215,0,0.1)" cx="40" cy="60" r="1"/><circle fill="rgba(255,215,0,0.1)" cx="90" cy="30" r="1.5"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .main-content {
+            padding: 4rem 0;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        /* Seções */
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2c5530;
+            margin: 3rem 0 2rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #ffd700;
+            display: inline-block;
+        }
+
+        /* Cards de Solicitação */
+        .solicitacoes-grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .solicitacao-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .solicitacao-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .card-header.status-pendente::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #ffc107;
+        }
+
+        .card-header.status-aprovada::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #28a745;
+        }
+
+        .card-header.status-rejeitada::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #dc3545;
+        }
+
+        .card-status {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-pendente {
+            background: rgba(255, 193, 7, 0.9);
+            color: #856404;
+        }
+
+        .status-aprovada {
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+        }
+
+        .status-rejeitada {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .card-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .acoes-moderacao {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .btn-aprovar {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-aprovar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-rejeitar {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-rejeitar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+            text-decoration: none;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            color: white;
+            padding: 2rem 0 1rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .footer p {
+            margin: 0;
+            opacity: 0.8;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #2c5530;
+                flex-direction: column;
+                padding: 2rem 0;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .container {
+                padding: 0 1rem;
+            }
+
+            .main-content {
+                margin-top: 80px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .acoes-moderacao {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('home') }}" class="logo">
+                <i class="fas fa-heart"></i>
+                SOS Comida
+            </a>
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+                <li><a href="{{ url_for('campanhas') }}" class="nav-link">Campanhas</a></li>
+                <li><a href="{{ url_for('formulariodoar') }}" class="nav-link">Doar</a></li>
+                <li><a href="{{ url_for('formularioreceber') }}" class="nav-link">Receber</a></li>
+                <li><a href="{{ url_for('minhas_solicitacoes') }}" class="nav-link">Minhas Solicitações</a></li>
+                {% if usuario and usuario.tipo == 'moderador' %}
+                    <li><a href="{{ url_for('moderacao') }}" class="nav-link active">Moderação</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Sair
+                </a></li>
+            </ul>
+            <button class="mobile-menu-toggle" id="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1><i class="fas fa-shield-alt"></i> Painel de Moderação</h1>
+            <p class="hero-description">
+                Bem-vindo, {{ usuario.nome }}! Gerencie e aprove todas as solicitações de doação e recebimento da plataforma.
+            </p>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <i class="fas fa-info-circle"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <h2 class="section-title">
+                <i class="fas fa-hand-holding-heart"></i>
+                Solicitações de Doação
+            </h2>
+            
+            <div class="solicitacoes-grid">
+                {% if doacoes %}
+                    {% for doacao in doacoes %}
+                        <div class="solicitacao-card">
+                            <div class="card-header status-{{ doacao.status }}">
+                                <div class="card-status status-{{ doacao.status }}">
+                                    {{ doacao.status|title }}
+                                </div>
+                                <h3 class="card-title">
+                                    {% if doacao.tipo == 'cesta' %}
+                                        <i class="fas fa-shopping-basket"></i>
+                                        Doação de Cesta Básica
+                                    {% else %}
+                                        <i class="fas fa-dollar-sign"></i>
+                                        Doação Monetária
+                                    {% endif %}
+                                </h3>
+                                <p class="card-subtitle">
+                                    <i class="fas fa-hashtag"></i>
+                                    ID: {{ doacao.id }} • {{ doacao.data_criacao.strftime('%d/%m/%Y às %H:%M') }}
+                                </p>
+                            </div>
+                            
+                            <div class="card-body">
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Doador</span>
+                                        <span class="info-value">{{ doacao.nome_doador }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Telefone</span>
+                                        <span class="info-value">{{ doacao.telefone }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Usuário Responsável</span>
+                                        <span class="info-value">{{ doacao.usuario.nome }} ({{ doacao.usuario.email }})</span>
+                                    </div>
+                                    {% if doacao.tipo == 'cesta' %}
+                                        <div class="info-item">
+                                            <span class="info-label">Local de Entrega</span>
+                                            <span class="info-value">{{ doacao.local_entrega }}</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Data de Entrega</span>
+                                            <span class="info-value">{{ doacao.data_entrega.strftime('%d/%m/%Y') if doacao.data_entrega else 'Não informada' }}</span>
+                                        </div>
+                                    {% elif doacao.tipo == 'monetaria' %}
+                                        <div class="info-item">
+                                            <span class="info-label">Valor</span>
+                                            <span class="info-value">R$ {{ "%.2f"|format(doacao.valor) if doacao.valor else 'Não informado' }}</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="info-item">
+                                    <span class="info-label">Endereço</span>
+                                    <span class="info-value">{{ doacao.endereco }}</span>
+                                </div>
+                                
+                                {% if doacao.status == 'pendente' %}
+                                    <div class="acoes-moderacao">
+                                        <a href="{{ url_for('aprovar_doacao', id=doacao.id) }}" class="btn-aprovar">
+                                            <i class="fas fa-check"></i>
+                                            Aprovar
+                                        </a>
+                                        <a href="{{ url_for('rejeitar_doacao', id=doacao.id) }}" class="btn-rejeitar">
+                                            <i class="fas fa-times"></i>
+                                            Rejeitar
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Nenhuma solicitação de doação encontrada</h3>
+                        <p>Quando houver novas solicitações, elas aparecerão aqui.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <h2 class="section-title">
+                <i class="fas fa-hands-helping"></i>
+                Solicitações de Recebimento
+            </h2>
+            
+            <div class="solicitacoes-grid">
+                {% if recebimentos %}
+                    {% for recebimento in recebimentos %}
+                        <div class="solicitacao-card">
+                            <div class="card-header status-{{ recebimento.status }}">
+                                <div class="card-status status-{{ recebimento.status }}">
+                                    {{ recebimento.status|title }}
+                                </div>
+                                <h3 class="card-title">
+                                    <i class="fas fa-hand-holding-heart"></i>
+                                    Solicitação de Recebimento
+                                </h3>
+                                <p class="card-subtitle">
+                                    <i class="fas fa-hashtag"></i>
+                                    ID: {{ recebimento.id }} • {{ recebimento.data_criacao.strftime('%d/%m/%Y às %H:%M') }}
+                                </p>
+                            </div>
+                            
+                            <div class="card-body">
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Nome</span>
+                                        <span class="info-value">{{ recebimento.nome }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Telefone</span>
+                                        <span class="info-value">{{ recebimento.telefone }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Usuário Responsável</span>
+                                        <span class="info-value">{{ recebimento.usuario.nome }} ({{ recebimento.usuario.email }})</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Quantidade de Pessoas</span>
+                                        <span class="info-value">{{ recebimento.qtd_pessoas }} pessoas</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <span class="info-label">Endereço</span>
+                                    <span class="info-value">{{ recebimento.endereco }}</span>
+                                </div>
+                                
+                                <div class="info-item" style="margin-top: 1rem;">
+                                    <span class="info-label">Necessidades Específicas</span>
+                                    <span class="info-value">{{ recebimento.necessidades }}</span>
+                                </div>
+                                
+                                {% if recebimento.status == 'pendente' %}
+                                    <div class="acoes-moderacao">
+                                        <a href="{{ url_for('aprovar_recebimento', id=recebimento.id) }}" class="btn-aprovar">
+                                            <i class="fas fa-check"></i>
+                                            Aprovar
+                                        </a>
+                                        <a href="{{ url_for('rejeitar_recebimento', id=recebimento.id) }}" class="btn-rejeitar">
+                                            <i class="fas fa-times"></i>
+                                            Rejeitar
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Nenhuma solicitação de recebimento encontrada</h3>
+                        <p>Quando houver novas solicitações, elas aparecerão aqui.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 SOS Comida. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            const icon = mobileMenuToggle.querySelector('i');
+            icon.classList.toggle('fa-bars');
+            icon.classList.toggle('fa-times');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-times');
+            });
+        });
+    </script>
+</body>
+</html>
