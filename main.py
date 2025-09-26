@@ -230,11 +230,14 @@ def registrar():
         return redirect(url_for('home'))
         
     if request.method == 'POST':
-        tipo_cadastro = request.form.get('tipo_cadastro')
+        # Determinar o tipo de cadastro baseado no formulário ativo
+        tipo_cadastro = request.form.get('tipo')
         email = request.form.get('email')
         senha = request.form.get('senha')
         
-        if len(senha) < 6:
+        print(f"DEBUG: tipo_cadastro={tipo_cadastro}, email={email}")  # Debug
+        
+        if not senha or len(senha) < 6:
             flash('A senha deve ter pelo menos 6 caracteres.', 'error')
             return render_template('registrar.html')
         
@@ -252,14 +255,14 @@ def registrar():
                 nome=nome,
                 email=email,
                 senha=hash_password(senha),
-                cpf=request.form.get('cpf'),
-                cidade=request.form.get('cidade'),
-                endereco=request.form.get('endereco', '')
+                telefone=request.form.get('telefone'),
+                endereco=request.form.get('endereco', ''),
+                tipo='usuario'
             )
             flash_msg = f'Cadastro de pessoa física realizado com sucesso! Bem-vindo(a), {nome}!'
             
         elif tipo_cadastro == 'instituicao':
-            nome_inst = request.form.get('instituicao_nome')
+            nome_inst = request.form.get('nome')
             if not nome_inst or len(nome_inst) < 2:
                 flash('O nome da instituição deve ter pelo menos 2 caracteres.', 'error')
                 return render_template('registrar.html')
@@ -268,10 +271,9 @@ def registrar():
                 nome=nome_inst,
                 email=email,
                 senha=hash_password(senha),
+                telefone=request.form.get('telefone'),
+                endereco=request.form.get('endereco'),
                 instituicao_nome=nome_inst,
-                instituicao_endereco=request.form.get('instituicao_endereco'),
-                instituicao_cep=request.form.get('instituicao_cep'),
-                instituicao_tipo=request.form.get('instituicao_tipo'),
                 tipo='instituicao'
             )
             flash_msg = f'Cadastro da instituição "{nome_inst}" realizado com sucesso!'
@@ -280,11 +282,17 @@ def registrar():
             flash('Tipo de cadastro inválido.', 'error')
             return render_template('registrar.html')
             
-        db.session.add(novo_usuario)
-        db.session.commit()
-        login_user(novo_usuario)
-        flash(flash_msg, 'success')
-        return redirect(url_for('home'))
+        try:
+            db.session.add(novo_usuario)
+            db.session.commit()
+            login_user(novo_usuario)
+            flash(flash_msg, 'success')
+            return redirect(url_for('home'))
+        except Exception as e:
+            db.session.rollback()
+            print(f"DEBUG: Erro ao salvar usuário: {e}")  # Debug
+            flash('Erro interno. Tente novamente.', 'error')
+            return render_template('registrar.html')
         
     return render_template('registrar.html')
 
@@ -856,3 +864,5 @@ def voluntariar(campanha_id):
 
     flash(f'Parabéns! Você agora é voluntário na campanha "{campanha.titulo}".', 'success')
     return redirect(url_for('campanhas'))
+
+
