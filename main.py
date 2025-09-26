@@ -633,12 +633,74 @@ def criar_campanha():
 
 # --- Rotas de Perfil (Usuários e Instituições) ---
 
-@app.route('/perfil')
+@app.route('/perfil', methods=['GET', 'POST'])
 @login_required
 def perfil():
     """
     Rota de perfil que exibe um painel diferente dependendo do tipo de usuário.
+    Também permite edição de perfil via POST.
     """
+    if request.method == 'POST':
+        # Processar edição de perfil
+        nome = request.form.get('nome')
+        email = request.form.get('email')
+        telefone = request.form.get('telefone')
+        cidade = request.form.get('cidade')
+        endereco = request.form.get('endereco')
+        bio = request.form.get('bio')
+        
+        # Validações básicas
+        if not nome or len(nome) < 2:
+            flash('Nome deve ter pelo menos 2 caracteres.', 'error')
+            return redirect(url_for('perfil'))
+            
+        if not email:
+            flash('Email é obrigatório.', 'error')
+            return redirect(url_for('perfil'))
+            
+        # Verificar se o email já existe para outro usuário
+        usuario_existente = Usuario.query.filter_by(email=email).first()
+        if usuario_existente and usuario_existente.id != current_user.id:
+            flash('Este email já está sendo usado por outro usuário.', 'error')
+            return redirect(url_for('perfil'))
+        
+        # Processar upload de foto de perfil
+        if 'foto_perfil' in request.files:
+            arquivo = request.files['foto_perfil']
+            if arquivo and arquivo.filename != '':
+                # Verificar extensão do arquivo
+                ext = arquivo.filename.rsplit('.', 1)[1].lower()
+                if ext in ['jpg', 'jpeg', 'png', 'gif']:
+                    # Gerar nome único para o arquivo
+                    nome_arquivo = f"perfil_{current_user.id}_{uuid.uuid4().hex[:8]}.{ext}"
+                    caminho_arquivo = os.path.join(app.static_folder, nome_arquivo)
+                    
+                    # Salvar o arquivo
+                    arquivo.save(caminho_arquivo)
+                    
+                    # Remover foto anterior se existir
+                    if current_user.foto_perfil:
+                        caminho_antigo = os.path.join(app.static_folder, current_user.foto_perfil)
+                        if os.path.exists(caminho_antigo):
+                            os.remove(caminho_antigo)
+                    
+                    # Atualizar o campo no banco
+                    current_user.foto_perfil = nome_arquivo
+                else:
+                    flash('Formato de imagem não suportado. Use JPG, PNG ou GIF.', 'error')
+                    return redirect(url_for('perfil'))
+        
+        # Atualizar dados do usuário
+        current_user.nome = nome
+        current_user.email = email
+        current_user.telefone = telefone
+        current_user.cidade = cidade
+        current_user.endereco = endereco
+        current_user.bio = bio
+        
+        db.session.commit()
+        flash('Perfil atualizado com sucesso!', 'success')
+        return redirect(url_for('perfil'))
     if current_user.tipo == 'instituicao':
         # Perfil de Instituição
         delegacoes_pendentes = Delegacao.query.filter_by(instituicao_id=current_user.id, status='pendente').all()
@@ -758,3 +820,41 @@ if __name__ == '__main__':
         create_initial_data()
         
     app.run(host='0.0.0.0', port=5000, debug=True)
+
+@app.route('/campanhas')
+def campanhas():
+    campanhas_ativas = Campanha.query.filter_by(status='ativa').order_by(Campanha.data_criacao.desc()).all()
+    for campanha in campanhas_ativas:
+        campanha.num_voluntarios = VoluntarioCampanha.query.filter_by(campanha_id=campanha.id).count()
+        campanha.progresso = (campanha.arrecadado / campanha.meta_doacoes * 100) if campanha.meta_doacoes > 0 else 0
+    return render_template('campanhas.html', campanhas=campanhas_ativas, usuario=current_user if current_user.is_authenticated else None)
+
+
+
+
+@app.route('/voluntariar/<int:campanha_id>')
+@login_required
+def voluntariar(campanha_id):
+    if current_user.tipo != 'usuario':
+        flash('Acesso negado. Apenas usuários podem se voluntariar.', 'error')
+        return redirect(url_for('campanhas'))
+
+    campanha = Campanha.query.get_or_404(campanha_id)
+    
+    # Verifica se o usuário já é voluntário
+    voluntario_existente = VoluntarioCampanha.query.filter_by(usuario_id=current_user.id, campanha_id=campanha.id).first()
+    if voluntario_existente:
+        flash('Você já está inscrito como voluntário nesta campanha.', 'info')
+        return redirect(url_for('campanhas'))
+
+    novo_voluntario = VoluntarioCampanha(
+        usuario_id=current_user.id,
+        campanha_id=campanha.id
+    )
+    db.session.add(novo_voluntario)
+    db.session.commit()
+
+    flash(f'Parabéns! Você agora é voluntário na campanha "{campanha.titulo}".', 'success')
+    return redirect(url_for('campanhas'))
+
+
