@@ -16,6 +16,9 @@ class Usuario(UserMixin, db.Model):
     cpf = db.Column(db.String(14))
     cidade = db.Column(db.String(100))
     endereco = db.Column(db.String(255)) # Adicionado para corrigir o erro
+    telefone = db.Column(db.String(20))
+    bio = db.Column(db.Text)
+    foto_perfil = db.Column(db.String(255))
 
     # Campos específicos para Instituição
     instituicao_nome = db.Column(db.String(200))
