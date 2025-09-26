@@ -1,78 +1,628 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NovaCampanha - SOS Comida</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light" id="barranav">
-        <a class="navbar-brand" href="{{ url_for('home') }}">
-            <img src="{{ url_for('static', filename='logo.png') }}" alt="SOS Comida" id="logo-navbar">
-        </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('pesquisar') }}">Pesquisar</a></li>
-                <li class="nav-item active"><a class="nav-link" href="{{ url_for('campanhas') }}">Campanhas</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Perfil</a></li>
-            </ul>
-            
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</header>
-
-<div class="container mt-5">
-    <h2 class="mb-4 text-center">Solicitar Nova Campanha</h2>
+    <title>Registrar - SOS Comida</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
-    <div class="auth-card mx-auto">
-        <form method="POST" action="{{ url_for('solicitarcampanha') }}">
-            <div class="form-group">
-                <label for="titulo">Título da Campanha</label>
-                <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Digite o título" required>
+    {% include 'navbar_styles.html' %}
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+
+        .page-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            padding: 2rem;
+        }
+
+        /* Card de autenticação */
+        .auth-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #0066CC, #80DDF9);
+            border-radius: 20px 20px 0 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #0066CC;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .auth-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #0066CC, #80DDF9);
+            border-radius: 2px;
+        }
+
+        /* Seleção de tipo de cadastro */
+        .registration-type {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .type-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            width: 150px;
+            font-weight: 600;
+            color: #666;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .type-btn:hover {
+            border-color: #80DDF9;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .type-btn.active {
+            background: #e6f3ff;
+            border-color: #0066CC;
+            color: #0066CC;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.2);
+        }
+
+        .type-btn i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #80DDF9;
+        }
+
+        .type-btn.active i {
+            color: #0066CC;
+        }
+        
+        /* Formulário */
+        .form-content {
+            display: none;
+            flex-direction: column;
+        }
+
+        .form-content.active {
+            display: flex;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #0066CC;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #80DDF9;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(128, 221, 249, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-control:hover {
+            border-color: #80DDF9;
+            background: white;
+        }
+
+        /* Indicador de força da senha */
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .password-strength.weak .password-strength-bar {
+            width: 33%;
+            background: #dc3545;
+        }
+
+        .password-strength.medium .password-strength-bar {
+            width: 66%;
+            background: #ffc107;
+        }
+
+        .password-strength.strong .password-strength-bar {
+            width: 100%;
+            background: #28a745;
+        }
+
+        .password-hint {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-hint.show {
+            opacity: 1;
+        }
+
+        /* Botão de submit */
+        .btn-auth-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #0066CC 0%, #80DDF9 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+
+        .btn-auth-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-auth-submit:hover::before {
+            left: 100%;
+        }
+
+        .btn-auth-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-auth-submit:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Link de login */
+        .auth-card p {
+            text-align: center;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .auth-card a {
+            color: #80DDF9;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .auth-card a:hover {
+            color: #0066CC;
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #0066CC 0%, #80DDF9 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            .auth-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-center {
+                padding: 1rem;
+            }
+
+            .auth-card {
+                padding: 1.5rem;
+            }
+
+            .auth-title {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'navbar_simple.html' %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="main-content" style="margin-top: 120px; padding-top: 0;">
+                <div class="container">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+        <div class="page-center">
+            <div class="auth-card">
+                <h3 class="auth-title">
+                    <i class="fas fa-user-plus" style="color: #FFD700; margin-right: 0.5rem;"></i>
+                    Registrar
+                </h3>
+
+                <div class="registration-type">
+                    <div class="type-btn active" id="btn-pessoa">
+                        <i class="fas fa-user"></i>
+                        Sou uma pessoa
+                    </div>
+                    <div class="type-btn" id="btn-instituicao">
+                        <i class="fas fa-building"></i>
+                        Sou uma instituição
+                    </div>
+                </div>
+
+                <form method="POST" id="registration-form">
+                    <!-- Formulário para Pessoa -->
+                    <div class="form-content active" id="form-pessoa">
+                        <input type="hidden" name="tipo" value="pessoa" id="tipo-pessoa">
+                        
+                        <div class="form-group">
+                            <label for="nome">Nome Completo</label>
+                            <input type="text" class="form-control" id="nome" name="nome" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telefone">Telefone</label>
+                            <input type="tel" class="form-control" id="telefone" name="telefone" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="endereco">Endereço</label>
+                            <input type="text" class="form-control" id="endereco" name="endereco" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="senha">Senha</label>
+                            <input type="password" class="form-control" id="senha" name="senha" required>
+                            <div class="password-strength" id="password-strength">
+                                <div class="password-strength-bar"></div>
+                            </div>
+                            <div class="password-hint" id="password-hint">
+                                A senha deve ter pelo menos 8 caracteres
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmar_senha">Confirmar Senha</label>
+                            <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" required>
+                        </div>
+                    </div>
+
+                    <!-- Formulário para Instituição -->
+                    <div class="form-content" id="form-instituicao">
+                        <input type="hidden" name="tipo" value="instituicao" id="tipo-instituicao">
+                        
+                        <div class="form-group">
+                            <label for="nome_instituicao">Nome da Instituição</label>
+                            <input type="text" class="form-control" id="nome_instituicao" name="nome" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cnpj">CNPJ</label>
+                            <input type="text" class="form-control" id="cnpj" name="cnpj" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email_instituicao">E-mail</label>
+                            <input type="email" class="form-control" id="email_instituicao" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="telefone_instituicao">Telefone</label>
+                            <input type="tel" class="form-control" id="telefone_instituicao" name="telefone" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="endereco_instituicao">Endereço</label>
+                            <input type="text" class="form-control" id="endereco_instituicao" name="endereco" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="descricao">Descrição da Instituição</label>
+                            <textarea class="form-control" id="descricao" name="descricao" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="senha_instituicao">Senha</label>
+                            <input type="password" class="form-control" id="senha_instituicao" name="senha" required>
+                            <div class="password-strength" id="password-strength-inst">
+                                <div class="password-strength-bar"></div>
+                            </div>
+                            <div class="password-hint" id="password-hint-inst">
+                                A senha deve ter pelo menos 8 caracteres
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirmar_senha_instituicao">Confirmar Senha</label>
+                            <input type="password" class="form-control" id="confirmar_senha_instituicao" name="confirmar_senha" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-auth-submit">
+                        <i class="fas fa-user-plus"></i>
+                        Registrar
+                    </button>
+                </form>
+
+                <p>Já tem uma conta? <a href="{{ url_for('login') }}">Faça login aqui</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 SOS Comida. Todos os direitos reservados.</p>
+            <p>Juntos contra a fome, unidos pela solidariedade.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        if (mobileMenuToggle && navMenu) {
+            mobileMenuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                const icon = mobileMenuToggle.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-times');
+            });
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    const icon = mobileMenuToggle.querySelector('i');
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
+                });
+            });
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (navbar) {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+        });
+
+        // Registration type toggle
+        const btnPessoa = document.getElementById('btn-pessoa');
+        const btnInstituicao = document.getElementById('btn-instituicao');
+        const formPessoa = document.getElementById('form-pessoa');
+        const formInstituicao = document.getElementById('form-instituicao');
+
+        function enablePersonForm() {
+            btnPessoa.classList.add('active');
+            btnInstituicao.classList.remove('active');
+            formPessoa.classList.add('active');
+            formInstituicao.classList.remove('active');
             
-            <div class="form-group">
-                <label for="descricao">Descrição</label>
-                <textarea class="form-control" id="descricao" name="descricao" rows="5" placeholder="Descreva sua campanha" required></textarea>
-            </div>
+            // Habilitar campos do formulário de pessoa
+            const pessoaInputs = formPessoa.querySelectorAll('input');
+            pessoaInputs.forEach(input => input.disabled = false);
+            
+            // Desabilitar campos do formulário de instituição
+            const instituicaoInputs = formInstituicao.querySelectorAll('input, textarea');
+            instituicaoInputs.forEach(input => input.disabled = true);
+        }
 
-            <div class="form-group">
-                <label for="prazo">Prazo da Campanha</label>
-                <input type="date" class="form-control" id="prazo" name="prazo" required>
-            </div>
+        function enableInstitutionForm() {
+            btnInstituicao.classList.add('active');
+            btnPessoa.classList.remove('active');
+            formInstituicao.classList.add('active');
+            formPessoa.classList.remove('active');
+            
+            // Habilitar campos do formulário de instituição
+            const instituicaoInputs = formInstituicao.querySelectorAll('input, textarea');
+            instituicaoInputs.forEach(input => input.disabled = false);
+            
+            // Desabilitar campos do formulário de pessoa
+            const pessoaInputs = formPessoa.querySelectorAll('input');
+            pessoaInputs.forEach(input => input.disabled = true);
+        }
 
-            <div class="form-group">
-                <label for="status">Status da Campanha</label>
-                <select class="form-control" id="status" name="status" required>
-                    <option value="aberta">Aberta</option>
-                    <option value="fechada">Fechada</option>
-                </select>
-            </div>
+        btnPessoa.addEventListener('click', enablePersonForm);
+        btnInstituicao.addEventListener('click', enableInstitutionForm);
 
-            <div class="text-center mt-4">
-                <button type="submit" class="btn-auth-submit">Enviar Solicitação</button>
-            </div>
-        </form>
-    </div>
-</div>
+        // Inicializar com formulário de pessoa ativo
+        enablePersonForm();
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        // Password strength indicator
+        function checkPasswordStrength(password, strengthElement, hintElement) {
+            const strength = strengthElement;
+            const hint = hintElement;
+            
+            if (password.length === 0) {
+                strength.className = 'password-strength';
+                hint.classList.remove('show');
+                return;
+            }
+            
+            hint.classList.add('show');
+            
+            if (password.length < 6) {
+                strength.className = 'password-strength weak';
+                hint.textContent = 'Senha muito fraca';
+            } else if (password.length < 8) {
+                strength.className = 'password-strength medium';
+                hint.textContent = 'Senha média';
+            } else {
+                strength.className = 'password-strength strong';
+                hint.textContent = 'Senha forte';
+            }
+        }
 
+        document.getElementById('senha').addEventListener('input', function() {
+            checkPasswordStrength(this.value, 
+                document.getElementById('password-strength'),
+                document.getElementById('password-hint')
+            );
+        });
+
+        document.getElementById('senha_instituicao').addEventListener('input', function() {
+            checkPasswordStrength(this.value, 
+                document.getElementById('password-strength-inst'),
+                document.getElementById('password-hint-inst')
+            );
+        });
+
+        // Form validation
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            const activeForm = document.querySelector('.form-content.active');
+            const senha = activeForm.querySelector('input[name="senha"]').value;
+            const confirmarSenha = activeForm.querySelector('input[name="confirmar_senha"]').value;
+            
+            if (senha !== confirmarSenha) {
+                e.preventDefault();
+                alert('As senhas não coincidem!');
+                return false;
+            }
+            
+            if (senha.length < 6) {
+                e.preventDefault();
+                alert('A senha deve ter pelo menos 6 caracteres!');
+                return false;
+            }
+        });
+    </script>
 </body>
 </html>
+
