@@ -1,95 +1,139 @@
 {% extends "base.html" %}
 
-{% block title %}Formulário de Recebimento - SOS Comida{% endblock %}
+{% block title %}Doar - SOS Comida{% endblock %}
 
 {% block extra_css %}
-.form-section {
-    padding: 4rem 0;
-}
-
-.form-container {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 3rem;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.form-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2c5530;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #2c5530;
-}
-
-.form-control {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: #2c5530;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
-}
-
-.btn-submit {
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.btn-submit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(44, 85, 48, 0.3);
-}
-
-.hidden-field {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .form-container {
-        padding: 2rem;
-        margin: 0 1rem;
+<style>
+    /* Estilos do formulário de doação */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9)),
+                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><rect fill="%23f0f8f0" width="1200" height="300"/><circle fill="%23e8f5e8" cx="200" cy="80" r="50"/><circle fill="%23d4edda" cx="800" cy="150" r="70"/><circle fill="%23c3e6cb" cx="1000" cy="60" r="35"/></svg>');
+        background-size: cover;
+        background-position: center;
+        min-height: 40vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        position: relative;
+        padding-top: 80px;
     }
-    .form-title {
-        font-size: 1.5rem;
+    .hero-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
-}
+    .hero-subtitle {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        opacity: 0.95;
+    }
+    .solicitacoes-grid {
+        display: grid;
+        gap: 2rem;
+        margin-bottom: 3rem;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    }
+    .solicitacao-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .solicitacao-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    .card-header {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        color: white;
+        padding: 1.5rem;
+    }
+    .card-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+    }
+    .card-subtitle {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    .card-body {
+        padding: 1.5rem;
+    }
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .info-label {
+        font-size: 0.8rem;
+        color: #666;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .info-value {
+        font-size: 1rem;
+        color: #333;
+        font-weight: 500;
+    }
+    .acoes-doacao {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e9ecef;
+    }
+    .btn-doar, .btn-entregar {
+        flex: 1;
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    .btn-doar {
+        background: linear-gradient(135deg, #0d6efd 0%, #0c63e4 100%);
+        color: white;
+    }
+    .btn-entregar {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+    }
+    .empty-state i {
+        font-size: 3rem;
+        color: #ddd;
+        margin-bottom: 1rem;
+    }
+    .form-control.hidden {
+        display: none;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <section class="hero-section">
     <div class="container">
-        <h1 class="hero-title">Formulário de Solicitação</h1>
-        <p class="hero-subtitle">Preencha os detalhes para solicitar campanha ou ajuda.</p>
+        <h1 class="hero-title"><i class="fas fa-hand-holding-heart"></i> Ajude quem precisa</h1>
+        <p class="hero-subtitle">Escolha uma solicitação de recebimento abaixo e faça sua doação de forma direta e segura.</p>
     </div>
 </section>
 
@@ -107,113 +151,120 @@
         {% endif %}
     {% endwith %}
 
-    <div class="form-container">
-        <h2 class="form-title">Tipo de Solicitação</h2>
-        <form method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="tipoFormSolicitacao" class="form-label">Selecione o tipo de solicitação</label>
-                <select class="form-control" id="tipoFormSolicitacao" name="tipoFormSolicitacao" required>
-                    <option value="">Selecione...</option>
-                    <option value="campanha">Solicitar Campanha</option>
-                    <option value="ajuda">Solicitar Ajuda</option>
-                </select>
+    <div class="solicitacoes-grid">
+        {% if solicitacoes %}
+            {% for solicitacao in solicitacoes %}
+                <div class="solicitacao-card">
+                    <div class="card-header">
+                        <h3 class="card-title">{{ solicitacao.nome }}</h3>
+                        <p class="card-subtitle">Solicitação de recebimento para {{ solicitacao.qtd_pessoas }} pessoa(s)</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Necessidades Principais</span>
+                                <span class="info-value">{{ solicitacao.necessidades }}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Endereço</span>
+                                <span class="info-value">{{ solicitacao.endereco }}</span>
+                            </div>
+                        </div>
+                        <div class="acoes-doacao">
+                            <button type="button" class="btn btn-entregar" data-bs-toggle="modal" data-bs-target="#entregaModal" onclick="setRecebimentoId('{{ solicitacao.id }}', '{{ solicitacao.nome }}')">
+                                <i class="fas fa-box-open"></i> Quero Entregar
+                            </button>
+                            <button type="button" class="btn btn-doar" data-bs-toggle="modal" data-bs-target="#pixModal" onclick="setRecebimentoId('{{ solicitacao.id }}', '{{ solicitacao.nome }}')">
+                                <i class="fas fa-dollar-sign"></i> Doar (Pix)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3>Nenhuma solicitação aprovada no momento</h3>
+                <p>Volte mais tarde para ver novas oportunidades de ajuda.</p>
             </div>
+        {% endif %}
+    </div>
+</div>
 
-            <div id="campanhaFields" class="hidden-field">
-                <h3 class="form-title">Detalhes da Campanha</h3>
-                <div class="form-group">
-                    <label for="tituloCampanha" class="form-label">Título da Campanha</label>
-                    <input type="text" class="form-control" id="tituloCampanha" name="tituloCampanha">
-                </div>
-                <div class="form-group">
-                    <label for="descricaoCampanha" class="form-label">Texto Explicando a Situação</label>
-                    <textarea class="form-control" id="descricaoCampanha" name="descricaoCampanha" rows="5"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="fotoCampanha" class="form-label">Foto da Campanha</label>
-                    <input type="file" class="form-control" id="fotoCampanha" name="fotoCampanha" accept="image/*">
-                </div>
-                <div class="form-group">
-                    <label for="metaVoluntarios" class="form-label">Meta de Voluntários</label>
-                    <input type="number" class="form-control" id="metaVoluntarios" name="metaVoluntarios" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="metaDoacoes" class="form-label">Meta de Doações (R$)</label>
-                    <input type="number" step="0.01" class="form-control" id="metaDoacoes" name="metaDoacoes" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="necessidadesCampanha" class="form-label">Necessidades Principais da Campanha</label>
-                    <textarea class="form-control" id="necessidadesCampanha" name="necessidadesCampanha" rows="3"></textarea>
-                </div>
+<div class="modal fade" id="pixModal" tabindex="-1" aria-labelledby="pixModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pixModalLabel">Doação via PIX</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <form method="POST" id="formPix">
+                <div class="modal-body">
+                    <input type="hidden" name="recebimento_id" id="pixRecebimentoId">
+                    <p>Sua doação irá para a solicitação de <strong id="pixSolicitacaoNome"></strong>.</p>
+                    <div class="form-group mb-3">
+                        <label for="valor_pix" class="form-label">Valor (R$)</label>
+                        <input type="number" step="0.01" class="form-control" id="valor_pix" name="valor_pix" required>
+                    </div>
+                    <div class="text-center mt-4">
+                        <p>Aponte a câmera do seu celular para o QR Code abaixo:</p>
+                        <img src="{{ url_for('static', filename='qrcode_exemplo.png') }}" alt="QR Code PIX" class="img-fluid" style="max-width: 200px;">
+                        <p class="mt-2">Chave PIX: **11.111.111/0001-11** (ONG SOS Comida)</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar Doação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-            <div id="ajudaFields" class="hidden-field">
-                <h3 class="form-title">Detalhes da Ajuda</h3>
-                <div class="form-group">
-                    <label for="nomeAjuda" class="form-label">Seu Nome</label>
-                    <input type="text" class="form-control" id="nomeAjuda" name="nomeAjuda" value="{{ usuario.nome }}">
-                </div>
-                <div class="form-group">
-                    <label for="telefoneAjuda" class="form-label">Telefone</label>
-                    <input type="text" class="form-control" id="telefoneAjuda" name="telefoneAjuda">
-                </div>
-                <div class="form-group">
-                    <label for="enderecoAjuda" class="form-label">Endereço</label>
-                    <input type="text" class="form-control" id="enderecoAjuda" name="enderecoAjuda">
-                </div>
-                <div class="form-group">
-                    <label for="explicarSituacaoAjuda" class="form-label">Explique a Situação</label>
-                    <textarea class="form-control" id="explicarSituacaoAjuda" name="explicarSituacaoAjuda" rows="5"></textarea>
-                </div>
+<div class="modal fade" id="entregaModal" tabindex="-1" aria-labelledby="entregaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="entregaModalLabel">Agendar Entrega de Itens</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-
-            <button type="submit" class="btn-submit">Enviar Solicitação</button>
-        </form>
+            <form method="POST" id="formEntrega">
+                <div class="modal-body">
+                    <input type="hidden" name="recebimento_id" id="entregaRecebimentoId">
+                    <p>Você irá agendar a entrega de itens para a solicitação de <strong id="entregaSolicitacaoNome"></strong>.</p>
+                    <div class="form-group mb-3">
+                        <label for="local_entrega" class="form-label">Local da Entrega (Seu Endereço)</label>
+                        <input type="text" class="form-control" id="local_entrega" name="local_entrega" value="{{ usuario.endereco }}" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="data_entrega" class="form-label">Data de Entrega</label>
+                        <input type="date" class="form-control" id="data_entrega" name="data_entrega" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary">Confirmar Agendamento</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
 {% block extra_js %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const tipoSolicitacaoSelect = document.getElementById("tipoFormSolicitacao");
-        const campanhaFields = document.getElementById("campanhaFields");
-        const ajudaFields = document.getElementById("ajudaFields");
+    function setRecebimentoId(id, nome) {
+        // Configura o modal de PIX
+        const formPix = document.getElementById('formPix');
+        formPix.action = `/doar_monetario/${id}`;
+        document.getElementById('pixSolicitacaoNome').textContent = nome;
+        document.getElementById('pixRecebimentoId').value = id;
 
-        function toggleFields() {
-            if (tipoSolicitacaoSelect.value === "campanha") {
-                campanhaFields.style.display = "block";
-                ajudaFields.style.display = "none";
-
-                // Set required attributes for campanha fields
-                campanhaFields.querySelectorAll('input, textarea').forEach(field => {
-                    if (field.name !== 'fotoCampanha') { // Photo is optional
-                        field.setAttribute('required', 'required');
-                    }
-                });
-                ajudaFields.querySelectorAll('input, textarea').forEach(field => field.removeAttribute('required'));
-
-            } else if (tipoSolicitacaoSelect.value === "ajuda") {
-                campanhaFields.style.display = "none";
-                ajudaFields.style.display = "block";
-
-                // Set required attributes for ajuda fields
-                ajudaFields.querySelectorAll('input, textarea').forEach(field => field.setAttribute('required', 'required'));
-                campanhaFields.querySelectorAll('input, textarea').forEach(field => field.removeAttribute('required'));
-
-            } else {
-                campanhaFields.style.display = "none";
-                ajudaFields.style.display = "none";
-
-                // Remove required attributes from all fields when nothing is selected
-                campanhaFields.querySelectorAll('input, textarea').forEach(field => field.removeAttribute('required'));
-                ajudaFields.querySelectorAll('input, textarea').forEach(field => field.removeAttribute('required'));
-            }
-        }
-
-        tipoSolicitacaoSelect.addEventListener("change", toggleFields);
-        toggleFields(); // Call on initial load
-    });
+        // Configura o modal de Entrega
+        const formEntrega = document.getElementById('formEntrega');
+        formEntrega.action = `/doar_item/${id}`;
+        document.getElementById('entregaSolicitacaoNome').textContent = nome;
+        document.getElementById('entregaRecebimentoId').value = id;
+    }
 </script>
 {% endblock %}
 {% endblock %}
-
