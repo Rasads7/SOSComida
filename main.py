@@ -856,5 +856,3 @@ def voluntariar(campanha_id):
 
     flash(f'Parabéns! Você agora é voluntário na campanha "{campanha.titulo}".', 'success')
     return redirect(url_for('campanhas'))
-
-
