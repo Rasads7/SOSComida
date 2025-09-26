@@ -4,7 +4,7 @@
 
 {% block extra_css %}
 .hero-section {
-    background: linear-gradient(135deg, rgba(44, 85, 48, 0.9) 0%, rgba(74, 124, 89, 0.9) 100%), 
+    background: linear-gradient(135deg, rgba(0, 51, 102, 0.9) 0%, rgba(0, 85, 170, 0.9) 100%),
                 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23ffffff" fill-opacity="0.05" points="0,1000 1000,0 1000,1000"/></svg>');
     min-height: 100vh;
     display: flex;
@@ -122,7 +122,7 @@
     text-align: center;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #2c5530;
+    color: #003366; /* Cor do título alterada para combinar com o azul */
     margin-bottom: 3rem;
 }
 
@@ -151,7 +151,7 @@
 .feature-icon {
     width: 80px;
     height: 80px;
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    background: linear-gradient(135deg, #003366 0%, #0055AA 100%); /* Ícone com o mesmo gradiente do bem-vindo */
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -164,7 +164,7 @@
 .feature-title {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #2c5530;
+    color: #003366; /* Cor do título alterada para combinar com o azul */
     margin-bottom: 1rem;
 }
 
@@ -174,7 +174,7 @@
 }
 
 .stats-section {
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+    background: linear-gradient(135deg, #003366 0%, #0055AA 100%); /* Seção de estatísticas com o mesmo gradiente */
     color: white;
     padding: 4rem 0;
 }
@@ -217,7 +217,7 @@
 .cta-title {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #2c5530;
+    color: #003366; /* Cor do título alterada para combinar com o azul */
     margin-bottom: 1.5rem;
 }
 
@@ -269,13 +269,12 @@
 {% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
 <section class="hero-section">
     <div class="hero-content">
         <h1 class="hero-title">SOS Comida</h1>
         <h2 class="hero-subtitle">Juntos contra a fome</h2>
         <p class="hero-description">
-            Uma plataforma que conecta pessoas dispostas a doar com aquelas que precisam de ajuda. 
+            Uma plataforma que conecta pessoas dispostas a doar com aquelas que precisam de ajuda.
             Participe de campanhas solidárias e faça a diferença na vida de quem mais precisa.
         </p>
         <div class="hero-buttons">
@@ -291,7 +290,6 @@
     </div>
 </section>
 
-<!-- Features Section -->
 <section class="features-section">
     <div class="container">
         <h2 class="section-title">Como Funciona</h2>
@@ -329,7 +327,6 @@
     </div>
 </section>
 
-<!-- Stats Section -->
 <section class="stats-section">
     <div class="container">
         <div class="stats-grid">
@@ -353,13 +350,12 @@
     </div>
 </section>
 
-<!-- CTA Section -->
 <section class="cta-section">
     <div class="container">
         <div class="cta-content">
             <h2 class="cta-title">Pronto para Fazer a Diferença?</h2>
             <p class="cta-description">
-                Cadastre-se agora e comece a transformar vidas através da solidariedade. 
+                Cadastre-se agora e comece a transformar vidas através da solidariedade.
                 Cada gesto conta na luta contra a fome.
             </p>
             <a href="{{ url_for('registrar') }}" class="btn btn-primary btn-lg">
@@ -388,7 +384,7 @@
 
         /* Header e Navegação */
         .navbar {
-            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            background: linear-gradient(135deg, #003366 0%, #0055AA 100%); /* Gradiente azul aplicado */
             padding: 1rem 0;
             position: fixed;
             width: 100%;
@@ -399,7 +395,7 @@
         }
 
         .navbar.scrolled {
-            background: rgba(44, 85, 48, 0.95);
+            background: rgba(0, 51, 102, 0.95); /* Cor de fundo da barra de navegação rolada */
             backdrop-filter: blur(10px);
         }
 
@@ -479,7 +475,7 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9)), 
+            background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 85, 170, 0.9)), /* Gradiente azul aplicado */
                         url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f0f8f0" width="1200" height="600"/><circle fill="%23e8f5e8" cx="200" cy="150" r="80"/><circle fill="%23d4edda" cx="800" cy="300" r="120"/><circle fill="%23c3e6cb" cx="1000" cy="100" r="60"/></svg>');
             background-size: cover;
             background-position: center;
@@ -562,7 +558,7 @@
 
         .btn-primary {
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            color: #2c5530;
+            color: #003366; /* Cor do texto alterada para combinar com o azul */
             padding: 1rem 2.5rem;
             border: none;
             border-radius: 50px;
@@ -597,7 +593,7 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 25px rgba(255, 215, 0, 0.4);
             text-decoration: none;
-            color: #2c5530;
+            color: #003366; /* Cor do texto alterada para combinar com o azul */
         }
 
         .btn-secondary {
@@ -617,7 +613,7 @@
 
         .btn-secondary:hover {
             background: white;
-            color: #2c5530;
+            color: #003366; /* Cor do texto alterada para combinar com o azul */
             transform: translateY(-3px);
             text-decoration: none;
         }
@@ -642,7 +638,7 @@
         .section-title h2 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #2c5530;
+            color: #003366; /* Cor do título alterada para combinar com o azul */
             margin-bottom: 1rem;
         }
 
@@ -678,7 +674,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            background: linear-gradient(135deg, #003366, #0055AA); /* Gradiente azul aplicado */
         }
 
         .feature-card:hover {
@@ -689,7 +685,7 @@
         .feature-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #2c5530, #4a7c59);
+            background: linear-gradient(135deg, #003366, #0055AA); /* Gradiente azul aplicado */
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -702,7 +698,7 @@
         .feature-card h3 {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #2c5530;
+            color: #003366; /* Cor do título alterada para combinar com o azul */
             margin-bottom: 1rem;
         }
 
@@ -713,7 +709,7 @@
 
         /* Estatísticas */
         .stats {
-            background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+            background: linear-gradient(135deg, #003366 0%, #0055AA 100%); /* Gradiente azul aplicado */
             color: white;
             padding: 4rem 0;
         }
@@ -747,7 +743,7 @@
         .cta h2 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #2c5530;
+            color: #003366; /* Cor do título alterada para combinar com o azul */
             margin-bottom: 1rem;
         }
 
@@ -762,7 +758,7 @@
 
         /* Footer */
         .footer {
-            background: #2c5530;
+            background: #003366; /* Cor do rodapé alterada para combinar com o azul */
             color: white;
             padding: 3rem 0 1rem;
         }
@@ -818,7 +814,7 @@
 
         .social-links a:hover {
             background: #ffd700;
-            color: #2c5530;
+            color: #003366; /* Cor do texto alterada para combinar com o azul */
             transform: translateY(-3px);
         }
 
@@ -830,7 +826,7 @@
                 top: 100%;
                 left: 0;
                 width: 100%;
-                background: #2c5530;
+                background: #003366; /* Cor do menu mobile alterada para combinar com o azul */
                 flex-direction: column;
                 padding: 1rem;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -946,7 +942,6 @@
 </head>
 
 <body>
-    <!-- Navegação -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="logo">
@@ -965,312 +960,165 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero" id="inicio">
         <div class="hero-content">
             <h1>SOS Comida</h1>
             <p class="hero-subtitle">Conectando Corações, Alimentando Vidas</p>
             <p class="hero-description">
-                Uma plataforma dedicada a conectar pessoas que desejam doar alimentos com aquelas que precisam. 
-                Facilitamos a comunicação e a logística das doações, tornando mais rápido e seguro o processo de ajudar quem precisa. 
+                Uma plataforma dedicada a conectar pessoas que desejam doar alimentos com aquelas que precisam.
+                Facilitamos a comunicação e a logística das doações, tornando mais rápido e seguro o processo de ajudar quem precisa.
                 Com apenas alguns cliques, você pode cadastrar doações e realizar campanhas, contribuindo para reduzir o desperdício de alimentos e ajudar a transformar vidas.
             </p>
             <div class="action-buttons">
                 <a href="login" class="btn-primary">
-                    <i class="fas fa-sign-in-alt"></i>
-                    Fazer Login
+                    <i class="fas fa-hand-holding-heart"></i>
+                    Fazer Doação
                 </a>
-                <a href="registrar" class="btn-secondary">
-                    <i class="fas fa-user-plus"></i>
-                    Registre-se
+                <a href="login" class="btn-secondary">
+                    <i class="fas fa-hands-helping"></i>
+                    Preciso de Ajuda
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Recursos -->
-    <section class="features" id="sobre">
+    <section class="features" id="como-funciona">
         <div class="container">
             <div class="section-title">
-                <h2>Como Podemos Ajudar</h2>
-                <p>Descubra as funcionalidades que tornam o SOS Comida uma plataforma completa para doações</p>
+                <h2>Como Funciona</h2>
+                <p>Nossa plataforma simplifica o processo de doação e solicitação de ajuda.</p>
             </div>
             <div class="features-grid">
                 <div class="feature-card fade-in">
                     <div class="feature-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <h3>Doações</h3>
+                    <p>Cadastre o que você deseja doar. Pode ser alimentos, produtos de higiene ou outros itens essenciais.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
                         <i class="fas fa-hand-holding-heart"></i>
                     </div>
-                    <h3>Doações Simples</h3>
-                    <p>Cadastre suas doações de forma rápida e intuitiva. Nossa plataforma facilita todo o processo para que você possa ajudar sem complicações.</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
-                    <h3>Localização Inteligente</h3>
-                    <p>Encontre pessoas que precisam de ajuda próximas a você ou descubra doadores na sua região através do nosso sistema de geolocalização.</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Segurança Garantida</h3>
-                    <p>Todos os usuários são verificados e as doações são moderadas para garantir a segurança e confiabilidade de todas as transações.</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <h3>Notificações em Tempo Real</h3>
-                    <p>Receba alertas instantâneos sobre novas oportunidades de doação ou quando alguém responder às suas solicitações de ajuda.</p>
+                    <h3>Solicitações</h3>
+                    <p>Se você precisa de ajuda, pode cadastrar sua necessidade e ser notificado sobre doações disponíveis.</p>
                 </div>
                 <div class="feature-card fade-in">
                     <div class="feature-icon">
                         <i class="fas fa-users"></i>
                     </div>
-                    <h3>Comunidade Solidária</h3>
-                    <p>Faça parte de uma rede de pessoas comprometidas em fazer a diferença, com sistema de reconhecimento para doadores frequentes.</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Impacto Mensurável</h3>
-                    <p>Acompanhe o impacto das suas doações através de relatórios detalhados e estatísticas sobre as vidas que você ajudou a transformar.</p>
+                    <h3>Conexão</h3>
+                    <p>Nossa plataforma conecta doadores e solicitantes, organizando a entrega de forma segura e eficiente.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Estatísticas -->
     <section class="stats">
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-item fade-in">
-                    <h3>1,250+</h3>
-                    <p>Doações Realizadas</p>
+                    <h3>1500+</h3>
+                    <p>Doações Entregues</p>
                 </div>
                 <div class="stat-item fade-in">
-                    <h3>850+</h3>
+                    <h3>900+</h3>
                     <p>Famílias Ajudadas</p>
                 </div>
                 <div class="stat-item fade-in">
-                    <h3>500+</h3>
-                    <p>Doadores Ativos</p>
-                </div>
-                <div class="stat-item fade-in">
-                    <h3>15</h3>
-                    <p>Cidades Atendidas</p>
+                    <h3>200+</h3>
+                    <p>Voluntários Ativos</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Como Funciona -->
-    <section class="features" id="como-funciona">
+    <section class="cta" id="contato">
         <div class="container">
-            <div class="section-title">
-                <h2>Como Funciona</h2>
-                <p>Em poucos passos simples, você pode começar a fazer a diferença na vida de outras pessoas</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-user-plus"></i>
-                    </div>
-                    <h3>1. Cadastre-se</h3>
-                    <p>Crie sua conta escolhendo seu perfil: Doador, Beneficiário ou Voluntário. O processo é rápido e seguro.</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <h3>2. Encontre ou Ofereça</h3>
-                    <p>Busque por pessoas que precisam de ajuda na sua região ou cadastre suas doações disponíveis.</p>
-                </div>
-                <div class="feature-card fade-in">
-                    <div class="feature-icon">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <h3>3. Conecte-se</h3>
-                    <p>Entre em contato diretamente com doadores ou beneficiários através da nossa plataforma segura.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Call to Action -->
-    <section class="cta">
-        <div class="container">
-            <h2>Pronto para Fazer a Diferença?</h2>
-            <p>Junte-se à nossa comunidade e comece a transformar vidas hoje mesmo. Cada doação conta, cada gesto importa.</p>
-            <div class="action-buttons">
-                <a href="#" class="btn-primary">
-                    <i class="fas fa-rocket"></i>
-                    Começar Agora
+            <div class="cta-content fade-in">
+                <h2>Faça Parte da Mudança</h2>
+                <p>Junte-se à nossa missão de acabar com a fome. Cada pequena ação faz uma grande diferença.</p>
+                <a href="registrar" class="btn-primary">
+                    <i class="fas fa-heart"></i>
+                    Junte-se Agora
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer" id="contato">
+    <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section">
-                    <h3>SOS Comida</h3>
-                    <p>Conectando corações e alimentando vidas através da solidariedade. Juntos, podemos fazer a diferença na luta contra a fome.</p>
+                <div class="footer-section about">
+                    <h3>Sobre a SOS Comida</h3>
+                    <p>Somos uma organização sem fins lucrativos dedicada a combater a fome e o desperdício de alimentos através da tecnologia.</p>
+                </div>
+                <div class="footer-section links">
+                    <h3>Links Rápidos</h3>
+                    <ul>
+                        <li><a href="#">Início</a></li>
+                        <li><a href="#">Doar</a></li>
+                        <li><a href="#">Solicitar Ajuda</a></li>
+                        <li><a href="#">Login</a></li>
+                        <li><a href="#">Campanhas</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section contact">
+                    <h3>Contato</h3>
+                    <p><i class="fas fa-envelope"></i> contato@soscomida.org</p>
+                    <p><i class="fas fa-phone"></i> +55 (11) 98765-4321</p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
                     </div>
-                </div>
-                <div class="footer-section">
-                    <h3>Links Rápidos</h3>
-                    <p><a href="#inicio">Início</a></p>
-                    <p><a href="#sobre">Sobre</a></p>
-                    <p><a href="#como-funciona">Como Funciona</a></p>
-                    <p><a href="#contato">Contato</a></p>
-                </div>
-                <div class="footer-section">
-                    <h3>Suporte</h3>
-                    <p><a href="#">Central de Ajuda</a></p>
-                    <p><a href="#">Termos de Uso</a></p>
-                    <p><a href="#">Política de Privacidade</a></p>
-                    <p><a href="#">Segurança</a></p>
-                </div>
-                <div class="footer-section">
-                    <h3>Contato</h3>
-                    <p><i class="fas fa-envelope"></i> contato@soscomida.com.br</p>
-                    <p><i class="fas fa-phone"></i> (11) 9999-9999</p>
-                    <p><i class="fas fa-map-marker-alt"></i> São Paulo, SP</p>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>© 2025 SOS Comida. Todos os direitos reservados.</p>
+                <p>&copy; 2024 SOS Comida. Todos os direitos reservados.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Navegação móvel
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const navMenu = document.getElementById('nav-menu');
-
-        mobileMenuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        // Navbar scroll effect
-        window.addEventListener('scroll', () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll para mostrar/esconder a barra de navegação
             const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // Animação de fade-in
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
                 }
             });
-        }, observerOptions);
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Smooth scroll para links internos
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+            // Menu mobile
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            mobileMenuToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
             });
-        });
 
-        // Contador animado para estatísticas
-        function animateCounters() {
-            const counters = document.querySelectorAll('.stat-item h3');
-            
-            counters.forEach(counter => {
-                const target = parseInt(counter.textContent.replace(/[^\d]/g, ''));
-                const increment = target / 100;
-                let current = 0;
-                
-                const updateCounter = () => {
-                    if (current < target) {
-                        current += increment;
-                        counter.textContent = Math.floor(current).toLocaleString() + '+';
-                        requestAnimationFrame(updateCounter);
-                    } else {
-                        counter.textContent = target.toLocaleString() + '+';
+            // Animação de fade-in
+            const fadeInElements = document.querySelectorAll('.fade-in');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
                     }
-                };
-                
-                updateCounter();
-            });
-        }
+                });
+            }, observerOptions);
 
-        // Observar seção de estatísticas
-        const statsSection = document.querySelector('.stats');
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    statsObserver.unobserve(entry.target);
-                }
+            fadeInElements.forEach(element => {
+                observer.observe(element);
             });
-        }, { threshold: 0.5 });
-
-        if (statsSection) {
-            statsObserver.observe(statsSection);
-        }
-
-        // Fechar menu móvel ao clicar em um link
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-            });
-        });
-
-        // Adicionar efeito de hover nos cards
-        document.querySelectorAll('.feature-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px) scale(1.02)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-
-        // Preloader simples
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '0';
-            setTimeout(() => {
-                document.body.style.transition = 'opacity 0.5s ease';
-                document.body.style.opacity = '1';
-            }, 100);
         });
     </script>
 </body>
-
-</html>
-
