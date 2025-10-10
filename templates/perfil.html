@@ -4,465 +4,265 @@
 
 {% block extra_css %}
 <style>
-    /* Hero Section */
     .hero {
-        background: linear-gradient(135deg, rgba(41, 62, 255, 0.9), rgba(74, 124, 89, 0.9)), 
-                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><rect fill="%23f0f8f0" width="1200" height="300"/><circle fill="%23e8f5e8" cx="200" cy="80" r="50"/><circle fill="%23d4edda" cx="800" cy="150" r="70"/><circle fill="%23c3e6cb" cx="1000" cy="60" r="35"/></svg>');
-        background-size: cover;
-        background-position: center;
-        min-height: 40vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+        background: linear-gradient(135deg, rgba(0, 86, 179, 0.9), rgba(0, 123, 255, 0.8));
         color: white;
-        position: relative;
-        margin-top: -100px;
+        padding: 5rem 0;
+        margin-top: -80px;
         padding-top: 120px;
+        text-align: center;
     }
-
-    .hero::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle fill="rgba(255,215,0,0.1)" cx="20" cy="20" r="2"/><circle fill="rgba(255,215,0,0.1)" cx="80" cy="80" r="2"/><circle fill="rgba(255,215,0,0.1)" cx="40" cy="60" r="1"/><circle fill="rgba(255,215,0,0.1)" cx="90" cy="30" r="1.5"/></svg>');
-        animation: float 20s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-    }
-
-    .hero-content {
-        max-width: 800px;
-        padding: 0 2rem;
-        position: relative;
-        z-index: 2;
-    }
-
-    .hero h1 {
-        font-size: 2.8rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        animation: fadeInUp 1s ease-out;
-    }
-
-    .hero-description {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        line-height: 1.8;
-        opacity: 0.95;
-        animation: fadeInUp 1s ease-out 0.3s both;
-    }
-
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(30px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Layout do Perfil */
+    .hero h1 { font-weight: 700; }
     .profile-layout {
         display: grid;
         grid-template-columns: 300px 1fr;
         gap: 2rem;
-        margin-top: 2rem;
+        margin-top: 3rem;
     }
-
     .profile-sidebar {
-        background: white;
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        height: fit-content;
-        position: sticky;
-        top: 120px;
+        background: white; border-radius: 15px; padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); height: fit-content;
+        position: sticky; top: 120px;
     }
-
-    .profile-avatar {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
+    .profile-avatar { text-align: center; margin-bottom: 2rem; }
     .avatar-circle {
-        width: 120px;
-        height: 120px;
+        width: 120px; height: 120px;
         background: linear-gradient(135deg, #0066CC 0%, #80DDF9 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem;
-        color: white;
-        font-size: 3rem;
-        font-weight: 700;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 1rem; color: white; font-size: 3rem; font-weight: 700;
+        border: 4px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.2);
     }
-
-    .profile-name {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #0066CC;
-        margin-bottom: 0.5rem;
-    }
-
-    .profile-email {
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .profile-type {
-        background: linear-gradient(135deg, #FFD700 0%, #ffed4e 100%);
-        color: #0066CC;
-        padding: 0.3rem 1rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        display: inline-block;
-        margin-top: 1rem;
-    }
-
-    .profile-menu {
-        list-style: none;
-        margin-top: 2rem;
-    }
-
-    .profile-menu li {
-        margin-bottom: 0.5rem;
-    }
-
+    .profile-name { font-size: 1.5rem; font-weight: 600; color: #0056b3; margin-bottom: 0.5rem; }
+    .profile-email { color: #6c757d; font-size: 0.9rem; }
+    .profile-menu { list-style: none; margin-top: 2rem; padding: 0; }
+    .profile-menu li { margin-bottom: 0.5rem; }
     .profile-menu a {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        padding: 0.8rem 1rem;
-        color: #666;
-        text-decoration: none;
-        border-radius: 10px;
-        transition: all 0.3s ease;
+        display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1rem;
+        color: #343a40; text-decoration: none; border-radius: 10px; transition: all 0.3s ease;
+        font-weight: 500;
     }
-
-    .profile-menu a:hover,
-    .profile-menu a.active {
-        background: linear-gradient(135deg, #0066CC 0%, #80DDF9 100%);
-        color: white;
-        text-decoration: none;
+    .profile-menu a:hover, .profile-menu a.active {
+        background: #0d6efd; color: white;
     }
-
     .profile-content {
-        background: white;
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        background: white; border-radius: 15px; padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
-
-    .content-header {
-        border-bottom: 2px solid #f8f9fa;
-        padding-bottom: 1rem;
-        margin-bottom: 2rem;
-    }
-
-    .content-title {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #0066CC;
-        margin-bottom: 0.5rem;
-    }
-
-    .content-subtitle {
-        color: #666;
-        font-size: 1rem;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .form-input {
-        padding: 0.8rem 1rem;
-        border: 2px solid #e9ecef;
-        border-radius: 10px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-    }
-
-    .form-input:focus {
-        outline: none;
-        border-color: #0066CC;
-        box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
-    }
-
-    .form-textarea {
-        min-height: 120px;
-        resize: vertical;
-    }
-
-    .user-stats {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        padding: 1.5rem;
-        border-radius: 15px;
-        text-align: center;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-    }
-
-    .stat-card:hover {
-        border-color: #0066CC;
-        transform: translateY(-5px);
-    }
-
-    .stat-icon {
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, #0066CC 0%, #80DDF9 100%);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem;
-        color: white;
-        font-size: 1.5rem;
-    }
-
-    .stat-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #0066CC;
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-label {
-        color: #666;
-        font-size: 0.9rem;
-    }
-
-    .btn {
-        padding: 0.8rem 2rem;
-        border: none;
-        border-radius: 50px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: all 0.3s ease;
-        font-size: 1rem;
-    }
-
+    .content-title { font-size: 2rem; font-weight: 700; color: #0056b3; }
+    .content-subtitle { color: #6c757d; font-size: 1rem; margin-bottom: 2rem; border-bottom: 1px solid #dee2e6; padding-bottom: 1rem; }
     .btn-primary {
-        background: linear-gradient(135deg, #0066CC 0%, #80DDF9 100%);
-        color: white;
+        background-color: #0d6efd; border: none; font-weight: 600;
+        padding: 0.75rem 1.5rem; border-radius: 50px;
     }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
-        text-decoration: none;
-        color: white;
-    }
-
-    .btn-secondary {
-        background: transparent;
-        color: #0066CC;
-        border: 2px solid #0066CC;
-    }
-
-    .btn-secondary:hover {
-        background: #0066CC;
-        color: white;
-        text-decoration: none;
-    }
-
-    @media (max-width: 768px) {
-        .profile-layout {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .profile-sidebar {
-            position: static;
-        }
-
-        .form-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .user-stats {
-            grid-template-columns: 1fr;
-        }
-
-        .hero h1 {
-            font-size: 2.2rem;
-        }
+    @media (max-width: 992px) {
+        .profile-layout { grid-template-columns: 1fr; }
+        .profile-sidebar { position: static; }
     }
 </style>
 {% endblock %}
 
-
-
 {% block content %}
 <section class="hero">
-    <div class="hero-content">
-        <h1><i class="fas fa-user-circle"></i> Meu Perfil</h1>
-        <p class="hero-description">
-            Gerencie suas informações pessoais e acompanhe sua atividade na plataforma.
-        </p>
+    <div class="container">
+        <h1 class="hero-title"><i class="fas fa-user-circle"></i> Meu Perfil</h1>
+        <p class="hero-description">Gerencie suas informações e acompanhe sua atividade na plataforma.</p>
     </div>
 </section>
 
 <div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
     <div class="profile-layout">
         <aside class="profile-sidebar">
             <div class="profile-avatar">
                 <div class="avatar-circle" id="avatar-preview">
                     {% if usuario.foto_perfil %}
-                        <img src="{{ url_for('static', filename=usuario.foto_perfil) }}" alt="Foto de perfil" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                        <img src="{{ url_for('static', filename='img/' + usuario.foto_perfil) }}" alt="Foto de perfil" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                     {% else %}
-                        {{ usuario.nome[0].upper() if usuario else 'U' }}
+                        {{ usuario.nome[0].upper() if usuario.nome else 'U' }}
                     {% endif %}
                 </div>
-                <h3 class="profile-name">{{ usuario.nome if usuario else 'Usuário' }}</h3>
-                <p class="profile-email">{{ usuario.email if usuario else 'email@exemplo.com' }}</p>
-                <span class="profile-type">Usuário</span>
+                <h3 class="profile-name">{{ usuario.nome }}</h3>
+                <p class="profile-email">{{ usuario.email }}</p>
             </div>
 
             <ul class="profile-menu">
-                <li><a href="#" class="active"><i class="fas fa-user"></i> Informações Pessoais</a></li>
-                <li><a href="{{ url_for('minhas_solicitacoes') }}"><i class="fas fa-list"></i> Minhas Solicitações</a></li>
-                <li><a href="{{ url_for('campanhas') }}"><i class="fas fa-heart"></i> Campanhas</a></li>
-                <li><a href="#"><i class="fas fa-bell"></i> Notificações</a></li>
-                <li><a href="#"><i class="fas fa-shield-alt"></i> Privacidade</a></li>
-                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                <li><a href="#" class="active"><i class="fas fa-user-edit fa-fw"></i> Editar Perfil</a></li>
+                <li><a href="{{ url_for('minhas_solicitacoes') }}"><i class="fas fa-tasks fa-fw"></i> Minhas Solicitações</a></li>
+                {% if usuario.two_factor_enabled %}
+                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#disable2faModal"><i class="fas fa-unlock-alt fa-fw"></i> Desativar 2FA</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('configurar_2fa') }}"><i class="fas fa-shield-alt fa-fw"></i> Ativar 2FA</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}" style="color: #dc3545;"><i class="fas fa-sign-out-alt fa-fw"></i> Sair</a></li>
             </ul>
         </aside>
 
         <div class="profile-content">
             <div class="content-header">
                 <h2 class="content-title">Informações Pessoais</h2>
-                <p class="content-subtitle">Mantenha seus dados atualizados para uma melhor experiência</p>
-            </div>
-
-            <div class="user-stats">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-hand-holding-heart"></i>
-                    </div>
-                    <div class="stat-value">{{ usuario.doacoes|length if usuario else 0 }}</div>
-                    <div class="stat-label">Doações Realizadas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-hands-helping"></i>
-                    </div>
-                    <div class="stat-value">{{ usuario.recebimentos|length if usuario else 0 }}</div>
-                    <div class="stat-label">Solicitações de Ajuda</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <div class="stat-value">{{ usuario.voluntariados|length if usuario else 0 }}</div>
-                    <div class="stat-label">Voluntariados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-calendar"></i>
-                    </div>
-                    <div class="stat-value">{{ usuario.data_criacao.strftime('%m/%Y') if usuario else '--' }}</div>
-                    <div class="stat-label">Membro desde</div>
-                </div>
+                <p class="content-subtitle">Mantenha seus dados atualizados.</p>
             </div>
 
             <form method="POST" action="{{ url_for('perfil') }}" enctype="multipart/form-data">
-                <div class="form-group" style="margin-bottom: 2rem;">
-                    <label class="form-label" for="foto_perfil">Foto de Perfil</label>
-                    <input type="file" id="foto_perfil" name="foto_perfil" class="form-input" 
-                           accept="image/*" onchange="previewImage(this)">
-                    <small style="color: #666; font-size: 0.8rem;">Formatos aceitos: JPG, PNG, GIF (máx. 5MB)</small>
+                <div class="mb-4">
+                    <label class="form-label" for="foto_perfil">Alterar Foto de Perfil</label>
+                    <input type="file" id="foto_perfil" name="foto_perfil" class="form-control" accept="image/*" onchange="previewImage(this)">
                 </div>
                 
-                <div class="form-grid">
-                    <div class="form-group">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
                         <label class="form-label" for="nome">Nome Completo</label>
-                        <input type="text" id="nome" name="nome" class="form-input"
-                               value="{{ usuario.nome if usuario else '' }}" required>
+                        <input type="text" id="nome" name="nome" class="form-control" value="{{ usuario.nome }}" required>
                     </div>
-                    <div class="form-group">
+                    <div class="col-md-6 mb-3">
                         <label class="form-label" for="email">E-mail</label>
-                        <input type="email" id="email" name="email" class="form-input"
-                               value="{{ usuario.email if usuario else '' }}" required>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ usuario.email }}" required>
                     </div>
-                    <div class="form-group">
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="cpf">CPF</label>
+                        <input type="text" id="cpf" name="cpf" class="form-control" value="{{ usuario.cpf or '' }}" placeholder="000.000.000-00" maxlength="14">
+                    </div>
+                    <div class="col-md-6 mb-3">
                         <label class="form-label" for="telefone">Telefone</label>
-                        <input type="tel" id="telefone" name="telefone" class="form-input"
-                               value="{{ usuario.telefone if usuario.telefone else '' }}"
-                               placeholder="(11) 99999-9999">
+                        <input type="tel" id="telefone" name="telefone" class="form-control" value="{{ usuario.telefone or '' }}" placeholder="(00) 00000-0000">
                     </div>
-                    <div class="form-group">
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
                         <label class="form-label" for="cidade">Cidade</label>
-                        <input type="text" id="cidade" name="cidade" class="form-input"
-                               value="{{ usuario.cidade if usuario.cidade else '' }}"
-                               placeholder="São Paulo, SP">
+                        <input type="text" id="cidade" name="cidade" class="form-control" value="{{ usuario.cidade or '' }}">
                     </div>
-                    <div class="form-group">
+                    <div class="col-md-6 mb-3">
                         <label class="form-label" for="endereco">Endereço</label>
-                        <input type="text" id="endereco" name="endereco" class="form-input"
-                               value="{{ usuario.endereco if usuario.endereco else '' }}"
-                               placeholder="Rua, número, bairro">
+                        <input type="text" id="endereco" name="endereco" class="form-control" value="{{ usuario.endereco or '' }}">
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-4">
                     <label class="form-label" for="bio">Sobre você</label>
-                    <textarea id="bio" name="bio" class="form-input form-textarea"
-                              placeholder="Conte um pouco sobre você e sua motivação para ajudar...">{{ usuario.bio if usuario.bio else '' }}</textarea>
+                    <textarea id="bio" name="bio" class="form-control" rows="4">{{ usuario.bio or '' }}</textarea>
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i>
-                        Salvar Alterações
-                    </button>
-                    <button type="button" class="btn btn-secondary">
-                        <i class="fas fa-times"></i>
-                        Cancelar
-                    </button>
-                </div>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Salvar Alterações</button>
             </form>
+            
+            {% if usuario.two_factor_enabled %}
+            <div class="content-header mt-5">
+                <h2 class="content-title">Verificação de Conta</h2>
+                <p class="content-subtitle">Vincule sua conta ao Gov.br para poder solicitar doações.</p>
+            </div>
+
+            <div class="card p-3">
+                {% if current_user.gov_br_linked %}
+                    <div class="alert alert-success d-flex align-items-center mb-0">
+                        <i class="fas fa-check-circle fa-2x me-3"></i>
+                        <div>
+                            <h5 class="alert-heading mb-0">Conta Vinculada!</h5>
+                            Sua identidade foi verificada com o Gov.br.<br>
+                            <strong>Nível de Confiabilidade:</strong> <span class="badge bg-primary">{{ current_user.gov_br_level|title }}</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning d-flex align-items-center mb-0">
+                         <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                        <div>
+                            <h5 class="alert-heading">Vinculação Pendente</h5>
+                            É obrigatório vincular sua conta ao Gov.br para solicitar doações. Este processo garante a segurança de todos na plataforma.
+                        </div>
+                    </div>
+                    <div class="d-grid mt-3">
+                         <a href="{{ url_for('login_govbr') }}" class="btn btn-primary btn-lg">
+                            <img src="https://logodownload.org/wp-content/uploads/2023/04/gov-br-logo-0.png" height="24" class="me-2" style="filter: brightness(0) invert(1);">
+                            Vincular com Gov.br
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
+{% if usuario.two_factor_enabled %}
+<div class="modal fade" id="disable2faModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Desativar Autenticação de 2 Fatores</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="{{ url_for('desativar_2fa') }}" method="POST">
+        <div class="modal-body">
+          <p>Para sua segurança, digite o código de 6 dígitos do seu app autenticador para confirmar a desativação.</p>
+          <input type="text" name="codigo_verificacao" class="form-control" placeholder="123456" required>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Desativar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 {% endblock %}
 
+{% block extra_js %}
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('avatar-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.borderRadius = '50%';
+            img.style.objectFit = 'cover';
+            preview.appendChild(img);
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
+// Máscara de CPF
+document.getElementById('cpf').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 11) {
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d)/, '$1.$2');
+        value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        e.target.value = value;
+    }
+});
+
+// Máscara de Telefone
+document.getElementById('telefone').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 11) {
+        value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+        value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+        e.target.value = value;
+    }
+});
+</script>
+{% endblock %}
