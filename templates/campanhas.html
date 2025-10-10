@@ -1,48 +1,30 @@
 {% extends "base.html" %}
 
-{% block title %}Campanhas Ativas - SOS Comida{% endblock %}
+{% block title %}Campanhas - SOS Comida{% endblock %}
 
 {% block extra_css %}
 <style>
-    .hero-campanhas {
-        background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9));
-        min-height: 40vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+    .hero-section {
+        background: linear-gradient(135deg, rgba(0, 86, 179, 0.9), rgba(0, 123, 255, 0.8));
         color: white;
-        position: relative;
-        padding-top: 80px;
-        background-size: cover;
-        background-position: center;
+        padding: 5rem 0;
+        margin-top: -80px;
+        padding-top: 120px;
+        text-align: center;
     }
-
-    .hero-title {
-        font-size: 2.8rem;
-        font-weight: 700;
-        margin-bottom: 1rem;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .hero-subtitle {
-        font-size: 1.2rem;
-        margin-bottom: 2rem;
-        line-height: 1.8;
-        opacity: 0.95;
-    }
-
+    .hero-title { font-weight: 700; }
+    
     .campanhas-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
         gap: 2rem;
-        margin-top: 2rem;
+        margin-top: 1.5rem;
     }
 
     .campanha-card {
         background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         transition: all 0.3s ease;
         overflow: hidden;
         display: flex;
@@ -51,229 +33,121 @@
 
     .campanha-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
     }
 
-    .campanha-img-container {
+    .card-img-top {
+        height: 200px;
         width: 100%;
-        height: 250px;
-        overflow: hidden;
-    }
-
-    .campanha-img {
-        width: 100%;
-        height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
     }
 
-    .campanha-card:hover .campanha-img {
-        transform: scale(1.1);
-    }
-
-    .card-body-campanha {
+    .card-body {
         padding: 1.5rem;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
 
-    .campanha-title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #2c5530;
-        margin-bottom: 0.5rem;
+    .card-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        color: #0056b3;
     }
-
-    .campanha-location {
+    
+    .card-location {
         color: #6c757d;
-        font-size: 0.9rem;
         margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        font-size: 0.9rem;
     }
 
-    .campanha-description {
-        font-size: 1rem;
-        color: #495057;
-        margin-bottom: 1.5rem;
+    .card-text {
+        color: #343a40;
         flex-grow: 1;
     }
+    
+    .progress-info {
+        margin-top: 1.5rem;
+    }
 
-    .campanha-footer {
-        padding-top: 1.5rem;
-        border-top: 1px solid #e9ecef;
+    .btn-custom {
         margin-top: auto;
-    }
-
-    .campanha-footer p {
-        margin: 0.5rem 0;
-        font-size: 0.9rem;
-        color: #666;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .campanha-footer .progress {
-        height: 8px;
-        border-radius: 10px;
-        background-color: #e9ecef;
-    }
-
-    .campanha-footer .progress-bar {
-        background-color: #2c5530;
-        border-radius: 10px;
-        font-size: 0.7rem;
-        color: white;
-        text-align: right;
-        padding-right: 5px;
-        line-height: 8px;
-        transition: width 0.6s ease;
-    }
-
-    .btn-voluntariar,
-    .btn-doar-campanha {
-        padding: 0.8rem 2rem;
+        background-color: #0d6efd;
         border: none;
-        border-radius: 50px;
         font-weight: 600;
-        text-decoration: none;
-        display: block;
-        text-align: center;
-        transition: all 0.3s ease;
-        width: 100%;
-        margin-bottom: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
     }
 
-    .btn-voluntariar {
-        background: linear-gradient(135deg, #FFE07A 0%, #ffc107 100%);
-        color: #2c5530;
-    }
-
-    .btn-voluntariar:hover {
-        background: #ffc107;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-        text-decoration: none;
-        color: #2c5530;
-    }
-
-    .btn-doar-campanha {
-        background: linear-gradient(135deg, #0d6efd 0%, #0c63e4 100%);
-        color: white;
-    }
-
-    .btn-doar-campanha:hover {
-        background: #0c63e4;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
-        text-decoration: none;
-        color: white;
-    }
 </style>
-{% endblock extra_css %}
+{% endblock %}
 
 {% block content %}
-<section class="hero-campanhas">
+<section class="hero-section">
     <div class="container">
-        <h1 class="hero-title"><i class="fas fa-heartbeat"></i> Campanhas Ativas</h1>
-        <p class="hero-subtitle">Conheça as campanhas que estão transformando vidas e junte-se a nós como voluntário!</p>
+        <h1 class="hero-title"><i class="fas fa-bullhorn"></i> Nossas Campanhas</h1>
+        <p class="lead">Participe de uma de nossas campanhas e ajude a combater a fome na sua região.</p>
     </div>
 </section>
 
-<div class="container">
+<div class="container py-5">
+    
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="mt-3">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
     {% endwith %}
 
-    <div class="campanhas-grid">
-        {% if campanhas %}
-            {% for campanha in campanhas %}
-                <div class="campanha-card">
-                    <div class="campanha-img-container">
-                        <img src="{{ url_for('static', filename=campanha.imagem) }}" alt="{{ campanha.titulo }}" class="campanha-img">
-                    </div>
-                    <div class="card-body-campanha">
-                        <h3 class="campanha-title">{{ campanha.titulo }}</h3>
-                        <p class="campanha-location"><i class="fas fa-map-marker-alt"></i> {{ campanha.localizacao }}</p>
-                        <p class="campanha-description">{{ campanha.descricao }}</p>
-                        <div class="campanha-footer">
-                            <p>Voluntários: <strong>{{ campanha.num_voluntarios }} / {{ campanha.meta_voluntarios }}</strong></p>
-                            <p>Arrecadado: <strong>R$ {{ "%.2f"|format(campanha.arrecadado) }} / R$ {{ "%.2f"|format(campanha.meta_doacoes) }}</strong></p>
-                            <div class="progress mt-2">
-                                <div class="progress-bar" role="progressbar" style="width: {{ campanha.progresso ~ '%' }};" aria-valuenow="{{ campanha.progresso }}" aria-valuemin="0" aria-valuemax="100">
-                                    {{ "%.0f"|format(campanha.progresso) }}%
-                                </div>
-                            </div>
-                            
-                            <a href="{{ url_for('voluntariar', campanha_id=campanha.id) }}" class="btn-voluntariar mt-3">Quero ser voluntário</a>
-                            
-                            <button type="button" class="btn btn-doar-campanha" data-bs-toggle="modal" data-bs-target="#doarCampanhaPixModal" onclick="setCampanhaId('{{ campanha.id }}', '{{ campanha.titulo }}')">
-                                <i class="fas fa-dollar-sign"></i> Doar (Pix)
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="empty-state">
-                <i class="fas fa-box-open"></i>
-                <h3>Nenhuma campanha ativa no momento</h3>
-                <p>Volte em breve para ver novas oportunidades de ajuda.</p>
-            </div>
-        {% endif %}
-    </div>
-</div>
-
-<div class="modal fade" id="doarCampanhaPixModal" tabindex="-1" aria-labelledby="doarCampanhaPixModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="doarCampanhaPixModalLabel">Doar para Campanha via PIX</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="POST" id="formDoarCampanhaPix">
-                <div class="modal-body">
-                    <input type="hidden" name="campanha_id" id="pixCampanhaId">
-                    <p>Sua doação será destinada para a campanha: <strong id="pixCampanhaNome"></strong>.</p>
-                    <div class="form-group mb-3">
-                        <label for="valor_pix" class="form-label">Valor (R$)</label>
-                        <input type="number" step="0.01" class="form-control" id="valor_pix" name="valor_pix" required>
-                    </div>
-                    <div class="text-center mt-4">
-                        <p>Aponte a câmera do seu celular para o QR Code abaixo:</p>
-                        <img src="{{ url_for('static', filename='qrcode_exemplo.png') }}" alt="QR Code PIX" class="img-fluid" style="max-width: 200px;">
-                        <p class="mt-2">Chave PIX: **11.111.111/0001-11** (ONG SOS Comida)</p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="submit" class="btn btn-primary">Confirmar Doação</button>
-                </div>
-            </form>
+    {% if current_user.is_authenticated %}
+        <div class="d-flex justify-content-end mb-4">
+            {% if current_user.tipo == 'moderador' %}
+                <a href="{{ url_for('criar_campanha') }}" class="btn btn-success">
+                    <i class="fas fa-plus"></i> Criar Nova Campanha
+                </a>
+            {% elif current_user.tipo == 'usuario' %}
+                <a href="{{ url_for('solicitarcampanha') }}" class="btn btn-warning text-dark">
+                    <i class="fas fa-plus"></i> Solicitar Nova Campanha
+                </a>
+            {% endif %}
         </div>
+    {% endif %}
+    <div class="campanhas-grid">
+        {% for campanha in campanhas %}
+        <div class="campanha-card">
+            
+            <img src="{{ url_for('static', filename='img/' + campanha.imagem) }}" class="card-img-top" alt="Imagem da campanha {{ campanha.titulo }}">
+
+            <div class="card-body">
+                <h5 class="card-title">{{ campanha.titulo }}</h5>
+                <p class="card-location"><i class="fas fa-map-marker-alt"></i> {{ campanha.localizacao }}</p>
+                <p class="card-text">{{ campanha.descricao|truncate(120) }}</p>
+
+                <div class="progress-info">
+                    <div class="d-flex justify-content-between">
+                        <span><i class="fas fa-dollar-sign"></i> <strong>R$ {{ "%.2f"|format(campanha.arrecadado) }}</strong></span>
+                        <span>Meta: R$ {{ "%.2f"|format(campanha.meta_doacoes) }}</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar" role="progressbar" style="width: {{ campanha.progresso }}%;" aria-valuenow="{{ campanha.progresso }}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+
+                 <a href="{{ url_for('detalhes_campanha', campanha_id=campanha.id) }}" class="btn btn-primary btn-custom mt-4">
+                    <i class="fas fa-info-circle"></i> Ver Detalhes
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <h3>Nenhuma campanha ativa no momento.</h3>
+            <p>Volte em breve para novas oportunidades de ajudar!</p>
+        </div>
+        {% endfor %}
     </div>
 </div>
-{% endblock content %}
-
-{% block extra_js %}
-<script>
-    function setCampanhaId(id, nome) {
-        const form = document.getElementById('formDoarCampanhaPix');
-        form.action = `/doar_campanha_pix/${id}`;
-        document.getElementById('pixCampanhaId').value = id;
-        document.getElementById('pixCampanhaNome').textContent = nome;
-    }
-</script>
-{% endblock extra_js %}
+{% endblock %}

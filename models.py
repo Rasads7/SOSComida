@@ -9,22 +9,20 @@ class Usuario(UserMixin, db.Model):
     nome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     senha = db.Column(db.String(255), nullable=False)
-    tipo = db.Column(db.String(20), default='usuario')  # 'usuario', 'moderador' ou 'instituicao'
+    tipo = db.Column(db.String(20), default='usuario')
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Campos específicos para Pessoa
     cpf = db.Column(db.String(14))
     cidade = db.Column(db.String(100))
-    endereco = db.Column(db.String(255)) # Adicionado para corrigir o erro
+    endereco = db.Column(db.String(255))
     telefone = db.Column(db.String(20))
     bio = db.Column(db.Text)
     foto_perfil = db.Column(db.String(255))
 
-    # Campos específicos para Instituição
     instituicao_nome = db.Column(db.String(200))
     instituicao_endereco = db.Column(db.String(255))
     instituicao_cep = db.Column(db.String(10))
-    instituicao_tipo = db.Column(db.String(20)) # 'publica' ou 'privada'
+    instituicao_tipo = db.Column(db.String(20))
 
 class Campanha(db.Model):
     __tablename__ = 'campanhas'
@@ -37,7 +35,7 @@ class Campanha(db.Model):
     meta_doacoes = db.Column(db.Numeric(10, 2), default=1000.00)
     arrecadado = db.Column(db.Numeric(10, 2), default=0.00)
     imagem = db.Column(db.String(200), default='campanha1.jpg')
-    status = db.Column(db.String(20), default='ativa')  # 'ativa', 'pausada', 'finalizada'
+    status = db.Column(db.String(20), default='ativa')
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     data_fim = db.Column(db.DateTime)
 
@@ -49,7 +47,6 @@ class VoluntarioCampanha(db.Model):
     campanha_id = db.Column(db.Integer, db.ForeignKey('campanhas.id'), nullable=False)
     data_inscricao = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relacionamentos
     usuario = db.relationship('Usuario', backref=db.backref('voluntariados', lazy=True))
     campanha = db.relationship('Campanha', backref=db.backref('voluntarios', lazy=True))
 
@@ -58,7 +55,7 @@ class SolicitacaoDoacao(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
-    tipo = db.Column(db.String(20), nullable=False)  # 'cesta' ou 'monetaria'
+    tipo = db.Column(db.String(20), nullable=False)
     nome_doador = db.Column(db.String(100), nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     endereco = db.Column(db.Text, nullable=False)
@@ -70,10 +67,9 @@ class SolicitacaoDoacao(db.Model):
     
     valor = db.Column(db.Numeric(10, 2))
     
-    status = db.Column(db.String(20), default='pendente')  # 'pendente', 'rejeitada', 'delegada', 'aceita'
+    status = db.Column(db.String(20), default='pendente')
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     
-    # Relacionamentos
     usuario = db.relationship('Usuario', backref=db.backref('doacoes', lazy=True))
     recebimento_associado = db.relationship('SolicitacaoRecebimento', backref='doacoes_associadas', foreign_keys=[solicitacao_recebimento_id])
 
@@ -89,7 +85,7 @@ class SolicitacaoRecebimento(db.Model):
     qtd_pessoas = db.Column(db.Integer, nullable=False)
     necessidades = db.Column(db.Text, nullable=False)
     
-    status = db.Column(db.String(20), default='pendente')  # 'pendente', 'rejeitada', 'delegada', 'aceita', 'entregue'
+    status = db.Column(db.String(20), default='pendente')
     
     cestas_entregues = db.Column(db.Integer, default=0)
     alimento_kg_entregues = db.Column(db.Numeric(10, 2), default=0.00)
@@ -97,8 +93,7 @@ class SolicitacaoRecebimento(db.Model):
     data_entrega_final = db.Column(db.DateTime)
 
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    # Relacionamentos
+
     usuario = db.relationship('Usuario', backref=db.backref('recebimentos', lazy=True))
     
 class Delegacao(db.Model):
@@ -112,9 +107,8 @@ class Delegacao(db.Model):
     solicitacao_recebimento_id = db.Column(db.Integer, db.ForeignKey('solicitacoes_recebimento.id'), nullable=True)
     
     data_delegacao = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.String(20), default='pendente') # 'pendente', 'aceita', 'recusada', 'concluida'
-    
-    # Relacionamentos
+    status = db.Column(db.String(20), default='pendente')
+
     moderador = db.relationship('Usuario', foreign_keys=[moderador_id], backref='delegacoes_feitas')
     instituicao = db.relationship('Usuario', foreign_keys=[instituicao_id], backref='delegacoes_recebidas')
     doacao = db.relationship('SolicitacaoDoacao', backref='delegacao', uselist=False)

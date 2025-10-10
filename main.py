@@ -1,4 +1,3 @@
-# Importações de módulos necessários para o Flask e SQLAlchemy
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_cors import CORS
@@ -9,29 +8,24 @@ import os
 from datetime import datetime
 import uuid
 
-# --- Configuração da Aplicação Flask ---
 app = Flask(__name__)
-# Permite requisições de outras origens (CORS) para a API, se necessário
+
 CORS(app)
-# Chave secreta para segurança da sessão
+
 app.secret_key = 'soscomida_secret_key_2024'
 
-# Configuração do Flask-Login para gerenciar sessões de usuário
 lm = LoginManager(app)
 lm.login_view = 'login'
 
-# Configuração do SQLAlchemy para usar SQLite como banco de dados
 basedir = os.path.abspath(os.path.dirname(__file__))
 database_path = os.path.join(basedir, 'instance', 'database.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{database_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Cria o diretório 'instance' se ele não existir
-os.makedirs(os.path.join(basedir, 'instance'), exist_ok=True)
-# Inicializa a extensão SQLAlchemy com a aplicação Flask
-db.init_app(app)
 
-# --- Funções de Inicialização e Dados de Exemplo ---
+os.makedirs(os.path.join(basedir, 'instance'), exist_ok=True)
+
+db.init_app(app)
 
 def hash_password(txt):
     """
@@ -49,7 +43,6 @@ def create_initial_data():
     with app.app_context():
         print("Verificando se o banco de dados está populado...")
 
-        # --- Criação de Usuários e Instituições ---
         if not Usuario.query.first():
             print("Criando usuários e instituições de exemplo...")
 
@@ -93,7 +86,6 @@ def create_initial_data():
             db.session.commit()
             print("Usuários e instituições de exemplo criados com sucesso.")
 
-        # --- Criação de Campanhas ---
         if not Campanha.query.first():
             print("Criando campanhas de exemplo...")
             campanhas = [
@@ -132,11 +124,9 @@ def create_initial_data():
             db.session.commit()
             print("Campanhas de exemplo criadas com sucesso.")
 
-        # --- Criação de Solicitações de Exemplo ---
         if not SolicitacaoRecebimento.query.first():
             print("Criando solicitações de exemplo para moderação e doação...")
 
-            # Limpa as tabelas de solicitações e delegações para evitar duplicatas em reinicializações
             SolicitacaoDoacao.query.delete()
             SolicitacaoRecebimento.query.delete()
             Delegacao.query.delete()
@@ -144,7 +134,7 @@ def create_initial_data():
 
             usuario_exemplo = Usuario.query.filter_by(email='exemplo@email.com').first()
             if usuario_exemplo:
-                # Solicitações Aprovadas para o formulário de doação
+
                 solicitacoes_aprovadas = [
                     SolicitacaoRecebimento(
                         usuario_id=usuario_exemplo.id, nome='Dona Lúcia', telefone='(11) 99111-2222', 
@@ -158,7 +148,6 @@ def create_initial_data():
                     )
                 ]
                 
-                # Solicitação Pendente para o painel de moderação
                 solicitacao_pendente = SolicitacaoRecebimento(
                     usuario_id=usuario_exemplo.id, nome='Família Pereira', telefone='(11) 99888-7777', 
                     endereco='Rua da Solidariedade, 50, Bairro Centro, São Paulo', qtd_pessoas=4, 
@@ -173,7 +162,6 @@ def create_initial_data():
         
         print("Inicialização de dados concluída.")
 
-# --- Flask-Login User Loader ---
 @lm.user_loader
 def user_loader(id):
     """
@@ -181,12 +169,6 @@ def user_loader(id):
     a partir de seu ID na sessão.
     """
     return Usuario.query.get(int(id))
-
-# ================================================================
-#                       ROTAS DA APLICAÇÃO
-# ================================================================
-
-# --- Rotas de Autenticação e Navegação Geral ---
 
 @app.route('/')
 def home():
@@ -230,12 +212,11 @@ def registrar():
         return redirect(url_for('home'))
         
     if request.method == 'POST':
-        # Determinar o tipo de cadastro baseado no formulário ativo
         tipo_cadastro = request.form.get('tipo')
         email = request.form.get('email')
         senha = request.form.get('senha')
         
-        print(f"DEBUG: tipo_cadastro={tipo_cadastro}, email={email}")  # Debug
+        print(f"DEBUG: tipo_cadastro={tipo_cadastro}, email={email}")
         
         if not senha or len(senha) < 6:
             flash('A senha deve ter pelo menos 6 caracteres.', 'error')
@@ -290,7 +271,7 @@ def registrar():
             return redirect(url_for('home'))
         except Exception as e:
             db.session.rollback()
-            print(f"DEBUG: Erro ao salvar usuário: {e}")  # Debug
+            print(f"DEBUG: Erro ao salvar usuário: {e}")
             flash('Erro interno. Tente novamente.', 'error')
             return render_template('registrar.html')
         
@@ -305,9 +286,6 @@ def logout():
     logout_user()
     flash('Logout realizado com sucesso!', 'success')
     return redirect(url_for('home'))
-
-
-# --- Rotas de Doação e Recebimento (Pessoa Física) ---
 
 @app.route('/formulariodoar', methods=['GET'])
 @login_required
@@ -442,7 +420,6 @@ def minhas_solicitacoes():
     
     return render_template('minhas_solicitacoes.html', doacoes=doacoes, recebimentos=recebimentos, usuario=current_user)
 
-# --- Rotas de Campanhas (Todos) ---
 @app.route('/campanhas')
 @login_required
 def campanhas():
@@ -509,9 +486,6 @@ def doar_campanha_pix(campanha_id):
 
     flash(f'Sua doação de R${valor_doado:.2f} para a campanha "{campanha.titulo}" foi registrada. Muito obrigado!', 'success')
     return redirect(url_for('campanhas'))
-
-
-# --- Rotas de Moderação (Apenas Moderadores) ---
 
 @app.route('/moderacao')
 @login_required
@@ -638,9 +612,6 @@ def criar_campanha():
         
     return render_template('criar_campanha.html', usuario=current_user)
 
-
-# --- Rotas de Perfil (Usuários e Instituições) ---
-
 @app.route('/perfil', methods=['GET', 'POST'])
 @login_required
 def perfil():
@@ -649,7 +620,6 @@ def perfil():
     Também permite edição de perfil via POST.
     """
     if request.method == 'POST':
-        # Processar edição de perfil
         nome = request.form.get('nome')
         email = request.form.get('email')
         telefone = request.form.get('telefone')
@@ -657,7 +627,6 @@ def perfil():
         endereco = request.form.get('endereco')
         bio = request.form.get('bio')
         
-        # Validações básicas
         if not nome or len(nome) < 2:
             flash('Nome deve ter pelo menos 2 caracteres.', 'error')
             return redirect(url_for('perfil'))
@@ -666,39 +635,31 @@ def perfil():
             flash('Email é obrigatório.', 'error')
             return redirect(url_for('perfil'))
             
-        # Verificar se o email já existe para outro usuário
         usuario_existente = Usuario.query.filter_by(email=email).first()
         if usuario_existente and usuario_existente.id != current_user.id:
             flash('Este email já está sendo usado por outro usuário.', 'error')
             return redirect(url_for('perfil'))
         
-        # Processar upload de foto de perfil
         if 'foto_perfil' in request.files:
             arquivo = request.files['foto_perfil']
             if arquivo and arquivo.filename != '':
-                # Verificar extensão do arquivo
                 ext = arquivo.filename.rsplit('.', 1)[1].lower()
                 if ext in ['jpg', 'jpeg', 'png', 'gif']:
-                    # Gerar nome único para o arquivo
                     nome_arquivo = f"perfil_{current_user.id}_{uuid.uuid4().hex[:8]}.{ext}"
                     caminho_arquivo = os.path.join(app.static_folder, nome_arquivo)
                     
-                    # Salvar o arquivo
                     arquivo.save(caminho_arquivo)
                     
-                    # Remover foto anterior se existir
                     if current_user.foto_perfil:
                         caminho_antigo = os.path.join(app.static_folder, current_user.foto_perfil)
                         if os.path.exists(caminho_antigo):
                             os.remove(caminho_antigo)
                     
-                    # Atualizar o campo no banco
                     current_user.foto_perfil = nome_arquivo
                 else:
                     flash('Formato de imagem não suportado. Use JPG, PNG ou GIF.', 'error')
                     return redirect(url_for('perfil'))
         
-        # Atualizar dados do usuário
         current_user.nome = nome
         current_user.email = email
         current_user.telefone = telefone
@@ -710,7 +671,7 @@ def perfil():
         flash('Perfil atualizado com sucesso!', 'success')
         return redirect(url_for('perfil'))
     if current_user.tipo == 'instituicao':
-        # Perfil de Instituição
+ 
         delegacoes_pendentes = Delegacao.query.filter_by(instituicao_id=current_user.id, status='pendente').all()
         delegacoes_aceitas = Delegacao.query.filter_by(instituicao_id=current_user.id, status='aceita').all()
 
@@ -728,7 +689,6 @@ def perfil():
                                total_monetario=total_monetario,
                                projetos_ajudados=projetos_ajudados)
     
-    # Perfil de Usuário Comum
     doacoes = SolicitacaoDoacao.query.filter_by(usuario_id=current_user.id).order_by(SolicitacaoDoacao.data_criacao.desc()).all()
     recebimentos = SolicitacaoRecebimento.query.filter_by(usuario_id=current_user.id).order_by(SolicitacaoRecebimento.data_criacao.desc()).all()
     
@@ -820,8 +780,6 @@ def reportar_entrega(delegacao_id):
 
     return redirect(url_for('perfil'))
 
-
-# --- Ponto de Entrada da Aplicação ---
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
@@ -849,7 +807,6 @@ def voluntariar(campanha_id):
 
     campanha = Campanha.query.get_or_404(campanha_id)
     
-    # Verifica se o usuário já é voluntário
     voluntario_existente = VoluntarioCampanha.query.filter_by(usuario_id=current_user.id, campanha_id=campanha.id).first()
     if voluntario_existente:
         flash('Você já está inscrito como voluntário nesta campanha.', 'info')
@@ -864,5 +821,3 @@ def voluntariar(campanha_id):
 
     flash(f'Parabéns! Você agora é voluntário na campanha "{campanha.titulo}".', 'success')
     return redirect(url_for('campanhas'))
-
-

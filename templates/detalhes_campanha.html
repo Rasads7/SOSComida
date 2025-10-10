@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}{{ campanha.titulo }} - SOS Comida{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f4f7f6;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='hexagons' fill='%23e9ecef' fill-opacity='0.4' fill-rule='nonzero'%3E%3Cpath d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.99-7.5L26 15v19L13 41.5 0 34V15z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .campanha-header {
+        position: relative;
+        height: 50vh;
+        background-size: cover;
+        background-position: center;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+    }
+    .campanha-header::after {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to top, rgba(0, 50, 100, 0.7), rgba(0, 0, 0, 0.2));
+    }
+    .header-content { position: relative; z-index: 2; max-width: 800px; }
+    .campanha-title { font-size: 3.5rem; font-weight: 700; text-shadow: 2px 2px 8px rgba(0,0,0,0.7); }
+    .campanha-location { font-size: 1.2rem; opacity: 0.9; }
+
+    .main-container {
+        max-width: 900px;
+        margin: -80px auto 4rem auto;
+        position: relative;
+        z-index: 3;
+        background: #fff;
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    
+    .section-title { 
+        font-weight: 600; 
+        font-size: 1.8rem; 
+        color: #0056b3; 
+        margin-bottom: 1.5rem; 
+        text-align: center;
+    }
+
+    .stat-cards { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); 
+        gap: 1.5rem; 
+        margin: 2rem 0; 
+    }
+    .stat-card { 
+        background: #f8f9fa; 
+        text-align: center; 
+        padding: 1.5rem; 
+        border-radius: 10px; 
+        border: 1px solid #e9ecef;
+    }
+    .stat-value { font-size: 2rem; font-weight: 700; color: #0d6efd; }
+    .stat-label { font-size: 0.9rem; color: #6c757d; }
+    
+    .action-panel {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-top: 2.5rem;
+    }
+    .nav-pills .nav-link { color: #0056b3; font-weight: 500; }
+    .nav-pills .nav-link.active { background-color: #0d6efd; }
+    .tab-content { padding-top: 2rem; }
+
+    .item-doacao { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .item-doacao label { font-weight: 500; }
+    .item-doacao input { width: 80px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="campanha-header" style="background-image: url('{{ url_for('static', filename='img/' + campanha.imagem) }}');">
+    <div class="header-content">
+        <h1 class="campanha-title">{{ campanha.titulo }}</h1>
+        <p class="campanha-location"><i class="fas fa-map-marker-alt"></i> {{ campanha.localizacao }}</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="main-container">
+        
+        <h3 class="section-title">Sobre a Campanha</h3>
+        <p class="lead text-center" style="color: #495057;">{{ campanha.descricao }}</p>
+
+        {% if campanha.instituicao_delegada %}
+        <div class="alert alert-light text-center mt-4">
+            <i class="fas fa-university"></i> Organizada por: <strong>{{ campanha.instituicao_delegada.nome }}</strong>
+        </div>
+        {% endif %}
+
+        <div class="stat-cards">
+            <div class="stat-card">
+                <div class="stat-value">R$ {{ "%.0f"|format(campanha.arrecadado) }}</div>
+                <div class="stat-label">Arrecadados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ campanha.voluntarios|length }}</div>
+                <div class="stat-label">Voluntários</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ dias_restantes if dias_restantes is not none else 'N/D' }}</div>
+                <div class="stat-label">Dias Restantes</div>
+            </div>
+        </div>
+
+        <div class="action-panel">
+            <h3 class="section-title">Como Ajudar</h3>
+            <ul class="nav nav-pills nav-fill mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pills-itens">Doar Itens</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-pix">Doar via PIX</button></li>
+                <li class="nav-item" role="presentation"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#pills-voluntario">Ser Voluntário</button></li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-itens">
+                    <form action="{{ url_for('doar_itens_campanha', campanha_id=campanha.id) }}" method="POST">
+                        <p class="text-center text-muted small">Informe a quantidade de itens. Nossa equipe entrará em contato para agendar a coleta.</p>
+                        <div class="item-doacao"><label for="qtd_cestas"><i class="fas fa-shopping-basket fa-fw me-2 text-primary"></i>Cestas Básicas</label><input type="number" class="form-control" name="qtd_cestas" value="0" min="0"></div>
+                        <div class="item-doacao"><label for="qtd_higiene"><i class="fas fa-pump-soap fa-fw me-2 text-primary"></i>Kits de Higiene</label><input type="number" class="form-control" name="qtd_higiene" value="0" min="0"></div>
+                        <div class="item-doacao"><label for="qtd_agua"><i class="fas fa-tint fa-fw me-2 text-primary"></i>Litros de Água</label><input type="number" class="form-control" name="qtd_agua" value="0" min="0"></div>
+                        <div class="item-doacao"><label for="qtd_fraldas_infantis"><i class="fas fa-baby fa-fw me-2 text-primary"></i>Fraldas</label><input type="number" class="form-control" name="qtd_fraldas_infantis" value="0" min="0"></div>
+                        <div class="d-grid mt-4"><button type="submit" class="btn btn-success btn-lg"><i class="fas fa-box-open"></i> Registrar Doação de Itens</button></div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="pills-pix">
+                    <form action="{{ url_for('doar_campanha_pix', campanha_id=campanha.id) }}" method="POST">
+                        <div class="mb-3"><label for="valor_pix" class="form-label">Qual valor você gostaria de doar? (R$)</label><input type="number" step="0.01" class="form-control" name="valor_pix" placeholder="50,00" required></div>
+                        <div class="text-center p-3 rounded" style="background-color: #e9ecef;"><img src="{{ url_for('static', filename='img/qrcode_exemplo.png') }}" alt="QR Code PIX" class="img-fluid" style="max-width: 150px;"><p class="mt-2 small mb-0">Chave PIX (CNPJ):<br><strong>11.111.111/0001-11</strong></p></div>
+                        <div class="d-grid mt-3"><button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-dollar-sign"></i> Confirmar Doação</button></div>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="pills-voluntario">
+                    <div class="text-center">
+                        <p class="lead">Sua ajuda é fundamental para o sucesso desta campanha!</p>
+                        <p>Ao se voluntariar, você poderá ajudar na organização, coleta e distribuição das doações. Clique no botão abaixo para se inscrever.</p>
+                        <div class="d-grid mt-4">
+                            <a href="{{ url_for('voluntariar', campanha_id=campanha.id) }}" class="btn btn-warning btn-lg"><i class="fas fa-hands-helping"></i> Confirmar Voluntariado</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
