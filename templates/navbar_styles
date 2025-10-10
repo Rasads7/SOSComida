@@ -1,6 +1,4 @@
-<!-- Estilos CSS padronizados para navbar -->
 <style>
-    /* Header e Navegação */
     .navbar {
         background: linear-gradient(135deg, #0066CC 0%, #80DDF9 100%);
         padding: 1rem 0;
@@ -105,7 +103,6 @@
         cursor: pointer;
     }
 
-    /* Responsividade */
     @media (max-width: 768px) {
         .nav-menu {
             position: fixed;
@@ -136,4 +133,3 @@
         }
     }
 </style>
-

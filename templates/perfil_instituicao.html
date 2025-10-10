@@ -23,7 +23,6 @@
             min-height: 100vh;
         }
 
-        /* Header e Navegação (Estilos do seu template base) */
         .navbar {
             background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
             padding: 1rem 0;
@@ -124,7 +123,6 @@
             cursor: pointer;
         }
 
-        /* Main Content */
         .main-content {
             margin-top: 100px;
             min-height: calc(100vh - 200px);
@@ -137,7 +135,6 @@
             padding: 0 2rem;
         }
 
-        /* Cards */
         .card {
             background: white;
             border-radius: 15px;
@@ -152,7 +149,6 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
-        /* Buttons */
         .btn {
             border-radius: 25px;
             padding: 0.8rem 2rem;
@@ -206,8 +202,6 @@
             box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
         }
 
-
-        /* Alerts */
         .alert {
             border-radius: 10px;
             border: none;
@@ -230,7 +224,6 @@
             color: #856404;
         }
 
-        /* Footer */
         .footer {
             background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
             color: white;
@@ -239,7 +232,6 @@
             margin-top: 3rem;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .nav-menu {
                 position: fixed;
@@ -278,7 +270,6 @@
             }
         }
         
-        /* Estilos do perfil de instituição */
         .hero {
             background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9));
             min-height: 40vh;
@@ -813,7 +804,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Mobile menu toggle
         const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
         const navMenu = document.getElementById('nav-menu');
 
@@ -824,7 +814,6 @@
             icon.classList.toggle('fa-times');
         });
 
-        // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) {
@@ -832,9 +821,8 @@
             } else {
                 navbar.classList.remove('scrolled');
             }
-        });
+        })
 
-        // Close mobile menu when clicking on a link
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 navMenu.classList.remove('active');
