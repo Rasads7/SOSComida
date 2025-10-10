@@ -2,3 +2,5 @@ pip install flask-login
 pip install flask
 pip install flask-cors
 pip install flask-sqlalchemy
+pip install qrcode[pil]
+pip install pyotp

@@ -1,102 +1,126 @@
 {% extends "base.html" %}
 
-{% block title %}Formulário de Recebimento - SOS Comida{% endblock %}
+{% block title %}Formulário de Solicitação - SOS Comida{% endblock %}
 
 {% block extra_css %}
-.form-section {
-    padding: 4rem 0;
-}
+<style>
+    .form-section {
+        padding: 4rem 0;
+    }
 
-.form-container {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 3rem;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.form-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2c5530;
-    margin-bottom: 2rem;
-    text-align: center;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #2c5530;
-}
-
-.form-control {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    background: #f8f9fa;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: #2c5530;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
-}
-
-.btn-submit {
-    background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
-    color: white;
-    padding: 1rem 2rem;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.btn-submit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(44, 85, 48, 0.3);
-}
-
-.hidden-field {
-    display: none;
-}
-
-@media (max-width: 768px) {
     .form-container {
-        padding: 2rem;
-        margin: 0 1rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        max-width: 800px;
+        margin: 0 auto;
     }
+
     .form-title {
-        font-size: 1.5rem;
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c5530;
+        margin-bottom: 2rem;
+        text-align: center;
     }
-}
+
+    .form-subtitle {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #4a7c59;
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #2c5530;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #2c5530;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(44, 85, 48, 0.1);
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+        color: white;
+        padding: 1rem 2rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(44, 85, 48, 0.3);
+    }
+
+    .hidden-field {
+        display: none;
+    }
+    
+    .additional-items-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .item-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    @media (max-width: 768px) {
+        .form-container {
+            padding: 2rem;
+            margin: 0 1rem;
+        }
+        .form-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <section class="hero-section">
     <div class="container">
         <h1 class="hero-title">Formulário de Solicitação</h1>
-        <p class="hero-subtitle">Preencha os detalhes para solicitar campanha ou ajuda.</p>
+        <p class="hero-subtitle">Preencha os detalhes para solicitar ajuda.</p>
     </div>
 </section>
 
 <div class="container form-section">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="mt-3">
+            <div class="mt-3" style="max-width: 800px; margin: 0 auto 2rem auto;">
                 {% for category, message in messages %}
                     <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
                         {{ message }}
@@ -108,112 +132,82 @@
     {% endwith %}
 
     <div class="form-container">
-        <h2 class="form-title">Tipo de Solicitação</h2>
-        <form method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="tipoFormSolicitacao" class="form-label">Selecione o tipo de solicitação</label>
-                <select class="form-control" id="tipoFormSolicitacao" name="tipoFormSolicitacao" required>
-                    <option value="">Selecione...</option>
-                    <option value="campanha">Solicitar Campanha</option>
-                    <option value="ajuda">Solicitar Ajuda</option>
-                </select>
-            </div>
-
-            <div id="campanhaFields" class="hidden-field">
-                <h3 class="form-title">Detalhes da Campanha</h3>
-                <div class="form-group">
-                    <label for="tituloCampanha" class="form-label">Título da Campanha</label>
-                    <input type="text" class="form-control" id="tituloCampanha" name="tituloCampanha">
-                </div>
-                <div class="form-group">
-                    <label for="descricaoCampanha" class="form-label">Texto Explicando a Situação</label>
-                    <textarea class="form-control" id="descricaoCampanha" name="descricaoCampanha" rows="5"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="fotoCampanha" class="form-label">Foto da Campanha</label>
-                    <input type="file" class="form-control" id="fotoCampanha" name="fotoCampanha" accept="image/*">
-                </div>
-                <div class="form-group">
-                    <label for="metaVoluntarios" class="form-label">Meta de Voluntários</label>
-                    <input type="number" class="form-control" id="metaVoluntarios" name="metaVoluntarios" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="metaDoacoes" class="form-label">Meta de Doações (R$)</label>
-                    <input type="number" step="0.01" class="form-control" id="metaDoacoes" name="metaDoacoes" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="necessidadesCampanha" class="form-label">Necessidades Principais da Campanha</label>
-                    <textarea class="form-control" id="necessidadesCampanha" name="necessidadesCampanha" rows="3"></textarea>
-                </div>
-            </div>
-
-            <div id="ajudaFields" class="hidden-field">
-                <h3 class="form-title">Detalhes da Ajuda</h3>
-                <div class="form-group">
+        <h2 class="form-title"><i class="fas fa-hands-helping" style="margin-right: 10px;"></i>Solicitar Ajuda</h2>
+        <form method="POST">
+            
+            <h3 class="form-subtitle">Informações Básicas</h3>
+            <div class="row">
+                <div class="col-md-6 form-group">
                     <label for="nomeAjuda" class="form-label">Seu Nome</label>
-                    <input type="text" class="form-control" id="nomeAjuda" name="nomeAjuda" value="{{ usuario.nome }}">
+                    <input type="text" class="form-control" id="nomeAjuda" name="nomeAjuda" value="{{ usuario.nome }}" required>
                 </div>
-                <div class="form-group">
-                    <label for="telefoneAjuda" class="form-label">Telefone</label>
-                    <input type="text" class="form-control" id="telefoneAjuda" name="telefoneAjuda">
+                <div class="col-md-6 form-group">
+                    <label for="telefoneAjuda" class="form-label">Telefone de Contato</label>
+                    <input type="text" class="form-control" id="telefoneAjuda" name="telefoneAjuda" value="{{ usuario.telefone }}" required>
                 </div>
-                <div class="form-group">
-                    <label for="enderecoAjuda" class="form-label">Endereço</label>
-                    <input type="text" class="form-control" id="enderecoAjuda" name="enderecoAjuda">
+            </div>
+            <div class="form-group">
+                <label for="enderecoAjuda" class="form-label">Endereço Completo</label>
+                <input type="text" class="form-control" id="enderecoAjuda" name="enderecoAjuda" value="{{ usuario.endereco }}" placeholder="Rua, número, bairro, cidade" required>
+            </div>
+            
+            <h3 class="form-subtitle">Detalhes da Necessidade</h3>
+            <div class="row">
+                 <div class="col-md-6 form-group">
+                    <label for="qtdPessoasAjuda" class="form-label">Quantas pessoas na família?</label>
+                    <input type="number" class="form-control" id="qtdPessoasAjuda" name="qtdPessoasAjuda" min="1" required>
                 </div>
-                <div class="form-group">
-                    <label for="explicarSituacaoAjuda" class="form-label">Explique a Situação</label>
-                    <textarea class="form-control" id="explicarSituacaoAjuda" name="explicarSituacaoAjuda" rows="5"></textarea>
+                <div class="col-md-6 form-group">
+                    <label for="qtdCestas" class="form-label">Cestas básicas necessárias</label>
+                    <input type="number" class="form-control" id="qtdCestas" name="qtdCestas" min="1" required>
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit">Enviar Solicitação</button>
+            <div class="form-group">
+                <label for="explicarSituacaoAjuda" class="form-label">Explique sua situação e outras necessidades</label>
+                <textarea class="form-control" id="explicarSituacaoAjuda" name="explicarSituacaoAjuda" rows="4" placeholder="Descreva sua situação atual, se há crianças, idosos, e qualquer outra necessidade específica." required></textarea>
+            </div>
+            
+            <div class="additional-items-grid">
+                <div class="item-group form-group">
+                    <label for="qtd_higiene" class="form-label">Kits de Higiene Pessoal</label>
+                    <input type="number" class="form-control optional" id="qtd_higiene" name="qtd_higiene" min="0" value="0">
+                </div>
+                 <div class="item-group form-group">
+                    <label for="qtd_absorventes" class="form-label">Pacotes de Absorventes</label>
+                    <input type="number" class="form-control optional" id="qtd_absorventes" name="qtd_absorventes" min="0" value="0">
+                </div>
+                <div class="item-group form-group">
+                    <label for="qtd_fraldas_infantis" class="form-label">Pacotes de Fraldas Infantis</label>
+                    <input type="number" class="form-control optional" id="qtd_fraldas_infantis" name="qtd_fraldas_infantis" min="0" value="0">
+                </div>
+                <div class="item-group form-group">
+                    <label for="qtd_fraldas_geriatricas" class="form-label">Pacotes de Fraldas Geriátricas</label>
+                    <input type="number" class="form-control optional" id="qtd_fraldas_geriatricas" name="qtd_fraldas_geriatricas" min="0" value="0">
+                </div>
+            </div>
+
+            <h3 class="form-subtitle">Doação Monetária (Opcional)</h3>
+            <div class="row">
+                <div class="col-md-6 form-group">
+                    <label for="tipo_pix" class="form-label">Tipo de Chave PIX</label>
+                    <select class="form-control optional" id="tipo_pix" name="tipo_pix">
+                        <option value="">Nenhuma</option>
+                        <option value="cpf">CPF</option>
+                        <option value="celular">Celular</option>
+                        <option value="email">E-mail</option>
+                        <option value="aleatoria">Chave Aleatória</option>
+                    </select>
+                </div>
+                <div class="col-md-6 form-group">
+                    <label for="chave_pix" class="form-label">Sua Chave PIX</label>
+                    <input type="text" class="form-control optional" id="chave_pix" name="chave_pix" placeholder="Insira a chave PIX aqui">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Enviar Solicitação de Ajuda</button>
         </form>
     </div>
 </div>
 
-{% block extra_js %}
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const tipoSolicitacaoSelect = document.getElementById("tipoFormSolicitacao");
-        const campanhaFields = document.getElementById("campanhaFields");
-        const ajudaFields = document.getElementById("ajudaFields");
-
-        function toggleFields() {
-            if (tipoSolicitacaoSelect.value === "campanha") {
-                campanhaFields.style.display = "block";
-                ajudaFields.style.display = "none";
-
-                // Set required attributes for campanha fields
-                campanhaFields.querySelectorAll('input, textarea').forEach(field => {
-                    if (field.name !== 'fotoCampanha') { // Photo is optional
-                        field.setAttribute('required', 'required');
-                    }
-                });
-                ajudaFields.querySelectorAll('input, textarea').forEach(field => field.removeAttribute('required'));
-
-            } else if (tipoSolicitacaoSelect.value === "ajuda") {
-                campanhaFields.style.display = "none";
-                ajudaFields.style.display = "block";
-
-                // Set required attributes for ajuda fields
-                ajudaFields.querySelectorAll('input, textarea').forEach(field => field.setAttribute('required', 'required'));
-                campanhaFields.querySelectorAll('input, textarea').forEach(field => field.removeAttribute('required'));
-
-            } else {
-                campanhaFields.style.display = "none";
-                ajudaFields.style.display = "none";
-
-                // Remove required attributes from all fields when nothing is selected
-                campanhaFields.querySelectorAll('input, textarea').forEach(field => field.removeAttribute('required'));
-                ajudaFields.querySelectorAll('input, textarea').forEach(field => field.removeAttribute('required'));
-            }
-        }
-
-        tipoSolicitacaoSelect.addEventListener("change", toggleFields);
-        toggleFields(); // Call on initial load
-    });
-</script>
 {% endblock %}
-{% endblock %}
-

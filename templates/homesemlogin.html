@@ -4,8 +4,10 @@
 
 {% block extra_css %}
 .hero-section {
-    background: linear-gradient(135deg, rgba(0, 51, 102, 0.9) 0%, rgba(0, 85, 170, 0.9) 100%),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><polygon fill="%23ffffff" fill-opacity="0.05" points="0,1000 1000,0 1000,1000"/></svg>');
+    background: linear-gradient(135deg, rgba(0, 51, 102, 0.8) 0%, rgba(0, 85, 170, 0.8) 100%),
+                url("{{ url_for('static', filename='hero_background.png') }}");
+    background-size: cover;
+    background-position: center;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -14,16 +16,7 @@
     overflow: hidden;
 }
 
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23ffffff" fill-opacity="0.1"/></svg>') repeat;
-    animation: float 20s infinite linear;
-}
+
 
 @keyframes float {
     0% { transform: translateY(0px); }
@@ -382,9 +375,8 @@
             overflow-x: hidden;
         }
 
-        /* Header e Navegação */
         .navbar {
-            background: linear-gradient(135deg, #003366 0%, #0055AA 100%); /* Gradiente azul aplicado */
+            background: linear-gradient(135deg, #003366 0%, #0055AA 100%); 
             padding: 1rem 0;
             position: fixed;
             width: 100%;
@@ -395,7 +387,7 @@
         }
 
         .navbar.scrolled {
-            background: rgba(0, 51, 102, 0.95); /* Cor de fundo da barra de navegação rolada */
+            background: rgba(0, 51, 102, 0.95); 
             backdrop-filter: blur(10px);
         }
 
@@ -473,9 +465,8 @@
             cursor: pointer;
         }
 
-        /* Hero Section */
         .hero {
-            background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 85, 170, 0.9)), /* Gradiente azul aplicado */
+            background: linear-gradient(135deg, rgba(0, 51, 102, 0.9), rgba(0, 85, 170, 0.9)), 
                         url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23f0f8f0" width="1200" height="600"/><circle fill="%23e8f5e8" cx="200" cy="150" r="80"/><circle fill="%23d4edda" cx="800" cy="300" r="120"/><circle fill="%23c3e6cb" cx="1000" cy="100" r="60"/></svg>');
             background-size: cover;
             background-position: center;
@@ -546,7 +537,7 @@
             }
         }
 
-        /* Botões de Ação */
+       
         .action-buttons {
             display: flex;
             gap: 1.5rem;
@@ -558,7 +549,7 @@
 
         .btn-primary {
             background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            color: #003366; /* Cor do texto alterada para combinar com o azul */
+            color: #003366; 
             padding: 1rem 2.5rem;
             border: none;
             border-radius: 50px;
@@ -593,7 +584,7 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 25px rgba(255, 215, 0, 0.4);
             text-decoration: none;
-            color: #003366; /* Cor do texto alterada para combinar com o azul */
+            color: #003366;
         }
 
         .btn-secondary {
@@ -613,12 +604,12 @@
 
         .btn-secondary:hover {
             background: white;
-            color: #003366; /* Cor do texto alterada para combinar com o azul */
+            color: #003366; 
             transform: translateY(-3px);
             text-decoration: none;
         }
 
-        /* Seção de Recursos */
+        
         .features {
             padding: 5rem 0;
             background: #f8f9fa;
@@ -638,7 +629,7 @@
         .section-title h2 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #003366; /* Cor do título alterada para combinar com o azul */
+            color: #003366; 
             margin-bottom: 1rem;
         }
 
@@ -674,7 +665,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(135deg, #003366, #0055AA); /* Gradiente azul aplicado */
+            background: linear-gradient(135deg, #003366, #0055AA); 
         }
 
         .feature-card:hover {
@@ -685,7 +676,7 @@
         .feature-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #003366, #0055AA); /* Gradiente azul aplicado */
+            background: linear-gradient(135deg, #003366, #0055AA); 
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -698,7 +689,7 @@
         .feature-card h3 {
             font-size: 1.5rem;
             font-weight: 600;
-            color: #003366; /* Cor do título alterada para combinar com o azul */
+            color: #003366;
             margin-bottom: 1rem;
         }
 
@@ -707,9 +698,8 @@
             line-height: 1.6;
         }
 
-        /* Estatísticas */
         .stats {
-            background: linear-gradient(135deg, #003366 0%, #0055AA 100%); /* Gradiente azul aplicado */
+            background: linear-gradient(135deg, #003366 0%, #0055AA 100%); 
             color: white;
             padding: 4rem 0;
         }
@@ -733,7 +723,6 @@
             opacity: 0.9;
         }
 
-        /* Call to Action */
         .cta {
             background: #f8f9fa;
             padding: 5rem 0;
@@ -743,7 +732,7 @@
         .cta h2 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #003366; /* Cor do título alterada para combinar com o azul */
+            color: #003366; 
             margin-bottom: 1rem;
         }
 
@@ -756,9 +745,8 @@
             margin-right: auto;
         }
 
-        /* Footer */
         .footer {
-            background: #003366; /* Cor do rodapé alterada para combinar com o azul */
+            background: #003366; 
             color: white;
             padding: 3rem 0 1rem;
         }
@@ -814,11 +802,11 @@
 
         .social-links a:hover {
             background: #ffd700;
-            color: #003366; /* Cor do texto alterada para combinar com o azul */
+            color: #003366; 
             transform: translateY(-3px);
         }
 
-        /* Responsividade */
+        
         @media (max-width: 768px) {
             .nav-menu {
                 display: none;
@@ -826,7 +814,7 @@
                 top: 100%;
                 left: 0;
                 width: 100%;
-                background: #003366; /* Cor do menu mobile alterada para combinar com o azul */
+                background: #003366; 
                 flex-direction: column;
                 padding: 1rem;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -903,7 +891,6 @@
             }
         }
 
-        /* Animações adicionais */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -915,12 +902,10 @@
             transform: translateY(0);
         }
 
-        /* Scroll suave */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Hover effects para cards */
         .feature-card {
             cursor: pointer;
         }
@@ -930,7 +915,6 @@
             transition: transform 0.3s ease;
         }
 
-        /* Loading animation para botões */
         .btn-primary:active {
             transform: scale(0.98);
         }
@@ -1082,7 +1066,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Scroll para mostrar/esconder a barra de navegação
             const navbar = document.getElementById('navbar');
             window.addEventListener('scroll', () => {
                 if (window.scrollY > 50) {
@@ -1092,14 +1075,12 @@
                 }
             });
 
-            // Menu mobile
             const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
             const navMenu = document.getElementById('nav-menu');
             mobileMenuToggle.addEventListener('click', () => {
                 navMenu.classList.toggle('active');
             });
 
-            // Animação de fade-in
             const fadeInElements = document.querySelectorAll('.fade-in');
             const observerOptions = {
                 root: null,

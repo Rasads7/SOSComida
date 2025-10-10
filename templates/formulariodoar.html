@@ -4,150 +4,134 @@
 
 {% block extra_css %}
 <style>
-    /* Estilos do formulário de doação */
     .hero-section {
-        background: linear-gradient(135deg, rgba(44, 85, 48, 0.9), rgba(74, 124, 89, 0.9)),
-                    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300"><rect fill="%23f0f8f0" width="1200" height="300"/><circle fill="%23e8f5e8" cx="200" cy="80" r="50"/><circle fill="%23d4edda" cx="800" cy="150" r="70"/><circle fill="%23c3e6cb" cx="1000" cy="60" r="35"/></svg>');
-        background-size: cover;
-        background-position: center;
-        min-height: 40vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
+        background: linear-gradient(135deg, rgba(0, 86, 179, 0.9), rgba(0, 123, 255, 0.8));
         color: white;
-        position: relative;
-        padding-top: 80px;
+        padding: 5rem 0;
+        margin-top: -80px;
+        padding-top: 120px;
     }
     .hero-title {
         font-size: 2.8rem;
         font-weight: 700;
-        margin-bottom: 1rem;
         text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     }
     .hero-subtitle {
         font-size: 1.2rem;
-        margin-bottom: 2rem;
-        line-height: 1.8;
         opacity: 0.95;
     }
     .solicitacoes-grid {
         display: grid;
         gap: 2rem;
-        margin-bottom: 3rem;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        margin-top: 3rem;
+        grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
     }
     .solicitacao-card {
         background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         transition: all 0.3s ease;
         overflow: hidden;
-    }
-    .solicitacao-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    }
-    .card-header {
-        background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
-        color: white;
-        padding: 1.5rem;
-    }
-    .card-title {
-        font-size: 1.4rem;
-        font-weight: 600;
-    }
-    .card-subtitle {
-        font-size: 0.9rem;
-        opacity: 0.9;
-    }
-    .card-body {
-        padding: 1.5rem;
-    }
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-    }
-    .info-item {
         display: flex;
         flex-direction: column;
     }
+    .solicitacao-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+    }
+    .card-header {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #0056b3;
+        margin-bottom: 0.25rem;
+    }
+    .card-subtitle {
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    .card-body {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .info-item {
+        margin-bottom: 1rem;
+    }
     .info-label {
         font-size: 0.8rem;
-        color: #666;
+        color: #6c757d;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
     }
     .info-value {
         font-size: 1rem;
-        color: #333;
         font-weight: 500;
     }
-    .acoes-doacao {
-        display: flex;
-        gap: 1rem;
+    .itens-solicitados {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
         margin-top: 1.5rem;
+    }
+    .itens-solicitados h4 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #0056b3;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #e9ecef;
+        padding-bottom: 0.5rem;
+    }
+    .itens-list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+    }
+    .itens-list li {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.95rem;
+    }
+    .acoes-doacao {
+        margin-top: auto; 
         padding-top: 1.5rem;
         border-top: 1px solid #e9ecef;
+        display: flex;
+        gap: 1rem;
     }
     .btn-doar, .btn-entregar {
         flex: 1;
-        padding: 0.8rem 1.5rem;
-        border-radius: 50px;
         font-weight: 600;
         text-decoration: none;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.5rem;
     }
-    .btn-doar {
-        background: linear-gradient(135deg, #0d6efd 0%, #0c63e4 100%);
-        color: white;
-    }
-    .btn-entregar {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-    }
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: #666;
-    }
-    .empty-state i {
-        font-size: 3rem;
-        color: #ddd;
-        margin-bottom: 1rem;
-    }
-    .form-control.hidden {
-        display: none;
-    }
+    .empty-state { text-align: center; padding: 3rem; color: #6c757d; }
 </style>
 {% endblock %}
 
 {% block content %}
 <section class="hero-section">
     <div class="container">
-        <h1 class="hero-title"><i class="fas fa-hand-holding-heart"></i> Ajude quem precisa</h1>
-        <p class="hero-subtitle">Escolha uma solicitação de recebimento abaixo e faça sua doação de forma direta e segura.</p>
+        <h1 class="hero-title"><i class="fas fa-hand-holding-heart"></i> Ajude Quem Precisa</h1>
+        <p class="hero-subtitle">Escolha uma solicitação de ajuda abaixo e faça sua doação de forma direta e segura.</p>
     </div>
 </section>
 
-<div class="container form-section">
+<div class="container py-5">
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="mt-3">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
         {% endif %}
     {% endwith %}
 
@@ -157,24 +141,43 @@
                 <div class="solicitacao-card">
                     <div class="card-header">
                         <h3 class="card-title">{{ solicitacao.nome }}</h3>
-                        <p class="card-subtitle">Solicitação de recebimento para {{ solicitacao.qtd_pessoas }} pessoa(s)</p>
+                        <p class="card-subtitle">Família com {{ solicitacao.qtd_pessoas }} pessoa(s) em {{ solicitacao.endereco }}</p>
                     </div>
                     <div class="card-body">
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">Necessidades Principais</span>
-                                <span class="info-value">{{ solicitacao.necessidades }}</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Endereço</span>
-                                <span class="info-value">{{ solicitacao.endereco }}</span>
-                            </div>
+                        <div class="info-item">
+                            <span class="info-label">Situação</span>
+                            <span class="info-value">{{ solicitacao.necessidades }}</span>
                         </div>
+                        
+                        <div class="itens-solicitados">
+                            <h4><i class="fas fa-box-open"></i> Itens Necessários</h4>
+                            <ul class="itens-list">
+                                {% if solicitacao.qtd_cestas > 0 %}
+                                    <li><span><i class="fas fa-shopping-basket text-success"></i> Cestas Básicas:</span> <strong>{{ solicitacao.qtd_cestas }}</strong></li>
+                                {% endif %}
+                                {% if solicitacao.qtd_higiene > 0 %}
+                                    <li><span><i class="fas fa-pump-soap text-success"></i> Kits de Higiene:</span> <strong>{{ solicitacao.qtd_higiene }}</strong></li>
+                                {% endif %}
+                                {% if solicitacao.qtd_absorventes > 0 %}
+                                    <li><span><i class="fas fa-female text-success"></i> Absorventes:</span> <strong>{{ solicitacao.qtd_absorventes }}</strong></li>
+                                {% endif %}
+                                {% if solicitacao.qtd_fraldas_infantis > 0 %}
+                                    <li><span><i class="fas fa-baby text-success"></i> Fraldas Infantis:</span> <strong>{{ solicitacao.qtd_fraldas_infantis }}</strong></li>
+                                {% endif %}
+                                {% if solicitacao.qtd_fraldas_geriatricas > 0 %}
+                                    <li><span><i class="fas fa-user-friends text-success"></i> Fraldas Geriátricas:</span> <strong>{{ solicitacao.qtd_fraldas_geriatricas }}</strong></li>
+                                {% endif %}
+                            </ul>
+                        </div>
+
                         <div class="acoes-doacao">
-                            <button type="button" class="btn btn-entregar" data-bs-toggle="modal" data-bs-target="#entregaModal" onclick="setRecebimentoId('{{ solicitacao.id }}', '{{ solicitacao.nome }}')">
+                            <button type="button" class="btn btn-success btn-entregar" data-bs-toggle="modal" data-bs-target="#entregaModal" 
+                                onclick="setRecebimentoId('{{ solicitacao.id }}', '{{ solicitacao.nome }}', null, null)">
                                 <i class="fas fa-box-open"></i> Quero Entregar
                             </button>
-                            <button type="button" class="btn btn-doar" data-bs-toggle="modal" data-bs-target="#pixModal" onclick="setRecebimentoId('{{ solicitacao.id }}', '{{ solicitacao.nome }}')">
+                            
+                            <button type="button" class="btn btn-primary btn-doar" data-bs-toggle="modal" data-bs-target="#pixModal" 
+                                onclick="setRecebimentoId('{{ solicitacao.id }}', '{{ solicitacao.nome }}', '{{ solicitacao.chave_pix }}', '{{ solicitacao.tipo_pix|title }}')">
                                 <i class="fas fa-dollar-sign"></i> Doar (Pix)
                             </button>
                         </div>
@@ -200,16 +203,19 @@
             </div>
             <form method="POST" id="formPix">
                 <div class="modal-body">
-                    <input type="hidden" name="recebimento_id" id="pixRecebimentoId">
                     <p>Sua doação irá para a solicitação de <strong id="pixSolicitacaoNome"></strong>.</p>
-                    <div class="form-group mb-3">
+                    <div class="mb-3">
                         <label for="valor_pix" class="form-label">Valor (R$)</label>
-                        <input type="number" step="0.01" class="form-control" id="valor_pix" name="valor_pix" required>
+                        <input type="number" step="0.01" class="form-control" name="valor_pix" required>
                     </div>
-                    <div class="text-center mt-4">
-                        <p>Aponte a câmera do seu celular para o QR Code abaixo:</p>
-                        <img src="{{ url_for('static', filename='qrcode_exemplo.png') }}" alt="QR Code PIX" class="img-fluid" style="max-width: 200px;">
-                        <p class="mt-2">Chave PIX: **11.111.111/0001-11** (ONG SOS Comida)</p>
+                    
+                    <div id="pixInfoContainer" class="text-center mt-4 p-3 rounded" style="background-color: #e7f3ff;">
+                        <p id="pixInstructions">Aponte a câmera para o QR Code abaixo ou use a chave:</p>
+                        <div id="pixQrCodeContainer">
+                           <img src="{{ url_for('static', filename='img/qrcode_exemplo.png') }}" alt="QR Code PIX" class="img-fluid" style="max-width: 180px;">
+                        </div>
+                        <p class="mt-2 mb-0"><strong>Tipo:</strong> <span id="pixTipoChave">CNPJ</span></p>
+                        <p><strong>Chave:</strong> <span id="pixChaveValor" class="fw-bold">11.111.111/0001-11 (ONG SOS Comida)</span></p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -230,15 +236,14 @@
             </div>
             <form method="POST" id="formEntrega">
                 <div class="modal-body">
-                    <input type="hidden" name="recebimento_id" id="entregaRecebimentoId">
-                    <p>Você irá agendar a entrega de itens para a solicitação de <strong id="entregaSolicitacaoNome"></strong>.</p>
-                    <div class="form-group mb-3">
-                        <label for="local_entrega" class="form-label">Local da Entrega (Seu Endereço)</label>
-                        <input type="text" class="form-control" id="local_entrega" name="local_entrega" value="{{ usuario.endereco }}" required>
+                    <p>Você agendará a entrega para a solicitação de <strong id="entregaSolicitacaoNome"></strong>.</p>
+                    <div class="mb-3">
+                        <label for="local_entrega" class="form-label">Seu Endereço para Coleta</label>
+                        <input type="text" class="form-control" name="local_entrega" value="{{ usuario.endereco }}" required>
                     </div>
-                    <div class="form-group mb-3">
-                        <label for="data_entrega" class="form-label">Data de Entrega</label>
-                        <input type="date" class="form-control" id="data_entrega" name="data_entrega" required>
+                    <div class="mb-3">
+                        <label for="data_entrega" class="form-label">Melhor Data para Coleta</label>
+                        <input type="date" class="form-control" name="data_entrega" required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -249,22 +254,35 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
 {% block extra_js %}
 <script>
-    function setRecebimentoId(id, nome) {
-        // Configura o modal de PIX
-        const formPix = document.getElementById('formPix');
-        formPix.action = `/doar_monetario/${id}`;
-        document.getElementById('pixSolicitacaoNome').textContent = nome;
-        document.getElementById('pixRecebimentoId').value = id;
-
-        // Configura o modal de Entrega
+    function setRecebimentoId(id, nome, chavePix, tipoPix) {
         const formEntrega = document.getElementById('formEntrega');
         formEntrega.action = `/doar_item/${id}`;
         document.getElementById('entregaSolicitacaoNome').textContent = nome;
-        document.getElementById('entregaRecebimentoId').value = id;
+
+        const formPix = document.getElementById('formPix');
+        formPix.action = `/doar_monetario/${id}`;
+        document.getElementById('pixSolicitacaoNome').textContent = nome;
+
+        const pixInstructions = document.getElementById('pixInstructions');
+        const pixQrCodeContainer = document.getElementById('pixQrCodeContainer');
+        const pixTipoChave = document.getElementById('pixTipoChave');
+        const pixChaveValor = document.getElementById('pixChaveValor');
+
+        if (chavePix && chavePix !== 'None' && chavePix.trim() !== '') {
+            pixInstructions.textContent = 'Use a chave PIX abaixo para doar diretamente:';
+            pixQrCodeContainer.style.display = 'none'; 
+            pixTipoChave.textContent = tipoPix;
+            pixChaveValor.textContent = chavePix;
+        } else {
+            pixInstructions.textContent = 'Aponte a câmera para o QR Code abaixo ou use a chave da ONG:';
+            pixQrCodeContainer.style.display = 'block'; 
+            pixTipoChave.textContent = 'CNPJ';
+            pixChaveValor.textContent = '11.111.111/0001-11 (ONG SOS Comida)';
+        }
     }
 </script>
-{% endblock %}
 {% endblock %}
