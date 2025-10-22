@@ -1,0 +1,783 @@
+{% extends "base.html" %}
+
+{% block title %}Moderação - SOS Comida{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        background: linear-gradient(135deg, rgba(0, 86, 179, 0.9), rgba(0, 123, 255, 0.8));
+        color: white;
+        padding: 5rem 0;
+        margin-top: -80px;
+        padding-top: 120px;
+        text-align: center;
+    }
+    .hero h1 { font-weight: 700; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+    .hero p { max-width: 600px; margin: 1rem auto 0; }
+
+    .nav-tabs-custom {
+        border-bottom: 3px solid #0056b3;
+        margin-bottom: 2rem;
+        background: white;
+        border-radius: 10px 10px 0 0;
+        padding: 0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-tabs-custom .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 600;
+        padding: 1rem 1.5rem;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    .nav-tabs-custom .nav-link:hover {
+        color: #0056b3;
+        background: #f8f9fa;
+    }
+    .nav-tabs-custom .nav-link.active {
+        color: #0056b3;
+        background: white;
+        border-bottom: 3px solid #0056b3;
+    }
+    .nav-tabs-custom .nav-link .badge {
+        margin-left: 0.5rem;
+        font-size: 0.7rem;
+    }
+
+    .category-header {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 5px solid #0056b3;
+    }
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #0056b3;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .category-subtitle {
+        color: #6c757d;
+        margin: 0.5rem 0 0 0;
+        font-size: 0.95rem;
+    }
+    .category-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1rem;
+    }
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #0056b3;
+    }
+    .stat-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+
+    .solicitacoes-grid {
+        display: grid;
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    .solicitacao-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    .solicitacao-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .priority-high { border-left: 5px solid #dc3545; }
+    .priority-medium { border-left: 5px solid #ffc107; }
+    .priority-low { border-left: 5px solid #28a745; }
+
+    .card-header {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e9ecef;
+        position: relative;
+    }
+    .card-title { 
+        font-size: 1.3rem; 
+        font-weight: 600; 
+        color: #343a40; 
+        margin-bottom: 0.25rem; 
+    }
+    .card-subtitle { 
+        font-size: 0.85rem; 
+        color: #6c757d; 
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    .card-status {
+        position: absolute; 
+        top: 1.5rem; 
+        right: 1.5rem; 
+        font-size: 0.75rem; 
+        font-weight: 600;
+        padding: 0.4rem 0.8rem; 
+        border-radius: 20px; 
+        color: #fff;
+    }
+    .status-pendente { background: #ffc107; color: #343a40 !important; }
+    .status-urgente { background: #dc3545; }
+
+    .card-body { padding: 1.5rem; }
+    .info-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+        gap: 1.5rem; 
+        margin-bottom: 1.5rem; 
+    }
+    .info-item { display: flex; flex-direction: column; }
+    .info-label { 
+        font-size: 0.75rem; 
+        color: #6c757d; 
+        font-weight: 600; 
+        text-transform: uppercase; 
+        margin-bottom: 0.3rem; 
+    }
+    .info-value { 
+        font-size: 0.95rem; 
+        font-weight: 500; 
+        word-break: break-word;
+    }
+
+    .itens-solicitados { 
+        background-color: #f0faff; 
+        border-radius: 10px; 
+        padding: 1rem; 
+        margin-top: 1.5rem; 
+    }
+    .itens-solicitados h4 { 
+        font-size: 1rem; 
+        font-weight: 600; 
+        color: #0056b3; 
+        margin-bottom: 1rem; 
+    }
+    .itens-list { 
+        list-style: none; 
+        padding: 0; 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+        gap: 0.5rem; 
+    }
+    .itens-list li { 
+        display: flex; 
+        justify-content: space-between; 
+        padding: 0.3rem 0;
+        border-bottom: 1px solid rgba(0,86,179,0.1);
+    }
+    .itens-list li:last-child {
+        border-bottom: none;
+    }
+
+    .acoes-moderacao { 
+        display: flex; 
+        gap: 0.75rem; 
+        margin-top: 1.5rem; 
+        padding-top: 1.5rem; 
+        border-top: 1px solid #e9ecef; 
+        flex-wrap: wrap;
+    }
+    .btn-aprovar, .btn-rejeitar, .btn-delegar { 
+        color: white !important; 
+        font-weight: 600; 
+        border: none; 
+        text-align: center; 
+        text-decoration: none; 
+        display: inline-flex; 
+        justify-content: center; 
+        align-items: center; 
+        padding: 0.6rem 1.2rem; 
+        border-radius: 8px; 
+        font-size: 0.85rem;
+        transition: all 0.2s ease;
+        gap: 0.5rem;
+    }
+    .btn-aprovar { 
+        background-color: #198754; 
+        flex: 1;
+    }
+    .btn-aprovar:hover { background-color: #157347; }
+    .btn-rejeitar { 
+        background-color: #dc3545; 
+        flex: 1;
+    }
+    .btn-rejeitar:hover { background-color: #bb2d3b; }
+    .btn-delegar { 
+        background-color: #0d6efd; 
+        flex: 2;
+    }
+    .btn-delegar:hover { background-color: #0b5ed7; }
+
+    .empty-state { 
+        text-align: center; 
+        padding: 4rem 2rem; 
+        color: #6c757d; 
+        background: #f8f9fa;
+        border-radius: 15px;
+        border: 2px dashed #dee2e6;
+    }
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .filters-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .filters-row {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    .filter-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+        .acoes-moderacao {
+            flex-direction: column;
+        }
+        .btn-aprovar, .btn-rejeitar, .btn-delegar {
+            flex: none;
+        }
+        .category-stats {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .filters-row {
+            flex-direction: column;
+            align-items: stretch;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1><i class="fas fa-gavel"></i> Painel de Moderação</h1>
+        <p class="lead">Gerencie solicitações, campanhas e instituições de forma organizada e eficiente.</p>
+    </div>
+</section>
+
+<div class="container">
+    <ul class="nav nav-tabs nav-tabs-custom" id="moderacaoTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="ajuda-tab" data-bs-toggle="tab" data-bs-target="#ajuda" type="button" role="tab">
+                <i class="fas fa-hands-helping"></i> Pedidos de Ajuda
+                <span class="badge bg-warning">{{ recebimentos_pendentes|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="campanhas-tab" data-bs-toggle="tab" data-bs-target="#campanhas" type="button" role="tab">
+                <i class="fas fa-bullhorn"></i> Campanhas
+                <span class="badge bg-info">{{ campanhas_pendentes|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="instituicoes-tab" data-bs-toggle="tab" data-bs-target="#instituicoes" type="button" role="tab">
+                <i class="fas fa-university"></i> Instituições
+                <span class="badge bg-secondary">{{ instituicoes_pendentes|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
+                <i class="fas fa-chart-bar"></i> Dashboard
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="moderacaoTabsContent">
+
+        <div class="tab-pane fade show active" id="ajuda" role="tabpanel">
+            <div class="category-header">
+                <h2 class="category-title">
+                    <i class="fas fa-hands-helping"></i>
+                    Pedidos de Ajuda Pendentes
+                </h2>
+                <p class="category-subtitle">
+                    Analise e aprove solicitações de famílias que precisam de ajuda alimentar e produtos básicos.
+                </p>
+                <div class="category-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ recebimentos_pendentes|length }}</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ (recebimentos_pendentes|selectattr('qtd_pessoas', '>', 5)|list)|length }}</div>
+                        <div class="stat-label">Famílias Grandes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ (recebimentos_pendentes|selectattr('qtd_fraldas_infantis', '>', 0)|list)|length }}</div>
+                        <div class="stat-label">Com Bebês</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <label class="filter-label">Buscar por nome</label>
+                        <input type="text" class="form-control" id="searchAjuda" placeholder="Digite o nome da família...">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Filtrar por cidade</label>
+                        <select class="form-select" id="filterCidade">
+                            <option value="">Todas as cidades</option>
+                            <option value="São Paulo">São Paulo</option>
+                            <option value="Rio de Janeiro">Rio de Janeiro</option>
+                            <option value="Belo Horizonte">Belo Horizonte</option>
+                            <option value="Fortaleza">Fortaleza</option>
+                            <option value="Curitiba">Curitiba</option>
+                            <option value="Recife">Recife</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Prioridade</label>
+                        <select class="form-select" id="filterPrioridade">
+                            <option value="">Todas</option>
+                            <option value="alta">Alta (5+ pessoas)</option>
+                            <option value="media">Média (3-4 pessoas)</option>
+                            <option value="baixa">Baixa (1-2 pessoas)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solicitacoes-grid" id="ajudaGrid">
+                {% if recebimentos_pendentes %}
+                    {% for recebimento in recebimentos_pendentes %}
+                    <div class="solicitacao-card {% if recebimento.qtd_pessoas >= 5 %}priority-high{% elif recebimento.qtd_pessoas >= 3 %}priority-medium{% else %}priority-low{% endif %}" 
+                         data-nome="{{ recebimento.nome|lower }}" 
+                         data-cidade="{{ recebimento.endereco|lower }}" 
+                         data-pessoas="{{ recebimento.qtd_pessoas }}">
+                        <div class="card-header">
+                            <div class="card-status {% if recebimento.qtd_pessoas >= 5 %}status-urgente{% else %}status-pendente{% endif %}">
+                                {% if recebimento.qtd_pessoas >= 5 %}Urgente{% else %}Pendente{% endif %}
+                            </div>
+                            <h3 class="card-title">{{ recebimento.nome }}</h3>
+                            <p class="card-subtitle">
+                                <span><i class="fas fa-id-card"></i> ID: {{ recebimento.id }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ recebimento.data_criacao.strftime('%d/%m/%Y') }}</span>
+                                <span><i class="fas fa-users"></i> {{ recebimento.qtd_pessoas }} pessoas</span>
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Telefone</span>
+                                    <span class="info-value">{{ recebimento.telefone }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Chave PIX</span>
+                                    <span class="info-value">{{ recebimento.chave_pix or 'Não informado' }}</span>
+                                </div>
+                                <div class="info-item" style="grid-column: 1 / -1;">
+                                    <span class="info-label">Endereço</span>
+                                    <span class="info-value">{{ recebimento.endereco }}</span>
+                                </div>
+                                <div class="info-item" style="grid-column: 1 / -1;">
+                                    <span class="info-label">Situação Descrita</span>
+                                    <span class="info-value">{{ recebimento.necessidades }}</span>
+                                </div>
+                            </div>
+                            
+                            {% if recebimento.qtd_cestas > 0 or recebimento.qtd_higiene > 0 or recebimento.qtd_absorventes > 0 or recebimento.qtd_fraldas_infantis > 0 or recebimento.qtd_fraldas_geriatricas > 0 %}
+                            <div class="itens-solicitados">
+                                <h4><i class="fas fa-box-open"></i> Itens Solicitados</h4>
+                                <ul class="itens-list">
+                                    {% if recebimento.qtd_cestas > 0 %}
+                                    <li><span>Cestas Básicas:</span> <strong>{{ recebimento.qtd_cestas }}</strong></li>
+                                    {% endif %}
+                                    {% if recebimento.qtd_higiene > 0 %}
+                                    <li><span>Kits de Higiene:</span> <strong>{{ recebimento.qtd_higiene }}</strong></li>
+                                    {% endif %}
+                                    {% if recebimento.qtd_absorventes > 0 %}
+                                    <li><span>Absorventes:</span> <strong>{{ recebimento.qtd_absorventes }}</strong></li>
+                                    {% endif %}
+                                    {% if recebimento.qtd_fraldas_infantis > 0 %}
+                                    <li><span>Fraldas Infantis:</span> <strong>{{ recebimento.qtd_fraldas_infantis }}</strong></li>
+                                    {% endif %}
+                                    {% if recebimento.qtd_fraldas_geriatricas > 0 %}
+                                    <li><span>Fraldas Geriátricas:</span> <strong>{{ recebimento.qtd_fraldas_geriatricas }}</strong></li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            {% endif %}
+
+                            <div class="acoes-moderacao">
+                                <a href="{{ url_for('aprovar_recebimento', id=recebimento.id) }}" class="btn-aprovar">
+                                    <i class="fas fa-check"></i> Aprovar
+                                </a>
+                                <a href="{{ url_for('rejeitar_solicitacao', tipo='recebimento', id=recebimento.id) }}" class="btn-rejeitar">
+                                    <i class="fas fa-times"></i> Rejeitar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Nenhum pedido de ajuda pendente</h3>
+                        <p>Todas as solicitações foram processadas!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="campanhas" role="tabpanel">
+            <div class="category-header">
+                <h2 class="category-title">
+                    <i class="fas fa-bullhorn"></i>
+                    Campanhas Pendentes
+                </h2>
+                <p class="category-subtitle">
+                    Analise e aprove campanhas criadas por usuários, delegando-as para instituições parceiras.
+                </p>
+                <div class="category-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ campanhas_pendentes|length }}</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ (campanhas_pendentes|sum(attribute='meta_doacoes'))|round|int }}</div>
+                        <div class="stat-label">Meta Total (R$)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ (campanhas_pendentes|sum(attribute='meta_voluntarios'))|int }}</div>
+                        <div class="stat-label">Voluntários Esperados</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solicitacoes-grid">
+                {% if campanhas_pendentes %}
+                    {% for campanha in campanhas_pendentes %}
+                    <div class="solicitacao-card">
+                        <div class="card-header">
+                            <div class="card-status status-pendente">Pendente</div>
+                            <h3 class="card-title">{{ campanha.titulo }}</h3>
+                            <p class="card-subtitle">
+                                <span><i class="fas fa-id-card"></i> ID: {{ campanha.id }}</span>
+                                <span><i class="fas fa-calendar"></i> {{ campanha.data_criacao.strftime('%d/%m/%Y') }}</span>
+                                <span><i class="fas fa-user"></i> {{ campanha.solicitante.nome if campanha.solicitante else 'N/A' }}</span>
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Localização</span>
+                                    <span class="info-value">{{ campanha.localizacao }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Meta Financeira</span>
+                                    <span class="info-value">R$ {{ "%.2f"|format(campanha.meta_doacoes) }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Meta Voluntários</span>
+                                    <span class="info-value">{{ campanha.meta_voluntarios }} pessoas</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Solicitante</span>
+                                    <span class="info-value">{{ campanha.solicitante.nome if campanha.solicitante else 'N/A' }}</span>
+                                </div>
+                                <div class="info-item" style="grid-column: 1 / -1;">
+                                    <span class="info-label">Descrição</span>
+                                    <span class="info-value">{{ campanha.descricao }}</span>
+                                </div>
+                            </div>
+                            <div class="acoes-moderacao">
+                                <form action="{{ url_for('aprovar_campanha', campanha_id=campanha.id) }}" method="POST" class="d-flex w-100 gap-2">
+                                    <select name="instituicao_id" class="form-select" required>
+                                        <option value="">Delegar para...</option>
+                                        {% for instituicao in instituicoes %}
+                                            <option value="{{ instituicao.id }}">{{ instituicao.nome }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn-aprovar">
+                                        <i class="fas fa-check"></i> Aprovar e Delegar
+                                    </button>
+                                </form>
+                                <a href="{{ url_for('rejeitar_solicitacao', tipo='campanha', id=campanha.id) }}" class="btn-rejeitar">
+                                    <i class="fas fa-times"></i> Rejeitar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-bullhorn"></i>
+                        <h3>Nenhuma campanha pendente</h3>
+                        <p>Todas as campanhas foram processadas!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="instituicoes" role="tabpanel">
+            <div class="category-header">
+                <h2 class="category-title">
+                    <i class="fas fa-university"></i>
+                    Instituições Pendentes
+                </h2>
+                <p class="category-subtitle">
+                    Analise e aprove o cadastro de novas instituições parceiras para o programa.
+                </p>
+                <div class="category-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">{{ instituicoes_pendentes|length }}</div>
+                        <div class="stat-label">Pendentes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">{{ instituicoes|length }}</div>
+                        <div class="stat-label">Aprovadas</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solicitacoes-grid">
+                {% if instituicoes_pendentes %}
+                    {% for instituicao in instituicoes_pendentes %}
+                    <div class="solicitacao-card">
+                        <div class="card-header">
+                            <div class="card-status status-pendente">Pendente</div>
+                            <h3 class="card-title">{{ instituicao.instituicao_nome or instituicao.nome }}</h3>
+                            <p class="card-subtitle">
+                                <span><i class="fas fa-calendar"></i> Cadastro em: {{ instituicao.data_criacao.strftime('%d/%m/%Y') }}</span>
+                                <span><i class="fas fa-building"></i> {{ instituicao.instituicao_tipo|title if instituicao.instituicao_tipo else 'N/A' }}</span>
+                            </p>
+                        </div>
+                        <div class="card-body">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">E-mail</span>
+                                    <span class="info-value">{{ instituicao.email }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Telefone</span>
+                                    <span class="info-value">{{ instituicao.telefone or 'N/A' }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">CEP</span>
+                                    <span class="info-value">{{ instituicao.instituicao_cep or 'N/A' }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Tipo</span>
+                                    <span class="info-value">{{ instituicao.instituicao_tipo|title if instituicao.instituicao_tipo else 'N/A' }}</span>
+                                </div>
+                                <div class="info-item" style="grid-column: 1 / -1;">
+                                    <span class="info-label">Endereço</span>
+                                    <span class="info-value">{{ instituicao.instituicao_endereco or instituicao.endereco }}</span>
+                                </div>
+                            </div>
+                            <div class="acoes-moderacao">
+                                <a href="{{ url_for('aprovar_instituicao', instituicao_id=instituicao.id) }}" class="btn-aprovar">
+                                    <i class="fas fa-check"></i> Aprovar
+                                </a>
+                                <a href="{{ url_for('rejeitar_instituicao', instituicao_id=instituicao.id) }}" class="btn-rejeitar">
+                                    <i class="fas fa-times"></i> Rejeitar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-university"></i>
+                        <h3>Nenhuma instituição pendente</h3>
+                        <p>Todas as instituições foram processadas!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="dashboard" role="tabpanel">
+            <div class="category-header">
+                <h2 class="category-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Dashboard de Moderação
+                </h2>
+                <p class="category-subtitle">
+                    Visão geral das atividades de moderação e estatísticas do sistema.
+                </p>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">
+                                <i class="fas fa-hands-helping fa-2x"></i>
+                            </h5>
+                            <h3 class="text-warning">{{ recebimentos_pendentes|length }}</h3>
+                            <p class="card-text">Pedidos de Ajuda Pendentes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-info">
+                                <i class="fas fa-bullhorn fa-2x"></i>
+                            </h5>
+                            <h3 class="text-info">{{ campanhas_pendentes|length }}</h3>
+                            <p class="card-text">Campanhas Pendentes</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title text-secondary">
+                                <i class="fas fa-university fa-2x"></i>
+                            </h5>
+                            <h3 class="text-secondary">{{ instituicoes_pendentes|length }}</h3>
+                            <p class="card-text">Instituições Pendentes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-users"></i> Moderadores Ativos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="moderadores-grid">
+                                <div class="moderador-card">
+                                    <img src="{{ url_for('static', filename='img/perfil_default.png') }}" alt="Moderador" class="moderador-foto">
+                                    <div class="moderador-info">
+                                        <h4 class="moderador-nome">{{ usuario.nome }}</h4>
+                                        <p class="moderador-email">{{ usuario.email }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-clock"></i> Atividade Recente</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted">Sistema de moderação ativo e funcionando.</p>
+                            <p class="text-muted">Última atualização: {{ moment().format('DD/MM/YYYY HH:mm') if moment else 'Agora' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    const searchInput = document.getElementById('searchAjuda');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const cards = document.querySelectorAll('#ajudaGrid .solicitacao-card');
+            
+            cards.forEach(card => {
+                const nome = card.getAttribute('data-nome');
+                if (nome.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    const cityFilter = document.getElementById('filterCidade');
+    if (cityFilter) {
+        cityFilter.addEventListener('change', function() {
+            const selectedCity = this.value.toLowerCase();
+            const cards = document.querySelectorAll('#ajudaGrid .solicitacao-card');
+            
+            cards.forEach(card => {
+                const cidade = card.getAttribute('data-cidade');
+                if (selectedCity === '' || cidade.includes(selectedCity)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    const priorityFilter = document.getElementById('filterPrioridade');
+    if (priorityFilter) {
+        priorityFilter.addEventListener('change', function() {
+            const selectedPriority = this.value;
+            const cards = document.querySelectorAll('#ajudaGrid .solicitacao-card');
+            
+            cards.forEach(card => {
+                const pessoas = parseInt(card.getAttribute('data-pessoas'));
+                let showCard = false;
+                
+                switch(selectedPriority) {
+                    case 'alta':
+                        showCard = pessoas >= 5;
+                        break;
+                    case 'media':
+                        showCard = pessoas >= 3 && pessoas < 5;
+                        break;
+                    case 'baixa':
+                        showCard = pessoas < 3;
+                        break;
+                    default:
+                        showCard = true;
+                }
+                
+                card.style.display = showCard ? 'block' : 'none';
+            });
+        });
+    }
+});
+</script>
+{% endblock %}

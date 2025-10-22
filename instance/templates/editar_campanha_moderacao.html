@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Campanha - SOS Comida{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.9), rgba(255, 107, 107, 0.8));
+        color: white;
+        padding: 4rem 0;
+        margin-top: -80px;
+        padding-top: 120px;
+        text-align: center;
+    }
+    
+    .form-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        margin: 2rem auto;
+        max-width: 900px;
+    }
+    
+    .form-section {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 2px solid #e9ecef;
+    }
+    
+    .form-section:last-child {
+        border-bottom: none;
+    }
+    
+    .form-section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #0056b3;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #343a40;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+    }
+    
+    .btn-salvar {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        padding: 1rem 3rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-salvar:hover {
+        background: linear-gradient(135deg, #218838, #1a9d7f);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        color: white;
+    }
+    
+    .btn-cancelar {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-cancelar:hover {
+        background: #5a6268;
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .preview-image {
+        max-width: 300px;
+        border-radius: 10px;
+        margin-top: 1rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .status-info {
+        background: linear-gradient(135deg, #e7f3ff, #f0f8ff);
+        border-left: 4px solid #0d6efd;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .status-badge.ativa { background: #d4edda; color: #155724; }
+    .status-badge.pendente { background: #fff3cd; color: #856404; }
+    .status-badge.suspensa { background: #f8d7da; color: #721c24; }
+    .status-badge.rejeitada { background: #d6d8db; color: #383d41; }
+    
+    .info-row {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+    
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .info-item strong {
+        color: #0056b3;
+    }
+    
+    .char-counter {
+        font-size: 0.85rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    
+    .char-counter.warning {
+        color: #ffc107;
+    }
+    
+    .char-counter.danger {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1><i class="fas fa-edit"></i> Editar Campanha</h1>
+        <p>Modifique as informações da campanha "{{ campanha.titulo }}"</p>
+    </div>
+</section>
+
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <div class="form-container">
+        <div class="status-info">
+            <div class="info-row">
+                <div class="info-item">
+                    <strong><i class="fas fa-info-circle"></i> Status Atual:</strong>
+                    {% if campanha.status == 'ativa' %}
+                        <span class="status-badge ativa">✅ Ativa</span>
+                    {% elif campanha.status == 'pendente' %}
+                        <span class="status-badge pendente">⏳ Pendente</span>
+                    {% elif campanha.status == 'suspensa' %}
+                        <span class="status-badge suspensa">⏸️ Suspensa</span>
+                    {% elif campanha.status == 'rejeitada' %}
+                        <span class="status-badge rejeitada">❌ Rejeitada</span>
+                    {% endif %}
+                </div>
+                
+                <div class="info-item">
+                    <strong><i class="fas fa-hashtag"></i> ID:</strong>
+                    <span>#{{ campanha.id }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <strong><i class="fas fa-users"></i> Voluntários:</strong>
+                    <span>{{ campanha.voluntarios|length }}</span>
+                </div>
+                
+                <div class="info-item">
+                    <strong><i class="fas fa-dollar-sign"></i> Arrecadado:</strong>
+                    <span>R$ {{ "%.2f"|format(campanha.arrecadado) }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" id="formEditarCampanha">
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-info-circle"></i> Informações Básicas
+                </h3>
+                
+                <div class="mb-3">
+                    <label class="form-label" for="titulo">
+                        Título da Campanha *
+                    </label>
+                    <input type="text" 
+                           id="titulo" 
+                           name="titulo" 
+                           class="form-control" 
+                           value="{{ campanha.titulo }}" 
+                           required 
+                           minlength="5"
+                           maxlength="100"
+                           oninput="updateCharCount('titulo', 100)">
+                    <div class="char-counter" id="titulo-counter">0/100 caracteres</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label" for="descricao">
+                        Descrição *
+                    </label>
+                    <textarea id="descricao" 
+                              name="descricao" 
+                              class="form-control" 
+                              rows="5" 
+                              required 
+                              minlength="20"
+                              maxlength="500"
+                              oninput="updateCharCount('descricao', 500)">{{ campanha.descricao }}</textarea>
+                    <div class="char-counter" id="descricao-counter">0/500 caracteres</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label" for="localizacao">
+                        Localização *
+                    </label>
+                    <input type="text" 
+                           id="localizacao" 
+                           name="localizacao" 
+                           class="form-control" 
+                           value="{{ campanha.localizacao }}" 
+                           required
+                           placeholder="Ex: São Paulo, SP">
+                    <small class="text-muted">Cidade e estado onde a campanha acontece</small>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-bullseye"></i> Metas da Campanha
+                </h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="meta_voluntarios">
+                            Meta de Voluntários *
+                        </label>
+                        <input type="number" 
+                               id="meta_voluntarios" 
+                               name="meta_voluntarios" 
+                               class="form-control" 
+                               value="{{ campanha.meta_voluntarios }}" 
+                               min="1" 
+                               required>
+                        <small class="text-muted">Quantidade de voluntários necessários</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label" for="meta_doacoes">
+                            Meta Financeira (R$) *
+                        </label>
+                        <input type="number" 
+                               step="0.01" 
+                               id="meta_doacoes" 
+                               name="meta_doacoes" 
+                               class="form-control" 
+                               value="{{ "%.2f"|format(campanha.meta_doacoes) }}" 
+                               min="0" 
+                               required>
+                        <small class="text-muted">Valor em reais a ser arrecadado</small>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <strong><i class="fas fa-chart-line"></i> Progresso Atual:</strong><br>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            📊 Voluntários: <strong>{{ campanha.voluntarios|length }}</strong> / {{ campanha.meta_voluntarios }}
+                        </div>
+                        <div class="col-md-6">
+                            💰 Financeiro: <strong>R$ {{ "%.2f"|format(campanha.arrecadado) }}</strong> / R$ {{ "%.2f"|format(campanha.meta_doacoes) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-image"></i> Imagem da Campanha
+                </h3>
+                
+                <div class="mb-3">
+                    <label class="form-label" for="imagem">
+                        Nova Imagem (opcional)
+                    </label>
+                    <input type="file" 
+                           id="imagem" 
+                           name="imagem" 
+                           class="form-control" 
+                           accept="image/jpeg,image/jpg,image/png,image/gif"
+                           onchange="previewImage(this)">
+                    <small class="text-muted">
+                        Deixe em branco para manter a imagem atual. Formatos aceitos: JPG, PNG, GIF
+                    </small>
+                </div>
+                
+                <div>
+                    <p class="text-muted mb-2">Imagem Atual:</p>
+                    <img src="{{ url_for('static', filename='img/' + campanha.imagem) }}" 
+                         alt="{{ campanha.titulo }}" 
+                         class="preview-image" 
+                         id="image-preview">
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-toggle-on"></i> Status da Campanha
+                </h3>
+                
+                <div class="mb-3">
+                    <label class="form-label" for="status">Alterar Status</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="ativa" {% if campanha.status == 'ativa' %}selected{% endif %}>
+                            ✅ Ativa (visível para usuários)
+                        </option>
+                        <option value="suspensa" {% if campanha.status == 'suspensa' %}selected{% endif %}>
+                            ⏸️ Suspensa (não visível para usuários)
+                        </option>
+                        <option value="pendente" {% if campanha.status == 'pendente' %}selected{% endif %}>
+                            ⏳ Pendente (aguardando aprovação)
+                        </option>
+                        <option value="rejeitada" {% if campanha.status == 'rejeitada' %}selected{% endif %}>
+                            ❌ Rejeitada
+                        </option>
+                    </select>
+                    <small class="text-muted">
+                        <i class="fas fa-info-circle"></i> 
+                        Campanhas suspensas não aparecem para os usuários mas podem ser reativadas
+                    </small>
+                </div>
+            </div>
+
+            {% if campanha.solicitante %}
+            <div class="form-section">
+                <h3 class="form-section-title">
+                    <i class="fas fa-user"></i> Informações Adicionais
+                </h3>
+                
+                <div class="alert alert-light">
+                    <strong>Solicitante:</strong> {{ campanha.solicitante.nome }}<br>
+                    <strong>Email:</strong> {{ campanha.solicitante.email }}<br>
+                    <strong>Data de Criação:</strong> {{ campanha.data_criacao.strftime('%d/%m/%Y às %H:%M') }}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="text-center" style="margin-top: 2rem;">
+                <a href="{{ url_for('moderacao') }}" class="btn-cancelar">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+                <button type="submit" class="btn-salvar">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+function previewImage(input) {
+    const preview = document.getElementById('image-preview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function updateCharCount(fieldId, maxLength) {
+    const field = document.getElementById(fieldId);
+    const counter = document.getElementById(fieldId + '-counter');
+    const currentLength = field.value.length;
+    
+    counter.textContent = `${currentLength}/${maxLength} caracteres`;
+
+    counter.classList.remove('warning', 'danger');
+    if (currentLength >= maxLength) {
+        counter.classList.add('danger');
+    } else if (currentLength >= maxLength * 0.8) {
+        counter.classList.add('warning');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    updateCharCount('titulo', 100);
+    updateCharCount('descricao', 500);
+
+    const form = document.getElementById('formEditarCampanha');
+    form.addEventListener('submit', function(e) {
+        const titulo = document.getElementById('titulo').value;
+        const descricao = document.getElementById('descricao').value;
+        
+        if (titulo.length < 5) {
+            e.preventDefault();
+            alert('O título deve ter pelo menos 5 caracteres.');
+            return false;
+        }
+        
+        if (descricao.length < 20) {
+            e.preventDefault();
+            alert('A descrição deve ter pelo menos 20 caracteres.');
+            return false;
+        }
+    });
+});
+</script>
+{% endblock %}

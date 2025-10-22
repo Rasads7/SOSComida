@@ -26,7 +26,6 @@
             min-height: 100vh;
         }
 
-        /* Main Content */
         .main-content {
             margin-top: 100px;
             min-height: calc(100vh - 200px);
@@ -42,7 +41,6 @@
             padding: 2rem;
         }
 
-        /* Card de autenticação */
         .auth-card {
             background: white;
             padding: 3rem;
@@ -98,7 +96,6 @@
             border-radius: 2px;
         }
 
-        /* Seleção de tipo de cadastro */
         .registration-type {
             display: flex;
             justify-content: center;
@@ -143,8 +140,7 @@
         .type-btn.active i {
             color: #0066CC;
         }
-        
-        /* Formulário */
+
         .form-content {
             display: none;
             flex-direction: column;
@@ -191,7 +187,6 @@
             background: white;
         }
 
-        /* Botão de submit */
         .btn-auth-submit {
             width: 100%;
             background: linear-gradient(135deg, #0066CC 0%, #80DDF9 100%);
@@ -213,7 +208,6 @@
             box-shadow: 0 8px 25px rgba(0, 102, 204, 0.3);
         }
 
-        /* Link de login */
         .auth-card p {
             text-align: center;
             color: #666;
@@ -357,7 +351,6 @@
             const formInstituicao = document.getElementById('form-instituicao');
             const tipoCadastroInput = document.getElementById('tipo-cadastro');
 
-            // Função para gerenciar o atributo 'required'
             function toggleRequired(formElement, required) {
                 formElement.querySelectorAll('input, textarea, select').forEach(input => {
                     if (required) {
@@ -378,7 +371,6 @@
                 toggleRequired(formPessoa, true);
                 toggleRequired(formInstituicao, false);
 
-                // Garante que o campo 'nome' compartilhado tenha o ID correto para a pessoa
                 formPessoa.querySelector('input[name="nome"]').id = 'nome_pessoa';
                 formInstituicao.querySelector('input[name="nome"]').id = 'nome_instituicao';
                  formPessoa.querySelector('input[name="endereco"]').id = 'endereco_pessoa';
@@ -394,8 +386,7 @@
                 
                 toggleRequired(formInstituicao, true);
                 toggleRequired(formPessoa, false);
-                
-                 // Garante que o campo 'nome' compartilhado tenha o ID correto para a instituição
+
                 formPessoa.querySelector('input[name="nome"]').id = 'nome_pessoa';
                 formInstituicao.querySelector('input[name="nome"]').id = 'nome_instituicao';
                 formPessoa.querySelector('input[name="endereco"]').id = 'endereco_pessoa';
@@ -405,10 +396,8 @@
             btnPessoa.addEventListener('click', switchToPessoa);
             btnInstituicao.addEventListener('click', switchToInstituicao);
 
-            // Inicializa o formulário corretamente
             switchToPessoa();
 
-            // Validação de senhas
             document.getElementById('registration-form').addEventListener('submit', function(e) {
                 const senha = this.querySelector('input[name="senha"]').value;
                 const confirmarSenha = this.querySelector('input[name="confirmar_senha"]').value;

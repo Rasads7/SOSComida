@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Solicitar Nova Campanha - SOS Comida{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 3rem;
+        max-width: 800px;
+        margin: 3rem auto;
+    }
+    .form-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0056b3;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-container">
+        <h1 class="form-title"><i class="fas fa-bullhorn"></i> Solicitar Nova Campanha</h1>
+        <p class="lead text-center mb-4">Tem uma ideia para uma campanha? Preencha o formulário abaixo e nossa equipe de moderação irá analisá-la.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título da Campanha</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Ex: Campanha do Agasalho do Bairro X" required>
+            </div>
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Descrição</label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="5" placeholder="Explique por que esta campanha é importante, quem ela ajudará e como as pessoas podem contribuir." required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="localizacao" class="form-label">Localização (Cidade/Estado)</label>
+                <input type="text" class="form-control" id="localizacao" name="localizacao" placeholder="Ex: São Paulo, SP" required>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="meta_voluntarios" class="form-label">Meta de Voluntários (Sugestão)</label>
+                    <input type="number" class="form-control" id="meta_voluntarios" name="meta_voluntarios" value="10" min="1">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="meta_doacoes" class="form-label">Meta de Doações (R$ - Sugestão)</label>
+                    <input type="number" step="0.01" class="form-control" id="meta_doacoes" name="meta_doacoes" value="1000.00" min="0.01">
+                </div>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-paper-plane"></i> Enviar Solicitação
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

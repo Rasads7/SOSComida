@@ -1,0 +1,151 @@
+.nav-link {
+    color: #ffffff;
+}
+
+#barranav .nav-link {
+  color: #ffffff !important;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+#barranav .nav-link:hover {
+  color: #FFE07A !important;
+}
+
+#barranav .nav-item.active .nav-link {
+  color: #ffffff !important;
+  background-color: #FFE07A;
+  border-radius: 5px;
+}
+
+
+#barranav.navbar{
+    background-color: #80DDF9 !important;
+    color: #ffffff;
+}
+
+#barranav .navbar-nav .nav-link.btn-auth {
+  background-color: #FFE07A; 
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 6px 14px;
+  margin-left: 10px;
+  line-height: 1.25;
+  transition: background-color 0.3s ease;
+}
+
+#barranav .navbar-nav .nav-link.btn-auth:hover {
+  background-color: #e6ca68;
+}
+
+#logo-navbar {
+  height: 75px; /* altura do logo */
+  width: auto; /* proporção */
+  background: transparent;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: #ffffff; /* Cor do texto branco */
+    font-size: 20px;
+}
+.navbar-brand{
+    font-size: 30px;
+}
+
+body h1{
+    color: #FFE07A;
+    text-align: center;
+    font-size: 70px;
+    font-weight: 700;
+}
+
+body hr {
+    border: 0;
+    height: 3px;
+    background-color: #80DDF9;
+    width: 50%;
+    margin: 20px auto;
+}
+
+body h3{
+    text-align: justify;
+    margin: 0 auto;
+    max-width: 800px;
+    font-size: 30px;
+    font-weight: 350;
+    line-height: 1.5;
+}
+
+.botoes-doacao {
+    text-align: center;
+    margin: 30px 0;    
+}
+
+.btn-doacao {
+    display: inline-block;
+    background-color: #FFE07A;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 12px 25px;
+    margin: 10px;
+    border-radius: 8px;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-doacao:hover {
+    background-color: #e6ca68;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.page-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
+.auth-card {
+  max-width: 400px;
+  width: 100%;
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+}
+
+.auth-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #80DDF9;
+  font-weight: 700;
+}
+
+.btn-auth-submit {
+  background-color: #FFE07A;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-auth-submit:hover {
+  background-color: #e6ca68;
+  color: #fff;
+}
+
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.form-control:focus {
+  border-color: #80DDF9;
+  box-shadow: 0 0 0 0.2rem rgba(128, 221, 249, 0.25);
+}
+
+.trocaloginregistrar{
+  background-color: #e6ca68;
+}

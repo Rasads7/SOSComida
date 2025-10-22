@@ -1,0 +1,829 @@
+{% extends "base.html" %}
+
+{% block title %}Minhas Solicitações - SOS Comida{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero {
+        background: linear-gradient(135deg, rgba(0, 86, 179, 0.9), rgba(0, 123, 255, 0.8));
+        color: white;
+        padding: 4rem 0;
+        margin-top: -80px;
+        padding-top: 120px;
+        text-align: center;
+    }
+    
+    .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .stat-card .icon {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-card .value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #0d6efd;
+    }
+    
+    .stat-card .label {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .tabs {
+        display: flex;
+        gap: 1rem;
+        border-bottom: 2px solid #e9ecef;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .tab-button {
+        padding: 1rem 2rem;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        color: #6c757d;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .tab-button:hover {
+        color: #0d6efd;
+    }
+    
+    .tab-button.active {
+        color: #0d6efd;
+        border-bottom-color: #0d6efd;
+    }
+    
+    .tab-button .badge {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: #dc3545;
+        color: white;
+        border-radius: 10px;
+        padding: 2px 8px;
+        font-size: 0.75rem;
+    }
+    
+    .tab-content {
+        display: none;
+    }
+    
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .solicitacao-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border-left: 5px solid #0d6efd;
+    }
+    
+    .solicitacao-card.pendente {
+        border-left-color: #ffc107;
+    }
+    
+    .solicitacao-card.aceita {
+        border-left-color: #28a745;
+    }
+    
+    .solicitacao-card.concluida {
+        border-left-color: #6c757d;
+    }
+    
+    .solicitacao-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .solicitacao-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #212529;
+    }
+    
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+    
+    .status-badge.pendente {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .status-badge.aceita {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-badge.concluida {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .info-item {
+        padding: 0.75rem;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    
+    .info-item strong {
+        display: block;
+        color: #6c757d;
+        font-size: 0.85rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .info-item span {
+        color: #212529;
+        font-size: 1rem;
+    }
+    
+    .itens-solicitados {
+        background: #e7f3ff;
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .itens-solicitados h6 {
+        color: #0d6efd;
+        margin-bottom: 0.75rem;
+    }
+    
+    .itens-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 0.5rem;
+    }
+    
+    .item-chip {
+        background: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-aceitar {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-aceitar:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        color: white;
+    }
+    
+    .btn-recusar {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-recusar:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        color: white;
+    }
+    
+    .btn-reportar {
+        background: #0d6efd;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-reportar:hover {
+        background: #0b5ed7;
+    }
+    
+    .form-entrega {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        display: none;
+    }
+    
+    .form-entrega.show {
+        display: block;
+        animation: slideDown 0.3s ease;
+    }
+    
+    @keyframes slideDown {
+        from { opacity: 0; max-height: 0; }
+        to { opacity: 1; max-height: 500px; }
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+    
+    @media (max-width: 768px) {
+        .stats-cards {
+            grid-template-columns: 1fr;
+        }
+        
+        .tabs {
+            overflow-x: auto;
+        }
+        
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <h1><i class="fas fa-tasks"></i> Minhas Solicitações</h1>
+        <p>Gerencie todas as solicitações delegadas para sua instituição</p>
+    </div>
+</section>
+
+<div class="container" style="margin-top: 2rem; margin-bottom: 3rem;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="stats-cards">
+        <div class="stat-card">
+            <div class="icon" style="color: #ffc107;">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="value">{{ delegacoes_pendentes|length }}</div>
+            <div class="label">Pendentes</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon" style="color: #28a745;">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="value">{{ delegacoes_aceitas|length }}</div>
+            <div class="label">Aceitas</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon" style="color: #0d6efd;">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <div class="value">{{ delegacoes_concluidas|length }}</div>
+            <div class="label">Concluídas</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon" style="color: #6f42c1;">
+                <i class="fas fa-bullhorn"></i>
+            </div>
+            <div class="value">{{ (campanhas_ativas|length) + (campanhas_suspensas|length) }}</div>
+            <div class="label">Campanhas</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="icon" style="color: #17a2b8;">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="value">{{ projetos_ajudados }}</div>
+            <div class="label">Projetos Ajudados</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-button active" onclick="switchTab('pendentes')">
+            <i class="fas fa-clock"></i> Pendentes
+            {% if delegacoes_pendentes|length > 0 %}
+            <span class="badge">{{ delegacoes_pendentes|length }}</span>
+            {% endif %}
+        </button>
+        <button class="tab-button" onclick="switchTab('aceitas')">
+            <i class="fas fa-check-circle"></i> Aceitas
+            {% if delegacoes_aceitas|length > 0 %}
+            <span class="badge" style="background: #28a745;">{{ delegacoes_aceitas|length }}</span>
+            {% endif %}
+        </button>
+        <button class="tab-button" onclick="switchTab('campanhas')">
+            <i class="fas fa-bullhorn"></i> Minhas Campanhas
+            {% if campanhas_ativas|length > 0 %}
+            <span class="badge" style="background: #0d6efd;">{{ campanhas_ativas|length }}</span>
+            {% endif %}
+        </button>
+        <button class="tab-button" onclick="switchTab('concluidas')">
+            <i class="fas fa-trophy"></i> Concluídas
+        </button>
+        <button class="tab-button" onclick="switchTab('recusadas')">
+            <i class="fas fa-times-circle"></i> Recusadas
+        </button>
+    </div>
+
+    <div id="tab-pendentes" class="tab-content active">
+        {% if delegacoes_pendentes %}
+            {% for delegacao in delegacoes_pendentes %}
+            <div class="solicitacao-card pendente">
+                <div class="solicitacao-header">
+                    <div class="solicitacao-title">
+                        {% if delegacao.doacao %}
+                            <i class="fas fa-gift"></i> Doação #{{ delegacao.id }}
+                        {% elif delegacao.recebimento %}
+                            <i class="fas fa-hand-holding-heart"></i> Recebimento #{{ delegacao.id }}
+                        {% else %}
+                            <i class="fas fa-question-circle"></i> Solicitação #{{ delegacao.id }}
+                        {% endif %}
+                    </div>
+                    <span class="status-badge pendente">
+                        <i class="fas fa-clock"></i> Aguardando Resposta
+                    </span>
+                </div>
+                
+                <p style="color: #6c757d; font-size: 0.9rem;">
+                    <i class="fas fa-user-shield"></i> Delegado por: 
+                    <strong>{{ delegacao.moderador.nome if delegacao.moderador else 'Sistema' }}</strong>
+                    em {{ delegacao.data_delegacao.strftime('%d/%m/%Y às %H:%M') }}
+                </p>
+                
+                {% if delegacao.doacao %}
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Tipo</strong>
+                            <span>{{ delegacao.doacao.tipo|title }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Doador</strong>
+                            <span>{{ delegacao.doacao.nome_doador }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Telefone</strong>
+                            <span>{{ delegacao.doacao.telefone }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Endereço</strong>
+                            <span>{{ delegacao.doacao.endereco }}</span>
+                        </div>
+                    </div>
+                    
+                {% elif delegacao.recebimento %}
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Nome</strong>
+                            <span>{{ delegacao.recebimento.nome }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Telefone</strong>
+                            <span>{{ delegacao.recebimento.telefone }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Nº de Pessoas</strong>
+                            <span>{{ delegacao.recebimento.qtd_pessoas }} pessoas</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Endereço</strong>
+                            <span>{{ delegacao.recebimento.endereco }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if delegacao.recebimento.necessidades %}
+                    <div style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-radius: 8px;">
+                        <strong style="color: #856404;">📋 Situação:</strong>
+                        <p style="margin: 0.5rem 0 0 0; color: #856404;">{{ delegacao.recebimento.necessidades }}</p>
+                    </div>
+                    {% endif %}
+                    
+                    {% if delegacao.recebimento.qtd_cestas > 0 or delegacao.recebimento.qtd_higiene > 0 or delegacao.recebimento.qtd_absorventes > 0 or delegacao.recebimento.qtd_fraldas_infantis > 0 or delegacao.recebimento.qtd_fraldas_geriatricas > 0 %}
+                    <div class="itens-solicitados">
+                        <h6><i class="fas fa-shopping-basket"></i> Itens Solicitados</h6>
+                        <div class="itens-list">
+                            {% if delegacao.recebimento.qtd_cestas > 0 %}
+                            <div class="item-chip">
+                                <i class="fas fa-box"></i>
+                                <span>{{ delegacao.recebimento.qtd_cestas }} Cestas Básicas</span>
+                            </div>
+                            {% endif %}
+                            {% if delegacao.recebimento.qtd_higiene > 0 %}
+                            <div class="item-chip">
+                                <i class="fas fa-soap"></i>
+                                <span>{{ delegacao.recebimento.qtd_higiene }} Kits Higiene</span>
+                            </div>
+                            {% endif %}
+                            {% if delegacao.recebimento.qtd_absorventes > 0 %}
+                            <div class="item-chip">
+                                <i class="fas fa-female"></i>
+                                <span>{{ delegacao.recebimento.qtd_absorventes }} Absorventes</span>
+                            </div>
+                            {% endif %}
+                            {% if delegacao.recebimento.qtd_fraldas_infantis > 0 %}
+                            <div class="item-chip">
+                                <i class="fas fa-baby"></i>
+                                <span>{{ delegacao.recebimento.qtd_fraldas_infantis }} Fraldas Infantis</span>
+                            </div>
+                            {% endif %}
+                            {% if delegacao.recebimento.qtd_fraldas_geriatricas > 0 %}
+                            <div class="item-chip">
+                                <i class="fas fa-user-md"></i>
+                                <span>{{ delegacao.recebimento.qtd_fraldas_geriatricas }} Fraldas Geriátricas</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if delegacao.recebimento.chave_pix %}
+                    <div style="margin-top: 1rem; padding: 1rem; background: #e7f3ff; border-radius: 8px;">
+                        <strong style="color: #0d6efd;"><i class="fas fa-dollar-sign"></i> PIX para doação monetária:</strong>
+                        <p style="margin: 0.5rem 0 0 0; color: #0d6efd;">
+                            Tipo: {{ delegacao.recebimento.tipo_pix|capitalize }}<br>
+                            <code style="background: white; padding: 5px 10px; border-radius: 5px;">{{ delegacao.recebimento.chave_pix }}</code>
+                        </p>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> Dados da solicitação não disponíveis
+                    </div>
+                {% endif %}
+                
+                <div class="actions">
+                    <a href="{{ url_for('aceitar_delegacao', delegacao_id=delegacao.id) }}" class="btn-aceitar">
+                        <i class="fas fa-check"></i> Aceitar Solicitação
+                    </a>
+                    <a href="{{ url_for('recusar_delegacao', delegacao_id=delegacao.id) }}" class="btn-recusar">
+                        <i class="fas fa-times"></i> Recusar
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h4>Nenhuma solicitação pendente</h4>
+                <p>Quando houver novas solicitações delegadas para você, elas aparecerão aqui.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="tab-aceitas" class="tab-content">
+        {% if delegacoes_aceitas %}
+            {% for delegacao in delegacoes_aceitas %}
+            <div class="solicitacao-card aceita">
+                <div class="solicitacao-header">
+                    <div class="solicitacao-title">
+                        {% if delegacao.doacao %}
+                            <i class="fas fa-gift"></i> Doação #{{ delegacao.id }}
+                        {% elif delegacao.recebimento %}
+                            <i class="fas fa-hand-holding-heart"></i> Recebimento #{{ delegacao.id }}
+                        {% endif %}
+                    </div>
+                    <span class="status-badge aceita">
+                        <i class="fas fa-check-circle"></i> Em Andamento
+                    </span>
+                </div>
+                
+                <p style="color: #6c757d; font-size: 0.9rem;">
+                    <i class="fas fa-calendar-check"></i> Aceita em: 
+                    <strong>{{ delegacao.data_delegacao.strftime('%d/%m/%Y') }}</strong>
+                </p>
+                
+                {% if delegacao.recebimento %}
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Nome</strong>
+                            <span>{{ delegacao.recebimento.nome }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Telefone</strong>
+                            <span>{{ delegacao.recebimento.telefone }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Pessoas</strong>
+                            <span>{{ delegacao.recebimento.qtd_pessoas }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Endereço</strong>
+                            <span>{{ delegacao.recebimento.endereco }}</span>
+                        </div>
+                    </div>
+                    
+                    {% if delegacao.recebimento.status != 'entregue' %}
+                    <button class="btn-reportar" onclick="toggleForm('form-{{ delegacao.id }}')">
+                        <i class="fas fa-clipboard-check"></i> Reportar Entrega
+                    </button>
+                    
+                    <div id="form-{{ delegacao.id }}" class="form-entrega">
+                        <h5 style="margin-bottom: 1rem;"><i class="fas fa-check-double"></i> Confirmar Entrega</h5>
+                        <form action="{{ url_for('reportar_entrega', delegacao_id=delegacao.id) }}" method="POST">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Cestas Entregues</label>
+                                    <input type="number" name="cestas_entregues" class="form-control" value="0" min="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Alimentos (kg)</label>
+                                    <input type="number" step="0.01" name="alimento_kg_entregues" class="form-control" value="0" min="0">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label class="form-label">Valor Entregue (R$)</label>
+                                    <input type="number" step="0.01" name="valor_entregue" class="form-control" value="0" min="0">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save"></i> Confirmar Entrega
+                            </button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-double"></i> <strong>Entrega Concluída</strong>
+                        {% if delegacao.recebimento.data_entrega_final %}
+                        <br><small>Data: {{ delegacao.recebimento.data_entrega_final.strftime('%d/%m/%Y') }}</small>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-tasks"></i>
+                <h4>Nenhuma solicitação aceita</h4>
+                <p>As solicitações que você aceitar aparecerão aqui.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="tab-campanhas" class="tab-content">
+        {% if campanhas_ativas or campanhas_suspensas or campanhas_concluidas %}
+            {% for campanha in campanhas_ativas + campanhas_suspensas + campanhas_concluidas %}
+            <div class="solicitacao-card {% if campanha.status == 'ativa' %}aceita{% elif campanha.status == 'suspensa' %}pendente{% else %}concluida{% endif %}">
+                <div class="solicitacao-header">
+                    <div class="solicitacao-title">
+                        <i class="fas fa-bullhorn"></i> {{ campanha.titulo }}
+                    </div>
+                    <span class="status-badge {% if campanha.status == 'ativa' %}aceita{% elif campanha.status == 'suspensa' %}pendente{% else %}concluida{% endif %}">
+                        <i class="fas fa-{% if campanha.status == 'ativa' %}fire{% elif campanha.status == 'suspensa' %}pause{% else %}check-double{% endif %}"></i> 
+                        {{ campanha.status|capitalize }}
+                    </span>
+                </div>
+                
+                <p style="color: #6c757d; font-size: 0.9rem;">
+                    <i class="fas fa-calendar-alt"></i> Delegada em: 
+                    <strong>{{ campanha.data_criacao.strftime('%d/%m/%Y às %H:%M') }}</strong>
+                </p>
+                
+                <div style="margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                    <p style="margin: 0; color: #343a40;">{{ campanha.descricao }}</p>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Localização</strong>
+                        <span><i class="fas fa-map-marker-alt"></i> {{ campanha.localizacao }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Meta Financeira</strong>
+                        <span>R$ {{ "%.2f"|format(campanha.meta_doacoes) }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Arrecadado</strong>
+                        <span style="color: #28a745; font-weight: 700;">
+                            R$ {{ "%.2f"|format(campanha.arrecadado) }}
+                        </span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Voluntários</strong>
+                        <span>{{ campanha.voluntarios|length }} / {{ campanha.meta_voluntarios }}</span>
+                    </div>
+                </div>
+
+                {% set progresso = (campanha.arrecadado / campanha.meta_doacoes * 100)|int if campanha.meta_doacoes > 0 else 0 %}
+                <div style="margin-top: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span style="font-size: 0.9rem; color: #6c757d;">Progresso da Arrecadação</span>
+                        <span style="font-size: 0.9rem; font-weight: 600; color: #28a745;">{{ progresso }}%</span>
+                    </div>
+                    <div style="width: 100%; height: 10px; background: #e9ecef; border-radius: 10px; overflow: hidden;">
+                        <div style="width: {{ progresso }}%; height: 100%; background: linear-gradient(90deg, #28a745, #20c997); transition: width 0.3s ease;"></div>
+                    </div>
+                </div>
+                
+                {% if campanha.status == 'ativa' %}
+                <div style="margin-top: 1rem; padding: 1rem; background: #d4edda; border-radius: 8px; border-left: 4px solid #28a745;">
+                    <p style="margin: 0; color: #155724;">
+                        <i class="fas fa-check-circle"></i> 
+                        <strong>Campanha ativa!</strong> Esta campanha está sob sua responsabilidade. 
+                        Gerencie as doações e voluntários através do painel de campanhas.
+                    </p>
+                </div>
+                {% elif campanha.status == 'suspensa' %}
+                <div style="margin-top: 1rem; padding: 1rem; background: #fff3cd; border-radius: 8px; border-left: 4px solid #ffc107;">
+                    <p style="margin: 0; color: #856404;">
+                        <i class="fas fa-pause-circle"></i> 
+                        <strong>Campanha suspensa.</strong> Entre em contato com a moderação para reativá-la.
+                    </p>
+                </div>
+                {% elif campanha.status in ['concluida', 'finalizada'] %}
+                <div style="margin-top: 1rem; padding: 1rem; background: #d1ecf1; border-radius: 8px; border-left: 4px solid #17a2b8;">
+                    <p style="margin: 0; color: #0c5460;">
+                        <i class="fas fa-trophy"></i> 
+                        <strong>Campanha concluída!</strong> Obrigado por fazer a diferença na comunidade.
+                    </p>
+                </div>
+                {% endif %}
+                
+                <div class="actions">
+                    <a href="{{ url_for('detalhes_campanha', campanha_id=campanha.id) }}" class="btn-aceitar" style="background: #0d6efd;">
+                        <i class="fas fa-eye"></i> Ver Detalhes da Campanha
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-bullhorn"></i>
+                <h4>Nenhuma campanha delegada</h4>
+                <p>Quando campanhas forem delegadas para sua instituição, elas aparecerão aqui.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="tab-concluidas" class="tab-content">
+        {% if delegacoes_concluidas %}
+            {% for delegacao in delegacoes_concluidas %}
+            <div class="solicitacao-card concluida">
+                <div class="solicitacao-header">
+                    <div class="solicitacao-title">
+                        {% if delegacao.recebimento %}
+                            <i class="fas fa-trophy"></i> Recebimento #{{ delegacao.id }}
+                        {% endif %}
+                    </div>
+                    <span class="status-badge concluida">
+                        <i class="fas fa-check-double"></i> Concluída
+                    </span>
+                </div>
+                
+                {% if delegacao.recebimento %}
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Beneficiário</strong>
+                            <span>{{ delegacao.recebimento.nome }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Cestas Entregues</strong>
+                            <span>{{ delegacao.recebimento.cestas_entregues }}</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Alimentos (kg)</strong>
+                            <span>{{ "%.2f"|format(delegacao.recebimento.alimento_kg_entregues) }} kg</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Valor Distribuído</strong>
+                            <span>R$ {{ "%.2f"|format(delegacao.recebimento.valor_entregue) }}</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-trophy"></i>
+                <h4>Nenhuma solicitação concluída</h4>
+                <p>Suas entregas concluídas aparecerão aqui.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="tab-recusadas" class="tab-content">
+        {% if delegacoes_recusadas %}
+            {% for delegacao in delegacoes_recusadas %}
+            <div class="solicitacao-card" style="border-left-color: #dc3545; opacity: 0.7;">
+                <div class="solicitacao-header">
+                    <div class="solicitacao-title">
+                        Solicitação #{{ delegacao.id }}
+                    </div>
+                    <span class="status-badge" style="background: #f8d7da; color: #721c24;">
+                        <i class="fas fa-times-circle"></i> Recusada
+                    </span>
+                </div>
+                <p style="color: #6c757d;">Recusada em: {{ delegacao.data_delegacao.strftime('%d/%m/%Y') }}</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-times-circle"></i>
+                <h4>Nenhuma solicitação recusada</h4>
+                <p>As solicitações que você recusar aparecerão aqui.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+
+    event.target.closest('.tab-button').classList.add('active');
+    document.getElementById('tab-' + tabName).classList.add('active');
+}
+
+function toggleForm(formId) {
+    const form = document.getElementById(formId);
+    form.classList.toggle('show');
+}
+</script>
+{% endblock %}
