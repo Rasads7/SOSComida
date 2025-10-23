@@ -838,6 +838,9 @@
                                         {% elif denuncia.motivo == 'comportamento_inadequado' %}
                                             <i class="fas fa-ban"></i> Comportamento inadequado
                                         {% else %}
+                                        {% elif denuncia.motivo == 'suspeita_fraude' %}
+                                            <i class="fas fa-exclamation-triangle"></i> Suspeita de fraude
+                                        {% else %}
                                             <i class="fas fa-question-circle"></i> Outro
                                         {% endif %}
                                     </span>
