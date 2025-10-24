@@ -343,10 +343,52 @@ def registrar():
             telefone = request.form.get('telefone')
             endereco = request.form.get('endereco')
             cidade = request.form.get('cidade')
-            cpf = request.form.get('cpf')
-            
-            if not all([nome, telefone, endereco, cidade, cpf]):
+            cpf = request.form.get('cpf', '')
+
+
+#AQUI EU SEPAREI O VALIDADOR DE CPF P NN DAR CONFLITO COM OS DEMAIS
+            def is_valid_cpf(cpf_str: str) -> bool:
+                cpf = ''.join([c for c in cpf_str if c.isdigit()])
+                if len(cpf) != 11 or cpf == cpf[0] * 11:
+                    return False
+                def calc_dv(cpf_base: str) -> str:
+                    soma = sum(int(d) * peso for d, peso in zip(cpf_base, range(len(cpf_base)+1, 1, -1)))
+                    resto = (soma * 10) % 11
+                    return '0' if resto == 10 else str(resto)
+                dv1 = calc_dv(cpf[:9])
+                dv2 = calc_dv(cpf[:9] + dv1)
+                return cpf[-2:] == dv1 + dv2
+
+#AQUI O DE TELEFONE     OBS: TESTAR NOVAMENTE, PQ DEU CRASH QUANDO CRIEI UMA COM CPF E TELEFONE CORRETOS
+            def is_valid_tel_br(phone_str: str) -> bool:
+                digits = ''.join(c for c in phone_str if c.isdigit())
+                if len(digits) not in (10, 11):
+                    return False
+                ddd = digits[:2]
+                if ddd[0] == '0':  
+                    return False
+                return True
+
+            def only_digits(s: str) -> str:
+                return ''.join(c for c in s if c.isdigit())
+
+            cpf_digits = only_digits(cpf)
+            telefone_digits = only_digits(telefone)
+
+            if not all([nome, telefone_digits, endereco, cidade, cpf_digits]):
                 flash('Todos os campos para pessoa são obrigatórios.', 'error')
+                return render_template('registrar.html')
+
+            if not is_valid_cpf(cpf_digits):
+                flash('CPF inválido. Verifique e tente novamente.', 'error')
+                return render_template('registrar.html')
+
+            if not is_valid_tel_br(telefone_digits):
+                flash('Telefone inválido. Informe com DDD (2 dígitos) e 10 ou 11 dígitos no total, ex.: (11) 2345-6789 ou (11) 91234-5678.', 'error')
+                return render_template('registrar.html')
+
+            if Usuario.query.filter_by(cpf=cpf_digits).first():
+                flash('Este CPF já está cadastrado.', 'error')
                 return render_template('registrar.html')
 
             novo_usuario = Usuario(
@@ -356,7 +398,7 @@ def registrar():
                 telefone=telefone,
                 endereco=endereco,
                 cidade=cidade,
-                cpf=cpf,
+                cpf=cpf_digits,   
                 tipo='usuario'
             )
             flash_msg = f'Cadastro realizado com sucesso! Bem-vindo(a), {nome}!'
