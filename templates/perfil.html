@@ -165,12 +165,95 @@
         color: #721c24;
     }
     
+    /* Zona de Perigo */
+    .danger-zone {
+        background: #fff5f5;
+        border: 2px solid #dc3545;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: 3rem;
+    }
+    
+    .danger-zone-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #dc3545;
+    }
+    
+    .danger-zone-header i {
+        font-size: 2rem;
+        color: #dc3545;
+    }
+    
+    .danger-zone-header h3 {
+        color: #dc3545;
+        font-weight: 700;
+        margin: 0;
+    }
+    
+    .danger-action {
+        background: white;
+        border: 2px solid #dc3545;
+        border-radius: 10px;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    
+    .danger-action:hover {
+        background: #fff0f0;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+    }
+    
+    .danger-info h5 {
+        color: #dc3545;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .danger-info p {
+        color: #721c24;
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    .btn-danger-action {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-danger-action:hover {
+        background-color: #bb2d3b;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    }
+    
     @media (max-width: 992px) {
         .profile-layout {
             grid-template-columns: 1fr;
         }
         .profile-sidebar {
             position: static;
+        }
+        .security-option, .danger-action {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
         }
     }
 </style>
@@ -214,6 +297,7 @@
                 <li><a href="#editar" class="active"><i class="fas fa-user-edit fa-fw"></i> Editar Perfil</a></li>
                 <li><a href="#seguranca"><i class="fas fa-shield-alt fa-fw"></i> Segurança</a></li>
                 <li><a href="#solicitacoes"><i class="fas fa-list fa-fw"></i> Minhas Solicitações</a></li>
+                <li><a href="#perigo"><i class="fas fa-exclamation-triangle fa-fw"></i> Zona de Perigo</a></li>
                 <li><a href="{{ url_for('logout') }}" style="color: #dc3545;"><i class="fas fa-sign-out-alt fa-fw"></i> Sair</a></li>
             </ul>
         </aside>
@@ -317,6 +401,32 @@
                     </a>
                 </div>
             </div>
+
+            <!-- ZONA DE PERIGO -->
+            <div id="perigo" class="danger-zone">
+                <div class="danger-zone-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                        <h3>Zona de Perigo</h3>
+                        <p style="margin: 0; color: #721c24; font-size: 0.9rem;">Ações irreversíveis que afetam permanentemente sua conta.</p>
+                    </div>
+                </div>
+
+                <div class="danger-action">
+                    <div class="danger-info">
+                        <h5><i class="fas fa-user-times"></i> Revogar Minha Conta</h5>
+                        <p>Desative permanentemente sua conta no SOS Comida. Esta ação não pode ser desfeita.</p>
+                        <small style="display: block; margin-top: 0.5rem; color: #dc3545; font-weight: 600;">
+                            ⚠️ Você perderá acesso a todas as suas solicitações e histórico.
+                        </small>
+                    </div>
+                    <div>
+                        <a href="{{ url_for('revogar_minha_conta') }}" class="btn-danger-action">
+                            <i class="fas fa-ban"></i> Revogar Conta
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -353,6 +463,12 @@ document.querySelectorAll('.profile-menu a[href^="#"]').forEach(anchor => {
                 behavior: 'smooth',
                 block: 'start'
             });
+            
+            // Atualiza o active
+            document.querySelectorAll('.profile-menu a').forEach(link => {
+                link.classList.remove('active');
+            });
+            this.classList.add('active');
         }
     });
 });

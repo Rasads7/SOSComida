@@ -1960,6 +1960,48 @@ def moderacao_usuarios():
         tipo=tipo
     )
 
+@app.route('/revogar_minha_conta', methods=['GET', 'POST'])
+@login_required
+def revogar_minha_conta():
+    if request.method == 'POST':
+        senha_confirmacao = request.form.get('senha_confirmacao')
+        motivo = request.form.get('motivo', '')
+        
+        if not senha_confirmacao:
+            flash('Por favor, confirme sua senha.', 'error')
+            return redirect(url_for('revogar_minha_conta'))
+        
+        if current_user.senha != hash_password(senha_confirmacao):
+            flash('Senha incorreta.', 'error')
+            return redirect(url_for('revogar_minha_conta'))
+        
+        if current_user.two_factor_enabled:
+            codigo_2fa = request.form.get('codigo_2fa')
+            if not codigo_2fa:
+                flash('Código 2FA obrigatório.', 'error')
+                return redirect(url_for('revogar_minha_conta'))
+            
+            totp = pyotp.TOTP(current_user.two_factor_secret)
+            if not totp.verify(codigo_2fa):
+                flash('Código 2FA inválido.', 'error')
+                return redirect(url_for('revogar_minha_conta'))
+        
+        try:
+            current_user.conta_revogada = True
+            current_user.data_revogacao = datetime.utcnow()
+            current_user.motivo_revogacao = motivo if motivo else 'Revogação solicitada pelo próprio usuário'
+            db.session.commit()
+            logout_user()
+            flash('Sua conta foi revogada com sucesso. Esperamos vê-lo novamente no futuro.', 'success')
+            return redirect(url_for('home'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erro ao revogar conta: {str(e)}', 'error')
+            return redirect(url_for('perfil'))
+    
+    return render_template('revogar_conta.html', usuario=current_user)
+
+
 @app.route('/moderacao/excluir_usuario/<int:user_id>', methods=['POST'])
 @login_required
 def excluir_usuario(user_id):

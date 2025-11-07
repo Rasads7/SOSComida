@@ -1,0 +1,490 @@
+{% extends "base.html" %}
+
+{% block title %}Revogar Minha Conta - SOS Comida{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-danger {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.95), rgba(187, 45, 59, 0.9));
+        color: white;
+        padding: 5rem 0;
+        margin-top: -80px;
+        padding-top: 120px;
+        text-align: center;
+    }
+    
+    .hero-danger h1 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-danger p {
+        font-size: 1.2rem;
+        opacity: 0.95;
+    }
+    
+    .revoke-container {
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+    
+    .warning-card {
+        background: #fff3cd;
+        border: 3px solid #ffc107;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
+    }
+    
+    .warning-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .warning-icon {
+        font-size: 3rem;
+        color: #ffc107;
+    }
+    
+    .warning-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #856404;
+        margin: 0;
+    }
+    
+    .warning-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .warning-list li {
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        background: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: #856404;
+        font-weight: 500;
+    }
+    
+    .warning-list li i {
+        color: #dc3545;
+        font-size: 1.2rem;
+    }
+    
+    .revoke-form-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: 2px solid #dc3545;
+    }
+    
+    .form-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #dc3545;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .danger-alert {
+        background: #f8d7da;
+        border-left: 4px solid #dc3545;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        color: #721c24;
+    }
+    
+    .danger-alert strong {
+        display: block;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: #dc3545;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #343a40;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-label i {
+        color: #dc3545;
+    }
+    
+    .form-control {
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    }
+    
+    .form-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    
+    .checkbox-group {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 2rem;
+    }
+    
+    .form-check {
+        padding: 1rem;
+        background: white;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+    }
+    
+    .form-check-input {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-right: 0.75rem;
+        cursor: pointer;
+    }
+    
+    .form-check-label {
+        font-weight: 500;
+        color: #343a40;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .button-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .btn-revoke {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        font-weight: 600;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+    
+    .btn-revoke:hover:not(:disabled) {
+        background-color: #bb2d3b;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+    }
+    
+    .btn-revoke:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+    
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        font-weight: 600;
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+    
+    .btn-cancel:hover {
+        background-color: #5c636a;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+    }
+    
+    @media (max-width: 768px) {
+        .warning-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .button-group {
+            grid-template-columns: 1fr;
+        }
+        
+        .revoke-form-card {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero-danger">
+    <div class="container">
+        <h1><i class="fas fa-exclamation-triangle"></i> Revogar Minha Conta</h1>
+        <p>Esta é uma ação permanente e não pode ser desfeita.</p>
+    </div>
+</section>
+
+<div class="revoke-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Card de Avisos -->
+    <div class="warning-card">
+        <div class="warning-header">
+            <i class="fas fa-exclamation-circle warning-icon"></i>
+            <h2 class="warning-title">Antes de Continuar, Leia Atentamente</h2>
+        </div>
+        
+        <p style="color: #856404; font-size: 1.1rem; margin-bottom: 1.5rem;">
+            Ao revogar sua conta no SOS Comida, as seguintes consequências são <strong>IRREVERSÍVEIS</strong>:
+        </p>
+        
+        <ul class="warning-list">
+            <li>
+                <i class="fas fa-times-circle"></i>
+                <span>Você não poderá mais fazer login na plataforma</span>
+            </li>
+            <li>
+                <i class="fas fa-times-circle"></i>
+                <span>Todas as suas solicitações de ajuda serão canceladas</span>
+            </li>
+            <li>
+                <i class="fas fa-times-circle"></i>
+                <span>Todo o seu histórico de doações será perdido</span>
+            </li>
+            <li>
+                <i class="fas fa-times-circle"></i>
+                <span>Suas inscrições como voluntário serão removidas</span>
+            </li>
+            <li>
+                <i class="fas fa-times-circle"></i>
+                <span>Não será possível recuperar ou reativar esta conta</span>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Formulário de Revogação -->
+    <div class="revoke-form-card">
+        <h3 class="form-title">
+            <i class="fas fa-user-times"></i>
+            Confirmar Revogação de Conta
+        </h3>
+        
+        <div class="danger-alert">
+            <strong><i class="fas fa-shield-alt"></i> Verificação de Segurança Obrigatória</strong>
+            Para sua proteção, precisamos confirmar sua identidade antes de revogar a conta.
+        </div>
+        
+        <form method="POST" action="{{ url_for('revogar_minha_conta') }}" id="revokeForm">
+            <!-- Senha de Confirmação -->
+            <div class="form-group">
+                <label for="senha_confirmacao" class="form-label">
+                    <i class="fas fa-lock"></i>
+                    Confirme sua Senha
+                </label>
+                <input 
+                    type="password" 
+                    class="form-control" 
+                    id="senha_confirmacao" 
+                    name="senha_confirmacao" 
+                    placeholder="Digite sua senha atual"
+                    required
+                >
+                <small class="form-text">Digite sua senha para confirmar que é você.</small>
+            </div>
+            
+            {% if usuario.two_factor_enabled %}
+            <!-- Código 2FA (se ativado) -->
+            <div class="form-group">
+                <label for="codigo_2fa" class="form-label">
+                    <i class="fas fa-mobile-alt"></i>
+                    Código de Autenticação 2FA
+                </label>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="codigo_2fa" 
+                    name="codigo_2fa" 
+                    placeholder="000000"
+                    maxlength="6"
+                    pattern="[0-9]{6}"
+                    required
+                >
+                <small class="form-text">Digite o código de 6 dígitos do seu aplicativo autenticador.</small>
+            </div>
+            {% endif %}
+            
+            <!-- Motivo (Opcional) -->
+            <div class="form-group">
+                <label for="motivo" class="form-label">
+                    <i class="fas fa-comment"></i>
+                    Motivo da Revogação (Opcional)
+                </label>
+                <textarea 
+                    class="form-control" 
+                    id="motivo" 
+                    name="motivo" 
+                    rows="4"
+                    placeholder="Conte-nos por que você está saindo... (opcional)"
+                ></textarea>
+                <small class="form-text">Suas observações nos ajudam a melhorar a plataforma.</small>
+            </div>
+            
+            <!-- Confirmações Obrigatórias -->
+            <div class="checkbox-group">
+                <p style="font-weight: 600; color: #dc3545; margin-bottom: 1rem;">
+                    <i class="fas fa-check-square"></i> Confirmo que li e entendi:
+                </p>
+                
+                <div class="form-check">
+                    <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        id="check1" 
+                        required
+                    >
+                    <label class="form-check-label" for="check1">
+                        Esta ação é permanente e não pode ser desfeita
+                    </label>
+                </div>
+                
+                <div class="form-check">
+                    <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        id="check2" 
+                        required
+                    >
+                    <label class="form-check-label" for="check2">
+                        Perderei acesso a todas as minhas solicitações e histórico
+                    </label>
+                </div>
+                
+                <div class="form-check">
+                    <input 
+                        class="form-check-input" 
+                        type="checkbox" 
+                        id="check3" 
+                        required
+                    >
+                    <label class="form-check-label" for="check3">
+                        Não será possível recuperar esta conta no futuro
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Botões de Ação -->
+            <div class="button-group">
+                <a href="{{ url_for('perfil') }}" class="btn-cancel">
+                    <i class="fas fa-arrow-left"></i>
+                    Cancelar
+                </a>
+                <button type="submit" class="btn-revoke" id="btnRevoke" disabled>
+                    <i class="fas fa-ban"></i>
+                    Revogar Minha Conta
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Informações Adicionais -->
+    <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: #f8f9fa; border-radius: 15px;">
+        <p style="color: #6c757d; margin-bottom: 1rem;">
+            <i class="fas fa-info-circle"></i> 
+            <strong>Mudou de ideia?</strong>
+        </p>
+        <p style="color: #6c757d; margin-bottom: 1.5rem;">
+            Se você está tendo problemas com a plataforma ou tem alguma dúvida, 
+            nossa equipe está aqui para ajudar antes de tomar esta decisão.
+        </p>
+        <a href="mailto:suporte@soscomida.com" class="btn btn-outline-primary" style="border-radius: 50px; padding: 0.75rem 2rem;">
+            <i class="fas fa-envelope"></i> Falar com Suporte
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Habilitar botão de revogação apenas quando todos os checkboxes estiverem marcados
+const checkboxes = document.querySelectorAll('.form-check-input');
+const btnRevoke = document.getElementById('btnRevoke');
+const revokeForm = document.getElementById('revokeForm');
+
+function updateButtonState() {
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    btnRevoke.disabled = !allChecked;
+}
+
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', updateButtonState);
+});
+
+// Confirmação adicional ao submeter
+revokeForm.addEventListener('submit', function(e) {
+    const confirmed = confirm(
+        '⚠️ ÚLTIMA CONFIRMAÇÃO ⚠️\n\n' +
+        'Você está prestes a REVOGAR PERMANENTEMENTE sua conta.\n\n' +
+        'Esta ação NÃO PODE ser desfeita!\n\n' +
+        'Deseja realmente continuar?'
+    );
+    
+    if (!confirmed) {
+        e.preventDefault();
+    }
+});
+
+// Prevenir envio acidental do formulário com Enter
+revokeForm.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.target.type !== 'submit' && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+    }
+});
+</script>
+{% endblock %}
