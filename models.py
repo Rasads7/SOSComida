@@ -31,6 +31,11 @@ class Usuario(UserMixin, db.Model):
     gov_br_linked = db.Column(db.Boolean, default=False)
     gov_br_level = db.Column(db.String(20), nullable=True)
     status = db.Column(db.String(20), default='online', nullable=False)
+    
+    # ✅ NOVOS CAMPOS PARA REVOGAÇÃO DE CONTA
+    conta_revogada = db.Column(db.Boolean, default=False, nullable=False)
+    data_revogacao = db.Column(db.DateTime, nullable=True)
+    motivo_revogacao = db.Column(db.Text, nullable=True)
 
 class Campanha(db.Model):
     __tablename__ = 'campanhas'

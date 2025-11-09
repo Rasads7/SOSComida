@@ -296,6 +296,11 @@ def login():
             user = Usuario.query.filter_by(email=email, senha=hash_password(senha)).first()
             
             if user:
+                # ✅ VERIFICAR SE A CONTA FOI REVOGADA
+                if user.conta_revogada:
+                    flash('Esta conta foi revogada e não pode mais fazer login. Entre em contato com o suporte se isso foi um erro.', 'error')
+                    return render_template('login.html', show_2fa=False, usuario=None)
+                
                 if user.two_factor_enabled:
                     session['user_id_pending_2fa'] = user.id
                     flash('Digite o código de autenticação de 2 fatores.', 'info')
