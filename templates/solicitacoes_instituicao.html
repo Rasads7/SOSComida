@@ -383,8 +383,14 @@
     </div>
 
     <div class="tabs">
-        <button class="tab-button active" onclick="switchTab('pendentes')">
-            <i class="fas fa-clock"></i> Pendentes
+        <button class="tab-button active" onclick="switchTab('campanhas-pendentes')">
+            <i class="fas fa-bullhorn"></i> Campanhas para Aceitar
+            {% if campanhas_pendentes|length > 0 %}
+            <span class="badge" style="background: #dc3545;">{{ campanhas_pendentes|length }}</span>
+            {% endif %}
+        </button>
+        <button class="tab-button" onclick="switchTab('pendentes')">
+            <i class="fas fa-clock"></i> Solicitações Pendentes
             {% if delegacoes_pendentes|length > 0 %}
             <span class="badge">{{ delegacoes_pendentes|length }}</span>
             {% endif %}
@@ -409,7 +415,70 @@
         </button>
     </div>
 
-    <div id="tab-pendentes" class="tab-content active">
+    <div id="tab-campanhas-pendentes" class="tab-content active">
+        {% if campanhas_pendentes %}
+            {% for campanha in campanhas_pendentes %}
+            <div class="solicitacao-card pendente">
+                <div class="solicitacao-header">
+                    <div class="solicitacao-title">
+                        <i class="fas fa-bullhorn"></i> {{ campanha.titulo }}
+                    </div>
+                    <span class="status-badge pendente">
+                        <i class="fas fa-clock"></i> Aguardando Aceitação
+                    </span>
+                </div>
+                
+                <p style="color: #6c757d; margin-bottom: 1rem;">{{ campanha.descricao }}</p>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Localização</strong>
+                        <span><i class="fas fa-map-marker-alt"></i> {{ campanha.localizacao }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Meta Financeira</strong>
+                        <span>R$ {{ "%.2f"|format(campanha.meta_doacoes) }}</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Meta Voluntários</strong>
+                        <span>{{ campanha.meta_voluntarios }} pessoas</span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Data</strong>
+                        <span>{{ campanha.data_criacao.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                </div>
+                
+                {% if campanha.solicitante %}
+                <p style="color: #6c757d; font-size: 0.9rem; margin-top: 1rem;">
+                    <i class="fas fa-user"></i> Solicitante: <strong>{{ campanha.solicitante.nome }}</strong>
+                </p>
+                {% endif %}
+                
+                <div class="actions">
+                    <a href="{{ url_for('aceitar_campanha', campanha_id=campanha.id) }}" 
+                       class="btn-aceitar"
+                       onclick="return confirm('Deseja aceitar a responsabilidade por esta campanha?');">
+                        <i class="fas fa-check"></i> Aceitar Campanha
+                    </a>
+                    <a href="{{ url_for('recusar_campanha', campanha_id=campanha.id) }}" 
+                       class="btn-recusar"
+                       onclick="return confirm('Tem certeza que deseja recusar esta campanha? Ela retornará ao painel de moderação.');">
+                        <i class="fas fa-times"></i> Recusar
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fas fa-check-circle"></i>
+                <h3>Nenhuma campanha aguardando resposta</h3>
+                <p>Você não tem campanhas pendentes de aceitação no momento.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div id="tab-pendentes" class="tab-content">
         {% if delegacoes_pendentes %}
             {% for delegacao in delegacoes_pendentes %}
             <div class="solicitacao-card pendente">

@@ -868,6 +868,7 @@ def editar_campanha_moderacao(campanha_id):
         return redirect(url_for('home'))
     
     campanha = Campanha.query.get_or_404(campanha_id)
+    instituicoes = Usuario.query.filter_by(tipo='instituicao', status_aprovacao='aprovada').all()
     
     if request.method == 'POST':
         titulo = request.form.get('titulo')
@@ -888,7 +889,29 @@ def editar_campanha_moderacao(campanha_id):
         campanha.localizacao = localizacao
         campanha.meta_voluntarios = meta_voluntarios
         campanha.meta_doacoes = meta_doacoes
-        campanha.status = status
+        
+        # Atualizar instituição delegada
+        instituicao_id_nova = request.form.get('instituicao_id')
+        instituicao_id_antiga = campanha.instituicao_id
+        
+        # Verificar se a instituição mudou
+        instituicao_mudou = False
+        if instituicao_id_nova and instituicao_id_nova != '':
+            nova_id = int(instituicao_id_nova)
+            if nova_id != instituicao_id_antiga:
+                instituicao_mudou = True
+                campanha.instituicao_id = nova_id
+        else:
+            if instituicao_id_antiga is not None:
+                instituicao_mudou = True
+            campanha.instituicao_id = None
+        
+        # Se a instituição mudou e a campanha estava ativa, voltar para pendente
+        if instituicao_mudou and campanha.status == 'ativa':
+            campanha.status = 'pendente'
+            flash('A campanha foi alterada para status PENDENTE pois a instituição responsável foi modificada.', 'warning')
+        else:
+            campanha.status = status
 
         if 'imagem' in request.files:
             arquivo = request.files['imagem']
@@ -923,6 +946,7 @@ def editar_campanha_moderacao(campanha_id):
 
     return render_template('editar_campanha_moderacao.html', 
                          campanha=campanha, 
+                         instituicoes=instituicoes,
                          usuario=current_user)
 
 
@@ -1055,8 +1079,8 @@ def aprovar_campanha(campanha_id):
         flash('Você deve selecionar uma instituição para delegar a campanha.', 'error')
         return redirect(url_for('moderacao'))
 
-    campanha.status = 'ativa'
-    campanha.instituicao_id = instituicao_id
+    campanha.status = 'pendente'  # Fica pendente até a instituição aceitar
+    campanha.instituicao_id = int(instituicao_id)
     db.session.commit()
 
     instituicao = Usuario.query.get(instituicao_id)
@@ -1065,10 +1089,10 @@ def aprovar_campanha(campanha_id):
         tipo_item='campanha',
         item_id=campanha_id,
         item_nome=campanha.titulo,
-        detalhes=f'Campanha aprovada e delegada para {instituicao.instituicao_nome if instituicao else "instituição desconhecida"} (ID: {instituicao_id})'
+        detalhes=f'Campanha delegada para {instituicao.instituicao_nome if instituicao else "instituição desconhecida"} (ID: {instituicao_id}) - Aguardando aceitação'
     )
     
-    flash(f'Campanha "{campanha.titulo}" aprovada e delegada com sucesso!', 'success')
+    flash(f'Campanha "{campanha.titulo}" foi delegada para {instituicao.instituicao_nome}. Aguardando aceitação da instituição.', 'success')
     return redirect(url_for('moderacao'))
 
 @app.route('/aprovar_instituicao/<int:instituicao_id>', methods=['POST'])
@@ -1267,6 +1291,8 @@ def criar_campanha():
         flash('Acesso negado. Apenas moderadores podem criar campanhas.', 'error')
         return redirect(url_for('campanhas'))
     
+    instituicoes = Usuario.query.filter_by(tipo='instituicao', status_aprovacao='aprovada').all()
+    
     if request.method == 'POST':
         titulo = request.form.get('titulo')
         descricao = request.form.get('descricao')
@@ -1274,6 +1300,7 @@ def criar_campanha():
         meta_voluntarios = int(request.form.get('meta_voluntarios', 10))
         meta_doacoes = float(request.form.get('meta_doacoes', 1000.00))
         status = request.form.get('status', 'ativa')
+        instituicao_id = request.form.get('instituicao_id')
         
         if len(titulo) < 5 or len(descricao) < 20:
             flash('Título deve ter pelo menos 5 e descrição 20 caracteres.', 'error')
@@ -1297,7 +1324,8 @@ def criar_campanha():
             meta_voluntarios=meta_voluntarios, 
             meta_doacoes=meta_doacoes,
             imagem=imagem_nome, 
-            status=status
+            status=status,
+            instituicao_id=int(instituicao_id) if instituicao_id and instituicao_id != '' else None
         )
         db.session.add(nova_campanha)
         db.session.commit()
@@ -1313,7 +1341,7 @@ def criar_campanha():
         flash(f'Campanha "{titulo}" criada com sucesso!', 'success')
         return redirect(url_for('campanhas'))
         
-    return render_template('criar_campanha.html', usuario=current_user)
+    return render_template('criar_campanha.html', instituicoes=instituicoes, usuario=current_user)
 
 @app.route('/aprovar_recebimento/<int:id>', methods=['POST'])
 @login_required
@@ -1532,6 +1560,7 @@ def solicitacoes_instituicao():
     delegacoes_concluidas = [d for d in todas_delegacoes if d.status == 'concluida']
     delegacoes_recusadas = [d for d in todas_delegacoes if d.status == 'recusada']
 
+    campanhas_pendentes = [c for c in campanhas_delegadas if c.status == 'pendente']
     campanhas_ativas = [c for c in campanhas_delegadas if c.status == 'ativa']
     campanhas_suspensas = [c for c in campanhas_delegadas if c.status == 'suspensa']
     campanhas_concluidas = [c for c in campanhas_delegadas if c.status in ['concluida', 'finalizada']]
@@ -1541,6 +1570,7 @@ def solicitacoes_instituicao():
     print(f"   Delegações Aceitas: {len(delegacoes_aceitas)}")
     print(f"   Delegações Concluídas: {len(delegacoes_concluidas)}")
     print(f"   Delegações Recusadas: {len(delegacoes_recusadas)}")
+    print(f"   Campanhas Pendentes: {len(campanhas_pendentes)}")
     print(f"   Campanhas Ativas: {len(campanhas_ativas)}")
     print(f"   Campanhas Suspensas: {len(campanhas_suspensas)}")
     print(f"   Campanhas Concluídas: {len(campanhas_concluidas)}")
@@ -1598,6 +1628,7 @@ def solicitacoes_instituicao():
                           delegacoes_aceitas=delegacoes_aceitas,
                           delegacoes_concluidas=delegacoes_concluidas,
                           delegacoes_recusadas=delegacoes_recusadas,
+                          campanhas_pendentes=campanhas_pendentes,
                           campanhas_ativas=campanhas_ativas,
                           campanhas_suspensas=campanhas_suspensas,
                           campanhas_concluidas=campanhas_concluidas,
@@ -1720,9 +1751,21 @@ def perfil():
             SolicitacaoRecebimento.status == 'entregue'
         ).count()
         
+        campanhas_pendentes = Campanha.query.filter_by(
+            instituicao_id=current_user.id,
+            status='pendente'
+        ).all()
+        
+        campanhas_ativas = Campanha.query.filter_by(
+            instituicao_id=current_user.id,
+            status='ativa'
+        ).all()
+        
         return render_template('perfil_instituicao.html', 
                                 delegacoes_pendentes=delegacoes_pendentes, 
-                                delegacoes_aceitas=delegacoes_aceitas, 
+                                delegacoes_aceitas=delegacoes_aceitas,
+                                campanhas_pendentes=campanhas_pendentes,
+                                campanhas_ativas=campanhas_ativas,
                                 usuario=current_user,
                                 total_cestas=total_cestas,
                                 total_kg=total_kg_alimentos,
@@ -1764,6 +1807,55 @@ def aceitar_delegacao(delegacao_id):
     except Exception as e:
         db.session.rollback()
         flash('Erro ao aceitar solicitação.', 'error')
+    
+    return redirect(url_for('solicitacoes_instituicao'))
+
+@app.route('/aceitar_campanha/<int:campanha_id>')
+@login_required
+def aceitar_campanha(campanha_id):
+    if current_user.tipo != 'instituicao':
+        flash('Acesso negado.', 'error')
+        return redirect(url_for('home'))
+    
+    campanha = Campanha.query.get_or_404(campanha_id)
+    
+    if campanha.instituicao_id != current_user.id:
+        flash('Você não tem permissão para aceitar esta campanha.', 'error')
+        return redirect(url_for('solicitacoes_instituicao'))
+    
+    campanha.status = 'ativa'
+    
+    try:
+        db.session.commit()
+        flash(f'Campanha "{campanha.titulo}" aceita e ativada com sucesso!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao aceitar campanha.', 'error')
+    
+    return redirect(url_for('solicitacoes_instituicao'))
+
+@app.route('/recusar_campanha/<int:campanha_id>')
+@login_required
+def recusar_campanha(campanha_id):
+    if current_user.tipo != 'instituicao':
+        flash('Acesso negado.', 'error')
+        return redirect(url_for('home'))
+    
+    campanha = Campanha.query.get_or_404(campanha_id)
+    
+    if campanha.instituicao_id != current_user.id:
+        flash('Você não tem permissão para recusar esta campanha.', 'error')
+        return redirect(url_for('solicitacoes_instituicao'))
+    
+    campanha.status = 'pendente'
+    campanha.instituicao_id = None
+    
+    try:
+        db.session.commit()
+        flash(f'Campanha "{campanha.titulo}" recusada. Ela retornou para o painel de moderação.', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash('Erro ao recusar campanha.', 'error')
     
     return redirect(url_for('solicitacoes_instituicao'))
 

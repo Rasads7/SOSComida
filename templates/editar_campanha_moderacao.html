@@ -366,6 +366,30 @@
                         Campanhas suspensas não aparecem para os usuários mas podem ser reativadas
                     </small>
                 </div>
+                
+                <div class="mb-3 mt-4">
+                    <label class="form-label" for="instituicao_id">
+                        <i class="fas fa-university"></i> Instituição Responsável
+                    </label>
+                    <select id="instituicao_id" name="instituicao_id" class="form-select">
+                        <option value="">Nenhuma instituição delegada</option>
+                        {% for instituicao in instituicoes %}
+                            <option value="{{ instituicao.id }}" 
+                                    {% if campanha.instituicao_id == instituicao.id %}selected{% endif %}>
+                                {{ instituicao.instituicao_nome or instituicao.nome }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">
+                        {% if campanha.instituicao_delegada %}
+                            <i class="fas fa-check-circle text-success"></i> 
+                            Atualmente delegada para: <strong>{{ campanha.instituicao_delegada.instituicao_nome }}</strong>
+                        {% else %}
+                            <i class="fas fa-exclamation-circle text-warning"></i> 
+                            Esta campanha ainda não foi delegada para nenhuma instituição
+                        {% endif %}
+                    </small>
+                </div>
             </div>
 
             {% if campanha.solicitante %}

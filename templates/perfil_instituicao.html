@@ -226,8 +226,8 @@
                 <li>
                     <a href="{{ url_for('solicitacoes_instituicao') }}" style="background: #0d6efd; color: white;">
                         <i class="fas fa-tasks fa-fw"></i> Minhas Solicitações
-                        {% if (delegacoes_pendentes|length) > 0 %}
-                        <span class="badge bg-danger ms-auto">{{ delegacoes_pendentes|length }}</span>
+                        {% if (campanhas_pendentes|length) > 0 %}
+                        <span class="badge bg-danger ms-auto">{{ campanhas_pendentes|length }}</span>
                         {% endif %}
                     </a>
                 </li>
@@ -243,20 +243,20 @@
             <a href="{{ url_for('solicitacoes_instituicao') }}" style="text-decoration: none;">
                 <div class="solicitacoes-card">
                     <h3><i class="fas fa-tasks"></i> Central de Solicitações</h3>
-                    <p>Gerencie todas as solicitações delegadas para sua instituição em um só lugar</p>
+                    <p>Gerencie todas as solicitações e campanhas delegadas para sua instituição</p>
                     
                     <div class="badges">
                         <div class="badge-custom">
-                            <strong>{{ delegacoes_pendentes|length }}</strong>
-                            <span>Pendentes</span>
+                            <strong>{{ campanhas_pendentes|length }}</strong>
+                            <span>Campanhas Pendentes</span>
                         </div>
                         <div class="badge-custom">
                             <strong>{{ delegacoes_aceitas|length }}</strong>
-                            <span>Em Andamento</span>
+                            <span>Solicitações Aceitas</span>
                         </div>
                         <div class="badge-custom">
-                            <strong>{{ (delegacoes_pendentes|length) + (delegacoes_aceitas|length) }}</strong>
-                            <span>Total Ativas</span>
+                            <strong>{{ campanhas_ativas|length }}</strong>
+                            <span>Campanhas Ativas</span>
                         </div>
                     </div>
                     
@@ -351,10 +351,10 @@
                 <p class="content-subtitle">Visão geral das suas solicitações ativas.</p>
                 
                 <div class="delegacoes-resumo">
-                    <div class="delegacao-resumo-card pendente">
-                        <h4>{{ delegacoes_pendentes|length }}</h4>
-                        <p><i class="fas fa-clock"></i> Solicitações Pendentes</p>
-                        <small class="text-muted">Aguardando sua resposta</small>
+                    <div class="delegacao-resumo-card pendente" style="border-left-color: #dc3545;">
+                        <h4 style="color: #dc3545;">{{ campanhas_pendentes|length }}</h4>
+                        <p><i class="fas fa-bullhorn"></i> Campanhas Pendentes</p>
+                        <small class="text-muted">Aguardando aceitação</small>
                     </div>
                     
                     <div class="delegacao-resumo-card aceita">
@@ -362,13 +362,19 @@
                         <p><i class="fas fa-check-circle"></i> Solicitações Aceitas</p>
                         <small class="text-muted">Em andamento</small>
                     </div>
+                    
+                    <div class="delegacao-resumo-card aceita" style="border-left-color: #0d6efd;">
+                        <h4 style="color: #0d6efd;">{{ campanhas_ativas|length }}</h4>
+                        <p><i class="fas fa-fire"></i> Campanhas Ativas</p>
+                        <small class="text-muted">Em execução</small>
+                    </div>
                 </div>
                 
-                {% if (delegacoes_pendentes|length) > 0 %}
-                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                {% if (campanhas_pendentes|length) > 0 %}
+                <div class="alert alert-danger d-flex align-items-center" role="alert">
                     <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
                     <div>
-                        <strong>Atenção!</strong> Você tem {{ delegacoes_pendentes|length }} solicitação(ões) aguardando sua resposta.
+                        <strong>Urgente!</strong> Você tem {{ campanhas_pendentes|length }} campanha(s) aguardando sua aceitação.
                         <a href="{{ url_for('solicitacoes_instituicao') }}" class="alert-link">Clique aqui para visualizar</a>.
                     </div>
                 </div>
@@ -384,11 +390,11 @@
                 </div>
                 {% endif %}
                 
-                {% if (delegacoes_pendentes|length) == 0 and (delegacoes_aceitas|length) == 0 %}
+                {% if (campanhas_pendentes|length) == 0 and (delegacoes_aceitas|length) == 0 and (campanhas_ativas|length) == 0 %}
                 <div class="alert alert-success d-flex align-items-center" role="alert">
                     <i class="fas fa-check-circle fa-2x me-3"></i>
                     <div>
-                        <strong>Tudo em dia!</strong> No momento você não tem solicitações pendentes ou em andamento.
+                        <strong>Tudo em dia!</strong> No momento você não tem solicitações ou campanhas pendentes.
                     </div>
                 </div>
                 {% endif %}

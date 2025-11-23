@@ -72,6 +72,18 @@
                     <option value="pausada">Pausada</option>
                 </select>
             </div>
+            <div class="mb-3">
+                <label for="instituicao_id" class="form-label"><i class="fas fa-university"></i> Instituição Responsável (Opcional)</label>
+                <select class="form-select" id="instituicao_id" name="instituicao_id">
+                    <option value="">Nenhuma instituição</option>
+                    {% for instituicao in instituicoes %}
+                        <option value="{{ instituicao.id }}">
+                            {{ instituicao.instituicao_nome or instituicao.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <small class="text-muted">Selecione uma instituição para delegar a gestão da campanha</small>
+            </div>
             <div class="d-grid">
                 <button type="submit" class="btn btn-primary btn-lg">Criar Campanha</button>
             </div>
