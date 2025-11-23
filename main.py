@@ -13,7 +13,7 @@ import qrcode
 import io
 import base64
 import json
-
+from sqlalchemy import or_
 
 app = Flask(__name__, static_folder='static')
 CORS(app)
@@ -296,6 +296,11 @@ def login():
             user = Usuario.query.filter_by(email=email, senha=hash_password(senha)).first()
             
             if user:
+                # ✅ VERIFICAR SE A CONTA FOI REVOGADA
+                if user.conta_revogada:
+                    flash('Esta conta foi revogada e não pode mais fazer login. Entre em contato com o suporte se isso foi um erro.', 'error')
+                    return render_template('login.html', show_2fa=False, usuario=None)
+                
                 if user.two_factor_enabled:
                     session['user_id_pending_2fa'] = user.id
                     flash('Digite o código de autenticação de 2 fatores.', 'info')
@@ -1983,6 +1988,151 @@ def doar_itens_campanha(campanha_id):
 
     flash(f'Sua doação de {total_itens} item(ns) foi registrada com sucesso!', 'success')
     return redirect(url_for('detalhes_campanha', campanha_id=campanha_id))
+
+def apagar_cascata_usuario(user: Usuario):
+    VoluntarioCampanha.query.filter_by(usuario_id=user.id).delete()
+
+    SolicitacaoDoacao.query.filter_by(usuario_id=user.id).delete()
+
+    DoacaoCampanha.query.filter_by(usuario_id=user.id).delete()
+
+    SolicitacaoRecebimento.query.filter_by(usuario_id=user.id).delete()
+
+    Delegacao.query.filter(
+        or_(Delegacao.instituicao_id == user.id, Delegacao.moderador_id == user.id)
+    ).delete()
+
+    DenunciaVoluntario.query.filter(
+        or_(
+            DenunciaVoluntario.denunciante_id == user.id,
+            DenunciaVoluntario.denunciado_id == user.id,
+            DenunciaVoluntario.moderador_id == user.id
+        )
+    ).delete()
+
+    campanhas_solicitadas = Campanha.query.filter_by(solicitante_id=user.id).all()
+    for c in campanhas_solicitadas:
+        VoluntarioCampanha.query.filter_by(campanha_id=c.id).delete()
+        DoacaoCampanha.query.filter_by(campanha_id=c.id).delete()
+        DenunciaVoluntario.query.filter_by(campanha_id=c.id).delete()
+        db.session.delete(c)
+
+    campanhas_delegadas = Campanha.query.filter_by(instituicao_id=user.id).all()
+    for c in campanhas_delegadas:
+        VoluntarioCampanha.query.filter_by(campanha_id=c.id).delete()
+        DoacaoCampanha.query.filter_by(campanha_id=c.id).delete()
+        DenunciaVoluntario.query.filter_by(campanha_id=c.id).delete()
+        db.session.delete(c)
+
+    LogAcaoModerador.query.filter_by(moderador_id=user.id).delete()
+
+@app.route('/moderacao/usuarios')
+@login_required
+def moderacao_usuarios():
+    if current_user.tipo != 'moderador':
+        flash('Acesso negado. Apenas moderadores podem acessar esta página.', 'error')
+        return redirect(url_for('home'))
+
+    termo = request.args.get('q', '').strip()
+    tipo = request.args.get('tipo', '').strip()
+
+    query = Usuario.query
+    if termo:
+        like = f"%{termo}%"
+        query = query.filter(
+            or_(Usuario.nome.ilike(like),
+                Usuario.email.ilike(like),
+                Usuario.instituicao_nome.ilike(like))
+        )
+    if tipo in ('usuario', 'instituicao', 'moderador'):
+        query = query.filter(Usuario.tipo == tipo)
+
+    usuarios = query.order_by(Usuario.data_criacao.desc()).all()
+
+    return render_template(
+        'moderacao_usuarios.html',
+        usuario=current_user,
+        usuarios=usuarios,
+        termo=termo,
+        tipo=tipo
+    )
+
+@app.route('/revogar_minha_conta', methods=['GET', 'POST'])
+@login_required
+def revogar_minha_conta():
+    if request.method == 'POST':
+        senha_confirmacao = request.form.get('senha_confirmacao')
+        motivo = request.form.get('motivo', '')
+        
+        if not senha_confirmacao:
+            flash('Por favor, confirme sua senha.', 'error')
+            return redirect(url_for('revogar_minha_conta'))
+        
+        if current_user.senha != hash_password(senha_confirmacao):
+            flash('Senha incorreta.', 'error')
+            return redirect(url_for('revogar_minha_conta'))
+        
+        if current_user.two_factor_enabled:
+            codigo_2fa = request.form.get('codigo_2fa')
+            if not codigo_2fa:
+                flash('Código 2FA obrigatório.', 'error')
+                return redirect(url_for('revogar_minha_conta'))
+            
+            totp = pyotp.TOTP(current_user.two_factor_secret)
+            if not totp.verify(codigo_2fa):
+                flash('Código 2FA inválido.', 'error')
+                return redirect(url_for('revogar_minha_conta'))
+        
+        try:
+            current_user.conta_revogada = True
+            current_user.data_revogacao = datetime.utcnow()
+            current_user.motivo_revogacao = motivo if motivo else 'Revogação solicitada pelo próprio usuário'
+            db.session.commit()
+            logout_user()
+            flash('Sua conta foi revogada com sucesso. Esperamos vê-lo novamente no futuro.', 'success')
+            return redirect(url_for('home'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Erro ao revogar conta: {str(e)}', 'error')
+            return redirect(url_for('perfil'))
+    
+    return render_template('revogar_conta.html', usuario=current_user)
+
+
+@app.route('/moderacao/excluir_usuario/<int:user_id>', methods=['POST'])
+@login_required
+def excluir_usuario(user_id):
+    if current_user.tipo != 'moderador':
+        flash('Acesso negado. Apenas moderadores podem executar esta ação.', 'error')
+        return redirect(url_for('home'))
+
+    if current_user.id == user_id:
+        flash('Você não pode excluir a própria conta.', 'warning')
+        return redirect(url_for('moderacao_usuarios'))
+
+    user = Usuario.query.get_or_404(user_id)
+    nome_item = user.instituicao_nome if user.tipo == 'instituicao' else user.nome
+    tipo_item = 'instituicao' if user.tipo == 'instituicao' else 'usuario'
+
+    try:
+        apagar_cascata_usuario(user)
+        db.session.delete(user)
+        db.session.commit()
+
+        registrar_log(
+            acao=f'apagou_{tipo_item}',
+            tipo_item=tipo_item,
+            item_id=user_id,
+            item_nome=nome_item,
+            detalhes=f'{tipo_item.capitalize()} excluído(a) definitivamente'
+        )
+
+        flash(f'{tipo_item.capitalize()} "{nome_item}" excluído(a) com sucesso.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erro ao excluir {tipo_item}: {str(e)}', 'error')
+
+    return redirect(url_for('moderacao_usuarios'))
 
 if __name__ == '__main__':
     with app.app_context():
