@@ -578,13 +578,13 @@ document.getElementById('formDenuncia').addEventListener('submit', function(e) {
 
 function confirmarRemocao(voluntarioNome, campanhaId, voluntarioId) {
     if (confirm(`Tem certeza que deseja remover ${voluntarioNome} desta campanha?\n\nEsta ação não pode ser desfeita.`)) {
-        console.log('🗑️  Removendo voluntário:', voluntarioId, 'da campanha:', campanhaId);
+        console.log('  Removendo voluntário:', voluntarioId, 'da campanha:', campanhaId);
         window.location.href = `/remover_voluntario/${campanhaId}/${voluntarioId}`;
     }
 }
 
 window.addEventListener('load', function() {
-    console.log('📋 Formulário de denúncia carregado');
+    console.log(' Formulário de denúncia carregado');
     const form = document.getElementById('formDenuncia');
     if (form) {
         console.log('   Action:', form.action);
