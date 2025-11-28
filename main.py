@@ -540,6 +540,15 @@ def solicitarcampanha():
         flash('Acesso negado. Apenas usuários podem solicitar campanhas.', 'error')
         return redirect(url_for('home'))
     
+    # VERIFICAR LIMITE DE 2 CAMPANHAS ATIVAS/PENDENTES POR USUÁRIO CORRIGIDO POR PABLÃO
+    campanhas_usuario = Campanha.query.filter_by(solicitante_id=current_user.id).filter(
+        Campanha.status.in_(['ativa', 'pendente'])
+    ).count()
+    
+    if campanhas_usuario >= 2:
+        flash('Você já atingiu o limite máximo de 2 campanhas ativas/pendentes. Aguarde a conclusão de alguma campanha ou entre em contato com nossa equipe.', 'warning')
+        return redirect(url_for('minhas_solicitacoes'))
+    
     if request.method == 'POST':
         titulo = request.form.get('titulo')
         descricao = request.form.get('descricao')
@@ -2133,6 +2142,57 @@ def excluir_usuario(user_id):
         flash(f'Erro ao excluir {tipo_item}: {str(e)}', 'error')
 
     return redirect(url_for('moderacao_usuarios'))
+@app.route('/remover_voluntario/<int:campanha_id>/<int:voluntario_id>')
+@login_required
+def remover_voluntario(campanha_id, voluntario_id):
+    """Permite instituições e moderadores removerem voluntários de campanhas"""
+    campanha = Campanha.query.get_or_404(campanha_id)
+    
+    # ✅ VERIFICAR PERMISSÃO: Moderador OU Instituição responsável pela campanha
+    if current_user.tipo == 'moderador':
+        pode_remover = True
+    elif current_user.tipo == 'instituicao' and campanha.instituicao_id == current_user.id:
+        pode_remover = True
+    else:
+        pode_remover = False
+    
+    if not pode_remover:
+        flash('Você não tem permissão para remover voluntários desta campanha.', 'error')
+        return redirect(url_for('campanhas'))
+    
+    # Buscar o registro de voluntariado
+    voluntario = VoluntarioCampanha.query.filter_by(
+        usuario_id=voluntario_id,
+        campanha_id=campanha_id
+    ).first()
+    
+    if not voluntario:
+        flash('Este usuário não é voluntário desta campanha.', 'error')
+        return redirect(url_for('detalhes_campanha', campanha_id=campanha_id))
+    
+    nome_voluntario = voluntario.usuario.nome
+    
+    try:
+        db.session.delete(voluntario)
+        db.session.commit()
+        
+        # Registrar log se for moderador
+        if current_user.tipo == 'moderador':
+            registrar_log(
+                acao='removeu_voluntario',
+                tipo_item='campanha',
+                item_id=campanha_id,
+                item_nome=campanha.titulo,
+                detalhes=f'Voluntário {nome_voluntario} (ID: {voluntario_id}) removido da campanha'
+            )
+        
+        flash(f'Voluntário {nome_voluntario} foi removido da campanha com sucesso.', 'success')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Erro ao remover voluntário: {str(e)}', 'error')
+    
+    return redirect(url_for('detalhes_campanha', campanha_id=campanha_id))
 
 if __name__ == '__main__':
     with app.app_context():
