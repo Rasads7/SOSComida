@@ -243,22 +243,24 @@
             </div>
         </div>
 
-        {% if current_user.is_authenticated %}
-            {% set usuario_eh_voluntario = namespace(value=False) %}
-            {% for voluntario in campanha.voluntarios %}
-                {% if voluntario.usuario_id == current_user.id %}
-                    {% set usuario_eh_voluntario.value = True %}
-                {% endif %}
-            {% endfor %}
-            
-            {% if current_user.tipo == 'moderador' or usuario_eh_voluntario.value %}
-            <div class="text-center mt-4 mb-4">
-                <button type="button" class="btn btn-ver-participantes" data-bs-toggle="modal" data-bs-target="#participantesModal">
-                    <i class="fas fa-users"></i> Ver Participantes ({{ campanha.voluntarios|length }})
-                </button>
-            </div>
-            {% endif %}
+{% if current_user.is_authenticated %}
+    {% set usuario_eh_voluntario = namespace(value=False) %}
+    {% for voluntario in campanha.voluntarios %}
+        {% if voluntario.usuario_id == current_user.id %}
+            {% set usuario_eh_voluntario.value = True %}
         {% endif %}
+    {% endfor %}
+    
+    {% set eh_instituicao_responsavel = (current_user.tipo == 'instituicao' and campanha.instituicao_id == current_user.id) %}
+    
+    {% if current_user.tipo == 'moderador' or usuario_eh_voluntario.value or eh_instituicao_responsavel %}
+    <div class="text-center mt-4 mb-4">
+        <button type="button" class="btn btn-ver-participantes" data-bs-toggle="modal" data-bs-target="#participantesModal">
+            <i class="fas fa-users"></i> Ver Participantes ({{ campanha.voluntarios|length }})
+        </button>
+    </div>
+    {% endif %}
+{% endif %}
 
         <div class="action-panel">
             <h3 class="section-title">Como Ajudar</h3>
@@ -330,20 +332,19 @@
                 </div>
                 <div class="participante-acoes">
                     <button type="button" class="btn btn-sm btn-primary btn-ver-perfil" data-bs-toggle="modal" data-bs-target="#perfilModal{{ voluntario.usuario.id }}">
-                        <i class="fas fa-user"></i> Ver Perfil
-                    </button>
-                    
-                    {% if current_user.tipo == 'moderador' %}
-                        <button type="button" class="btn btn-sm btn-remover-voluntario btn-ver-perfil" onclick="confirmarRemocao('{{ voluntario.usuario.nome }}', {{ campanha.id }}, {{ voluntario.usuario.id }})">
-                            <i class="fas fa-user-times"></i> Remover
-                        </button>
-                    {% elif current_user.id != voluntario.usuario.id %}
-                        <button type="button" class="btn btn-sm btn-denunciar btn-ver-perfil" onclick="abrirDenuncia({{ voluntario.usuario.id }}, '{{ voluntario.usuario.nome }}', {{ campanha.id }})">
-                            <i class="fas fa-flag"></i> Denunciar
-                        </button>
-                    {% endif %}
-                </div>
-            </div>
+        <i class="fas fa-user"></i> Ver Perfil
+    </button>
+    
+    {% if current_user.tipo == 'moderador' or (current_user.tipo == 'instituicao' and campanha.instituicao_id == current_user.id) %}
+        <button type="button" class="btn btn-sm btn-remover-voluntario btn-ver-perfil" onclick="confirmarRemocao('{{ voluntario.usuario.nome }}', {{ campanha.id }}, {{ voluntario.usuario.id }})">
+            <i class="fas fa-user-times"></i> Remover
+        </button>
+    {% elif current_user.id != voluntario.usuario.id %}
+        <button type="button" class="btn btn-sm btn-denunciar btn-ver-perfil" onclick="abrirDenuncia({{ voluntario.usuario.id }}, '{{ voluntario.usuario.nome }}', {{ campanha.id }})">
+            <i class="fas fa-flag"></i> Denunciar
+        </button>
+    {% endif %}
+</div>
             {% endfor %}
         {% else %}
             <div class="text-center py-5">
@@ -578,13 +579,13 @@ document.getElementById('formDenuncia').addEventListener('submit', function(e) {
 
 function confirmarRemocao(voluntarioNome, campanhaId, voluntarioId) {
     if (confirm(`Tem certeza que deseja remover ${voluntarioNome} desta campanha?\n\nEsta ação não pode ser desfeita.`)) {
-        console.log('  Removendo voluntário:', voluntarioId, 'da campanha:', campanhaId);
+        console.log('🗑️  Removendo voluntário:', voluntarioId, 'da campanha:', campanhaId);
         window.location.href = `/remover_voluntario/${campanhaId}/${voluntarioId}`;
     }
 }
 
 window.addEventListener('load', function() {
-    console.log(' Formulário de denúncia carregado');
+    console.log('📋 Formulário de denúncia carregado');
     const form = document.getElementById('formDenuncia');
     if (form) {
         console.log('   Action:', form.action);
