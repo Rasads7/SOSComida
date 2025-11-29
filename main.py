@@ -2091,20 +2091,20 @@ def revogar_minha_conta():
             if not totp.verify(codigo_2fa):
                 flash('Código 2FA inválido.', 'error')
                 return redirect(url_for('revogar_minha_conta'))
-        
+
         try:
-            current_user.conta_revogada = True
-            current_user.data_revogacao = datetime.utcnow()
-            current_user.motivo_revogacao = motivo if motivo else 'Revogação solicitada pelo próprio usuário'
+            # Se necessário, remova dependências do usuário aqui (doações, solicitações, etc.)
+            # Exemplo: apagar_cascata_usuario(current_user)
+            db.session.delete(current_user)
             db.session.commit()
             logout_user()
-            flash('Sua conta foi revogada com sucesso. Esperamos vê-lo novamente no futuro.', 'success')
+            flash('Sua conta foi removida do sistema com sucesso.', 'success')
             return redirect(url_for('home'))
         except Exception as e:
             db.session.rollback()
-            flash(f'Erro ao revogar conta: {str(e)}', 'error')
+            flash(f'Erro ao remover conta: {str(e)}', 'error')
             return redirect(url_for('perfil'))
-    
+
     return render_template('revogar_conta.html', usuario=current_user)
 
 
