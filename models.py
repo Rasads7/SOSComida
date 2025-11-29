@@ -32,7 +32,7 @@ class Usuario(UserMixin, db.Model):
     gov_br_level = db.Column(db.String(20), nullable=True)
     status = db.Column(db.String(20), default='online', nullable=False)
     
-    # ✅ NOVOS CAMPOS PARA REVOGAÇÃO DE CONTA
+    # Campos para revogação de conta
     conta_revogada = db.Column(db.Boolean, default=False, nullable=False)
     data_revogacao = db.Column(db.DateTime, nullable=True)
     motivo_revogacao = db.Column(db.Text, nullable=True)
@@ -118,7 +118,6 @@ class SolicitacaoRecebimento(db.Model):
     usuario = db.relationship('Usuario', backref=db.backref('recebimentos', lazy=True))  
 
 class Delegacao(db.Model):
-
     __tablename__ = 'delegacoes'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -133,22 +132,6 @@ class Delegacao(db.Model):
     instituicao = db.relationship('Usuario', foreign_keys=[instituicao_id], backref='delegacoes_recebidas', lazy='joined')
     doacao = db.relationship('SolicitacaoDoacao', backref='delegacao', uselist=False, lazy='joined')
     recebimento = db.relationship('SolicitacaoRecebimento', backref='delegacao', uselist=False, lazy='joined')
-    
-    def __repr__(self):
-        return f'<Delegacao #{self.id} - Instituição: {self.instituicao_id} - Status: {self.status}>'
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'moderador_id': self.moderador_id,
-            'moderador_nome': self.moderador.nome if self.moderador else None,
-            'instituicao_id': self.instituicao_id,
-            'instituicao_nome': self.instituicao.instituicao_nome if self.instituicao else None,
-            'tipo': 'doacao' if self.solicitacao_doacao_id else 'recebimento',
-            'solicitacao_id': self.solicitacao_doacao_id or self.solicitacao_recebimento_id,
-            'status': self.status,
-            'data_delegacao': self.data_delegacao.strftime('%d/%m/%Y %H:%M') if self.data_delegacao else None
-        }
 
 class DoacaoCampanha(db.Model):
     __tablename__ = 'doacoes_campanha'
@@ -170,53 +153,24 @@ class DenunciaVoluntario(db.Model):
     __tablename__ = 'denuncias_voluntarios'
     
     id = db.Column(db.Integer, primary_key=True)
-
     denunciante_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
-
     denunciado_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
-
     campanha_id = db.Column(db.Integer, db.ForeignKey('campanhas.id'), nullable=False)
-
     motivo = db.Column(db.String(50), nullable=False)
-
     descricao = db.Column(db.Text, nullable=False)
-
     status = db.Column(db.String(20), default='pendente', nullable=False)
-
     data_denuncia = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-
     moderador_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=True)
-
     data_resolucao = db.Column(db.DateTime, nullable=True)
-
     observacoes_moderador = db.Column(db.Text, nullable=True)
-
     acao_tomada = db.Column(db.String(50), nullable=True)
 
     denunciante = db.relationship('Usuario', foreign_keys=[denunciante_id], backref=db.backref('denuncias_feitas', lazy=True))
     denunciado = db.relationship('Usuario', foreign_keys=[denunciado_id], backref=db.backref('denuncias_recebidas', lazy=True))
     campanha = db.relationship('Campanha', backref=db.backref('denuncias', lazy=True))
     moderador = db.relationship('Usuario', foreign_keys=[moderador_id], backref=db.backref('denuncias_analisadas', lazy=True))
-    
-    def __repr__(self):
-        return f'<DenunciaVoluntario #{self.id}: {self.denunciante.nome} -> {self.denunciado.nome} na campanha {self.campanha.titulo}>'
-    
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'denunciante_nome': self.denunciante.nome if self.denunciante else 'Desconhecido',
-            'denunciado_nome': self.denunciado.nome if self.denunciado else 'Desconhecido',
-            'campanha_titulo': self.campanha.titulo if self.campanha else 'Desconhecida',
-            'motivo': self.motivo,
-            'descricao': self.descricao,
-            'status': self.status,
-            'data_denuncia': self.data_denuncia.strftime('%d/%m/%Y %H:%M') if self.data_denuncia else None,
-            'moderador_nome': self.moderador.nome if self.moderador else None,
-            'acao_tomada': self.acao_tomada
-        }
 
 class LogAcaoModerador(db.Model):
-
     __tablename__ = 'log_acoes_moderador'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -230,20 +184,45 @@ class LogAcaoModerador(db.Model):
     ip_address = db.Column(db.String(45), nullable=True)
     
     moderador = db.relationship('Usuario', backref=db.backref('acoes_log', lazy=True))
+
+# NOVO MODELO: Advertência
+class Advertencia(db.Model):
+    __tablename__ = 'advertencias'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    moderador_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    denuncia_id = db.Column(db.Integer, db.ForeignKey('denuncias_voluntarios.id'), nullable=True)
+    
+    tipo = db.Column(db.String(50), nullable=False)  # 'advertencia', 'suspensao', 'revogacao'
+    mensagem = db.Column(db.Text, nullable=False)
+    motivo = db.Column(db.String(100), nullable=False)
+    
+    data_acao = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    vista = db.Column(db.Boolean, default=False, nullable=False)
+    data_vista = db.Column(db.DateTime, nullable=True)
+    
+    # Para suspensões temporárias
+    data_inicio_suspensao = db.Column(db.DateTime, nullable=True)
+    data_fim_suspensao = db.Column(db.DateTime, nullable=True)
+    
+    # Relacionamentos
+    usuario = db.relationship('Usuario', foreign_keys=[usuario_id], backref=db.backref('advertencias_recebidas', lazy=True))
+    moderador = db.relationship('Usuario', foreign_keys=[moderador_id], backref=db.backref('advertencias_aplicadas', lazy=True))
+    denuncia = db.relationship('DenunciaVoluntario', backref=db.backref('advertencia', uselist=False))
     
     def __repr__(self):
-        return f'<LogAcaoModerador {self.moderador.nome if self.moderador else "Unknown"}: {self.acao} em {self.tipo_item} #{self.item_id}>'
+        return f'<Advertencia #{self.id}: {self.tipo} para {self.usuario.nome if self.usuario else "Unknown"}>'
     
     def to_dict(self):
         return {
             'id': self.id,
+            'usuario_nome': self.usuario.nome if self.usuario else 'Desconhecido',
             'moderador_nome': self.moderador.nome if self.moderador else 'Desconhecido',
-            'moderador_id': self.moderador_id,
-            'acao': self.acao,
-            'tipo_item': self.tipo_item,
-            'item_id': self.item_id,
-            'item_nome': self.item_nome,
-            'data_acao': self.data_acao.strftime('%d/%m/%Y %H:%M:%S') if self.data_acao else None,
-            'detalhes': self.detalhes,
-            'ip_address': self.ip_address
+            'tipo': self.tipo,
+            'mensagem': self.mensagem,
+            'motivo': self.motivo,
+            'data_acao': self.data_acao.strftime('%d/%m/%Y %H:%M') if self.data_acao else None,
+            'vista': self.vista,
+            'data_vista': self.data_vista.strftime('%d/%m/%Y %H:%M') if self.data_vista else None
         }

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Redefinir Senha - SOS Comida{% endblock %}
+
+{% block extra_css %}
+<style>
+    .reset-container {
+        max-width: 420px;
+        margin: 4rem auto;
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 10px 32px rgba(0,0,0,0.13);
+        padding: 2.5rem 2rem;
+    }
+    .reset-title {
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.2rem;
+    }
+    .reset-desc {
+        text-align: center;
+        color: #718096;
+        margin-bottom: 2rem;
+    }
+    .btn-reset {
+        width: 100%;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        font-weight: 600;
+        border-radius: 10px;
+        padding: 0.8rem;
+        border: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="reset-container">
+    <div class="reset-title">
+        <i class="fas fa-key"></i> Redefinir Senha
+    </div>
+    <div class="reset-desc">
+        Digite sua nova senha abaixo.
+    </div>
+    <form method="POST">
+        <div class="form-group mb-3">
+            <label for="nova_senha" class="form-label">Nova Senha</label>
+            <input type="password" class="form-control" id="nova_senha" name="nova_senha" placeholder="Digite a nova senha" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="confirmar_senha" class="form-label">Confirmar Nova Senha</label>
+            <input type="password" class="form-control" id="confirmar_senha" name="confirmar_senha" placeholder="Confirme a nova senha" required>
+        </div>
+        <button type="submit" class="btn btn-reset">
+            <i class="fas fa-check"></i> Redefinir Senha
+        </button>
+    </form>
+    <div class="text-center mt-3">
+        <a href="{{ url_for('login') }}" class="link-secondary"><i class="fas fa-arrow-left"></i> Voltar ao login</a>
+    </div>
+</div>
+{% endblock %}

@@ -301,6 +301,7 @@
     </div>
 </div>
 
+<!-- Modal de Participantes -->
 <div class="modal fade" id="participantesModal" tabindex="-1" aria-labelledby="participantesModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-lg">
     <div class="modal-content">
@@ -332,19 +333,19 @@
                 </div>
                 <div class="participante-acoes">
                     <button type="button" class="btn btn-sm btn-primary btn-ver-perfil" data-bs-toggle="modal" data-bs-target="#perfilModal{{ voluntario.usuario.id }}">
-        <i class="fas fa-user"></i> Ver Perfil
-    </button>
-    
-    {% if current_user.tipo == 'moderador' or (current_user.tipo == 'instituicao' and campanha.instituicao_id == current_user.id) %}
-        <button type="button" class="btn btn-sm btn-remover-voluntario btn-ver-perfil" onclick="confirmarRemocao('{{ voluntario.usuario.nome }}', {{ campanha.id }}, {{ voluntario.usuario.id }})">
-            <i class="fas fa-user-times"></i> Remover
-        </button>
-    {% elif current_user.id != voluntario.usuario.id %}
-        <button type="button" class="btn btn-sm btn-denunciar btn-ver-perfil" onclick="abrirDenuncia({{ voluntario.usuario.id }}, '{{ voluntario.usuario.nome }}', {{ campanha.id }})">
-            <i class="fas fa-flag"></i> Denunciar
-        </button>
-    {% endif %}
-</div>
+                        <i class="fas fa-user"></i> Ver Perfil
+                    </button>
+                    {% if current_user.tipo == 'moderador' or (current_user.tipo == 'instituicao' and campanha.instituicao_id == current_user.id) %}
+                        <button type="button" class="btn btn-sm btn-remover-voluntario btn-ver-perfil" onclick="confirmarRemocao('{{ voluntario.usuario.nome }}', {{ campanha.id }}, {{ voluntario.usuario.id }})">
+                            <i class="fas fa-user-times"></i> Remover
+                        </button>
+                    {% elif current_user.id != voluntario.usuario.id %}
+                        <button type="button" class="btn btn-sm btn-denunciar btn-ver-perfil" onclick="abrirDenuncia({{ voluntario.usuario.id }}, '{{ voluntario.usuario.nome }}', {{ campanha.id }})">
+                            <i class="fas fa-flag"></i> Denunciar
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
             {% endfor %}
         {% else %}
             <div class="text-center py-5">
@@ -361,6 +362,7 @@
   </div>
 </div>
 
+<!-- Modais de Perfil -->
 {% for voluntario in campanha.voluntarios %}
 <div class="modal fade" id="perfilModal{{ voluntario.usuario.id }}" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -414,6 +416,7 @@
 </div>
 {% endfor %}
 
+<!-- Modal de Denúncia -->
 <div class="modal fade" id="denunciaModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -464,135 +467,114 @@
 {% endblock %}
 
 {% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-document.querySelectorAll('[id^="perfilModal"]').forEach(modal => {
-    modal.addEventListener('hidden.bs.modal', function (event) {
-        if (event.target.id.startsWith('perfilModal')) {
-            const participantesModal = new bootstrap.Modal(document.getElementById('participantesModal'));
-            participantesModal.show();
-        }
-    });
-});
-
+// Função para abrir modal de denúncia
 function abrirDenuncia(voluntarioId, voluntarioNome, campanhaId) {
     const modal = document.getElementById('denunciaModal');
     const form = document.getElementById('formDenuncia');
     const modalTitle = modal.querySelector('.modal-title');
     
-    console.log('🔧 Abrindo modal de denúncia...');
-    console.log('   Voluntário:', voluntarioNome, '(ID:', voluntarioId + ')');
-    console.log('   Campanha ID:', campanhaId);
-
+    // Atualiza título do modal
     modalTitle.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Denunciar: ${voluntarioNome}`;
 
-    form.action = "{{ url_for('denunciar_voluntario') }}";
+    // Remove campos ocultos antigos para evitar duplicidade
+    form.querySelectorAll('input[name="denunciado_id"], input[name="campanha_id"]').forEach(e => e.remove());
 
-    let inputDenunciado = form.querySelector('input[name="denunciado_id"]');
-    let inputCampanha = form.querySelector('input[name="campanha_id"]');
-    
-    if (!inputDenunciado) {
-        inputDenunciado = document.createElement('input');
-        inputDenunciado.type = 'hidden';
-        inputDenunciado.name = 'denunciado_id';
-        form.appendChild(inputDenunciado);
-        console.log('   ✅ Campo denunciado_id criado');
-    }
-    
-    if (!inputCampanha) {
-        inputCampanha = document.createElement('input');
-        inputCampanha.type = 'hidden';
-        inputCampanha.name = 'campanha_id';
-        form.appendChild(inputCampanha);
-        console.log('   ✅ Campo campanha_id criado');
-    }
-
+    // Cria campos ocultos atualizados
+    const inputDenunciado = document.createElement('input');
+    inputDenunciado.type = 'hidden';
+    inputDenunciado.name = 'denunciado_id';
     inputDenunciado.value = voluntarioId;
-    inputCampanha.value = campanhaId;
-    
-    console.log('   ✅ Valores definidos');
-    console.log('   📍 Action do formulário:', form.action);
-    console.log('   📍 Denunciado ID:', inputDenunciado.value);
-    console.log('   📍 Campanha ID:', inputCampanha.value);
+    form.appendChild(inputDenunciado);
 
+    const inputCampanha = document.createElement('input');
+    inputCampanha.type = 'hidden';
+    inputCampanha.name = 'campanha_id';
+    inputCampanha.value = campanhaId;
+    form.appendChild(inputCampanha);
+
+    // Limpa o formulário
+    form.querySelector('select[name="motivo"]').value = '';
+    form.querySelector('textarea[name="descricao"]').value = '';
+
+    // Fecha modal de participantes se estiver aberto
     const participantesModal = bootstrap.Modal.getInstance(document.getElementById('participantesModal'));
     if (participantesModal) {
         participantesModal.hide();
     }
 
-    form.querySelector('select[name="motivo"]').value = '';
-    form.querySelector('textarea[name="descricao"]').value = '';
-
+    // Abre modal de denúncia
     const denunciaModal = new bootstrap.Modal(modal);
     denunciaModal.show();
-    
-    console.log('   ✅ Modal aberto!');
 }
 
-document.getElementById('formDenuncia').addEventListener('submit', function(e) {
-    console.log('📝 Enviando formulário de denúncia...');
-    
-    const descricao = this.querySelector('textarea[name="descricao"]').value;
-    const motivo = this.querySelector('select[name="motivo"]').value;
-    const denunciadoId = this.querySelector('input[name="denunciado_id"]');
-    const campanhaId = this.querySelector('input[name="campanha_id"]');
-    
-    console.log('   Motivo:', motivo);
-    console.log('   Descrição (tamanho):', descricao.length);
-    console.log('   Denunciado ID:', denunciadoId ? denunciadoId.value : '❌ NÃO ENCONTRADO');
-    console.log('   Campanha ID:', campanhaId ? campanhaId.value : '❌ NÃO ENCONTRADO');
-
-    if (!denunciadoId || !denunciadoId.value) {
-        e.preventDefault();
-        console.error('❌ ERRO: Campo denunciado_id não encontrado!');
-        alert('Erro técnico: ID do voluntário não foi encontrado. Tente fechar e abrir o modal novamente.');
-        return false;
-    }
-    
-    if (!campanhaId || !campanhaId.value) {
-        e.preventDefault();
-        console.error('❌ ERRO: Campo campanha_id não encontrado!');
-        alert('Erro técnico: ID da campanha não foi encontrado. Tente recarregar a página.');
-        return false;
-    }
-
-    if (!motivo) {
-        e.preventDefault();
-        console.warn('⚠️  Motivo não selecionado');
-        alert('Por favor, selecione um motivo para a denúncia.');
-        return false;
-    }
-
-    if (descricao.length < 20) {
-        e.preventDefault();
-        console.warn('⚠️  Descrição muito curta:', descricao.length, 'caracteres');
-        alert(`A descrição deve ter pelo menos 20 caracteres.\nAtual: ${descricao.length} caracteres`);
-        return false;
-    }
-    
-    console.log('✅ Formulário válido! Enviando para:', this.action);
-    console.log('   Dados a serem enviados:');
-    console.log('   - denunciado_id:', denunciadoId.value);
-    console.log('   - campanha_id:', campanhaId.value);
-    console.log('   - motivo:', motivo);
-    console.log('   - descricao:', descricao.substring(0, 50) + '...');
-});
-
+// Função para confirmar remoção de voluntário
 function confirmarRemocao(voluntarioNome, campanhaId, voluntarioId) {
     if (confirm(`Tem certeza que deseja remover ${voluntarioNome} desta campanha?\n\nEsta ação não pode ser desfeita.`)) {
-        console.log('🗑️  Removendo voluntário:', voluntarioId, 'da campanha:', campanhaId);
         window.location.href = `/remover_voluntario/${campanhaId}/${voluntarioId}`;
     }
 }
 
-window.addEventListener('load', function() {
-    console.log('📋 Formulário de denúncia carregado');
-    const form = document.getElementById('formDenuncia');
-    if (form) {
-        console.log('   Action:', form.action);
-        console.log('   Method:', form.method);
-        console.log('   Campos iniciais:', [...form.elements].map(e => ({ name: e.name, type: e.type })));
-    } else {
-        console.error('❌ Formulário #formDenuncia não encontrado!');
+// Validação do formulário de denúncia
+document.addEventListener('DOMContentLoaded', function() {
+    const formDenuncia = document.getElementById('formDenuncia');
+    
+    if (formDenuncia) {
+        formDenuncia.addEventListener('submit', function(e) {
+            const descricao = this.querySelector('textarea[name="descricao"]').value;
+            const motivo = this.querySelector('select[name="motivo"]').value;
+            const denunciadoId = this.querySelector('input[name="denunciado_id"]');
+            const campanhaId = this.querySelector('input[name="campanha_id"]');
+
+            // Validações
+            if (!denunciadoId || !denunciadoId.value) {
+                e.preventDefault();
+                alert('Erro: ID do voluntário não foi encontrado. Tente fechar e abrir o modal novamente.');
+                return false;
+            }
+            
+            if (!campanhaId || !campanhaId.value) {
+                e.preventDefault();
+                alert('Erro: ID da campanha não foi encontrado. Tente recarregar a página.');
+                return false;
+            }
+
+            if (!motivo) {
+                e.preventDefault();
+                alert('Por favor, selecione um motivo para a denúncia.');
+                return false;
+            }
+
+            if (descricao.length < 20) {
+                e.preventDefault();
+                alert(`A descrição deve ter pelo menos 20 caracteres.\nAtual: ${descricao.length} caracteres`);
+                return false;
+            }
+        });
+    }
+
+    // Configuração para reabrir modal de participantes após fechar modal de perfil
+    document.querySelectorAll('[id^="perfilModal"]').forEach(modal => {
+        modal.addEventListener('hidden.bs.modal', function (event) {
+            // Pequeno delay para evitar conflitos
+            setTimeout(() => {
+                const participantesModal = new bootstrap.Modal(document.getElementById('participantesModal'));
+                participantesModal.show();
+            }, 100);
+        });
+    });
+
+    // Fecha modal de denúncia e reabre modal de participantes
+    const denunciaModal = document.getElementById('denunciaModal');
+    if (denunciaModal) {
+        denunciaModal.addEventListener('hidden.bs.modal', function () {
+            // Pequeno delay para evitar conflitos
+            setTimeout(() => {
+                const participantesModal = new bootstrap.Modal(document.getElementById('participantesModal'));
+                participantesModal.show();
+            }, 100);
+        });
     }
 });
 </script>

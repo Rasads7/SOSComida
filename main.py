@@ -1,7 +1,12 @@
+
+
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_cors import CORS
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
 from models import Usuario, SolicitacaoDoacao, SolicitacaoRecebimento, Campanha, VoluntarioCampanha, Delegacao, DoacaoCampanha, LogAcaoModerador, DenunciaVoluntario
+import traceback
 from db import db
 from requests_oauthlib import OAuth2Session
 import hashlib
@@ -15,9 +20,30 @@ import base64
 import json
 from sqlalchemy import or_
 
+
 app = Flask(__name__, static_folder='static')
 CORS(app)
 app.secret_key = 'soscomida_secret_key_2024'
+
+# Configuração do Flask-Mail (ajuste para seu provedor)
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'seu_email@gmail.com')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'senha_do_email')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'SOS Comida <seu_email@gmail.com>')
+
+mail = Mail(app)
+serializer = URLSafeTimedSerializer(app.secret_key)
+
+def enviar_email(destinatario, assunto, corpo_html):
+    try:
+        msg = Message(assunto, recipients=[destinatario], html=corpo_html)
+        mail.send(msg)
+        return True
+    except Exception as e:
+        print(f"Erro ao enviar e-mail: {e}")
+        return False
 
 
 lm = LoginManager(app)
@@ -1379,85 +1405,35 @@ def aprovar_recebimento(id):
     flash(f'Solicitação de ajuda de "{solicitacao.nome}" aprovada com sucesso!', 'success')
     return redirect(url_for('moderacao'))
 
+# ...existing code...
+from flask import request, redirect, url_for, flash
+from flask_login import login_required, current_user
+from models import db, DenunciaVoluntario
+
 @app.route('/denunciar_voluntario', methods=['POST'])
 @login_required
 def denunciar_voluntario():
-    """Rota para criar uma denúncia contra um voluntário"""
-    print("🔍 DEBUG: Função denunciar_voluntario foi chamada!")
-    print(f"   Usuário: {current_user.nome}")
-    print(f"   Tipo: {current_user.tipo}")
-
-    if current_user.tipo != 'usuario':
-        flash('Acesso negado. Apenas usuários podem denunciar.', 'error')
-        return redirect(url_for('home'))
-
-    denunciado_id = request.form.get('denunciado_id')
-    campanha_id = request.form.get('campanha_id')
     motivo = request.form.get('motivo')
     descricao = request.form.get('descricao')
-    
-    print(f"   Denunciado ID: {denunciado_id}")
-    print(f"   Campanha ID: {campanha_id}")
-    print(f"   Motivo: {motivo}")
-    print(f"   Descrição (primeiros 50 chars): {descricao[:50] if descricao else 'None'}...")
+    denunciado_id = request.form.get('denunciado_id')
+    campanha_id = request.form.get('campanha_id')
 
-    if not all([denunciado_id, campanha_id, motivo, descricao]):
-        flash('Todos os campos são obrigatórios.', 'error')
-        return redirect(url_for('campanhas'))
+    if not motivo or not descricao or not denunciado_id or not campanha_id:
+        flash('Preencha todos os campos da denúncia.', 'danger')
+        return redirect(request.referrer or url_for('index'))
 
-    try:
-        denunciado_id = int(denunciado_id)
-        campanha_id = int(campanha_id)
-    except (ValueError, TypeError) as e:
-        print(f"❌ Erro ao converter IDs: {e}")
-        flash('Dados inválidos.', 'error')
-        return redirect(url_for('campanhas'))
-
-    voluntario = VoluntarioCampanha.query.filter_by(
-        usuario_id=denunciado_id,
-        campanha_id=campanha_id
-    ).first()
-    
-    if not voluntario:
-        print(f"❌ Usuário {denunciado_id} não é voluntário da campanha {campanha_id}")
-        flash('O usuário não é voluntário desta campanha.', 'error')
-        return redirect(url_for('campanhas'))
-    
-    print(f"✅ Voluntário encontrado: {voluntario.usuario.nome}")
-
-    denuncia_existente = DenunciaVoluntario.query.filter_by(
+    denuncia = DenunciaVoluntario(
         denunciante_id=current_user.id,
-        denunciado_id=denunciado_id,
-        campanha_id=campanha_id,
-        status='pendente'
-    ).first()
-    
-    if denuncia_existente:
-        print(f"⚠️ Denúncia duplicada detectada: ID {denuncia_existente.id}")
-        flash('Você já possui uma denúncia pendente contra este voluntário nesta campanha.', 'warning')
-        return redirect(url_for('detalhes_campanha', campanha_id=campanha_id))
-
-    nova_denuncia = DenunciaVoluntario(
-        denunciante_id=current_user.id,
-        denunciado_id=denunciado_id,
-        campanha_id=campanha_id,
+        denunciado_id=int(denunciado_id),
+        campanha_id=int(campanha_id),
         motivo=motivo,
-        descricao=descricao,
-        status='pendente'
+        descricao=descricao
     )
-    
-    try:
-        db.session.add(nova_denuncia)
-        db.session.commit()
-        print(f"✅ Denúncia criada com sucesso! ID: {nova_denuncia.id}")
-        flash('Denúncia enviada com sucesso! Será analisada por nossa equipe.', 'success')
-        return redirect(url_for('detalhes_campanha', campanha_id=campanha_id))
-        
-    except Exception as e:
-        db.session.rollback()
-        print(f"❌ Erro ao salvar denúncia: {e}")
-        flash(f'Erro ao enviar denúncia: {str(e)}', 'error')
-        return redirect(url_for('campanhas'))
+    db.session.add(denuncia)
+    db.session.commit()
+    flash('Denúncia enviada com sucesso!', 'success')
+    return redirect(request.referrer or url_for('index'))
+# ...existing code...
 
 @app.route('/analisar_denuncia/<int:denuncia_id>', methods=['POST'])
 @login_required
@@ -1485,17 +1461,28 @@ def analisar_denuncia(denuncia_id):
             usuario_id=denuncia.denunciado_id,
             campanha_id=denuncia.campanha_id
         ).first()
-        
         if voluntario:
             db.session.delete(voluntario)
             flash(f'Voluntário {denuncia.denunciado.nome} foi removido da campanha.', 'success')
-    
+
     elif acao == 'advertencia':
-        flash(f'Advertência aplicada ao voluntário {denuncia.denunciado.nome}.', 'success')
-    
+        from models import Advertencia
+        advertencia = Advertencia(
+            usuario_id=denuncia.denunciado_id,
+            moderador_id=current_user.id,
+            denuncia_id=denuncia.id,
+            tipo='advertencia',
+            mensagem=observacoes if observacoes else 'Você recebeu uma advertência de um moderador.',
+            motivo=denuncia.motivo
+        )
+        db.session.add(advertencia)
+        # Envia aviso ao usuário denunciado (pode ser via notificação, modal ou campo no perfil)
+        # Aqui, garantimos que a advertência ficará disponível para o usuário ver ao acessar o perfil
+        flash(f'Advertência aplicada ao voluntário {denuncia.denunciado.nome}. O usuário receberá o aviso ao acessar o perfil.', 'success')
+
     elif acao == 'denuncia_improcedente':
         flash('Denúncia marcada como improcedente.', 'info')
-    
+
     elif acao == 'sem_acao':
         flash('Denúncia arquivada sem ação.', 'info')
     
@@ -1542,6 +1529,8 @@ def arquivar_denuncia(denuncia_id):
         flash('Denúncia arquivada com sucesso.', 'success')
     except Exception as e:
         db.session.rollback()
+        tb = traceback.format_exc()
+        print(f"❌ Erro ao arquivar denúncia: {e}\n{tb}")
         flash(f'Erro ao arquivar denúncia: {str(e)}', 'error')
     
     return redirect(url_for('moderacao'))
@@ -1788,8 +1777,32 @@ def perfil():
     
     doacoes = SolicitacaoDoacao.query.filter_by(usuario_id=current_user.id).order_by(SolicitacaoDoacao.data_criacao.desc()).all()
     recebimentos = SolicitacaoRecebimento.query.filter_by(usuario_id=current_user.id).order_by(SolicitacaoRecebimento.data_criacao.desc()).all()
-    
-    return render_template('perfil.html', doacoes=doacoes, recebimentos=recebimentos, usuario=current_user)
+
+    # Buscar advertências não vistas
+    from models import Advertencia
+    advertencia_nao_vista = Advertencia.query.filter_by(usuario_id=current_user.id, vista=False).order_by(Advertencia.data_acao.desc()).first()
+
+    # Buscar últimas advertências recebidas (para atividade recente)
+    advertencias = Advertencia.query.filter_by(usuario_id=current_user.id).order_by(Advertencia.data_acao.desc()).limit(5).all()
+
+    # Montar lista de atividades recentes (exemplo: doações, recebimentos, advertências...)
+    atividades_recentes = []
+    # Exemplo: adicionar advertências
+    for adv in advertencias:
+        atividades_recentes.append({
+            'tipo_icone': 'warning',
+            'icone': 'fa-exclamation-triangle',
+            'titulo': 'Advertência Recebida',
+            'descricao': f"Motivo: {adv.motivo}. Mensagem: {adv.mensagem}",
+            'data_formatada': adv.data_acao.strftime('%d/%m/%Y %H:%M'),
+            'badge': not adv.vista,
+            'badge_tipo': 'danger' if not adv.vista else 'secondary',
+            'badge_texto': 'Não vista' if not adv.vista else 'Vista'
+        })
+
+    # TODO: adicionar outros tipos de atividades se desejar
+
+    return render_template('perfil.html', doacoes=doacoes, recebimentos=recebimentos, usuario=current_user, advertencia_nao_vista=advertencia_nao_vista, atividades_recentes=atividades_recentes)
 
 @app.route('/aceitar_delegacao/<int:delegacao_id>')
 @login_required
@@ -1827,6 +1840,7 @@ def aceitar_delegacao(delegacao_id):
 @app.route('/aceitar_campanha/<int:campanha_id>')
 @login_required
 def aceitar_campanha(campanha_id):
+   
     if current_user.tipo != 'instituicao':
         flash('Acesso negado.', 'error')
         return redirect(url_for('home'))
@@ -2142,6 +2156,36 @@ def excluir_usuario(user_id):
         flash(f'Erro ao excluir {tipo_item}: {str(e)}', 'error')
 
     return redirect(url_for('moderacao_usuarios'))
+
+
+@app.route('/__debug_denuncias')
+@login_required
+def _debug_denuncias():
+    """Rota de debug para inspecionar denúncias no banco. Apenas para uso local."""
+    todas = DenunciaVoluntario.query.order_by(DenunciaVoluntario.data_denuncia.desc()).limit(50).all()
+    feitas = DenunciaVoluntario.query.filter_by(denunciante_id=current_user.id).order_by(DenunciaVoluntario.data_denuncia.desc()).all()
+    recebidas = DenunciaVoluntario.query.filter_by(denunciado_id=current_user.id).order_by(DenunciaVoluntario.data_denuncia.desc()).all()
+
+    def to_dict(d):
+        return {
+            'id': d.id,
+            'denunciante_id': d.denunciante_id,
+            'denunciante_nome': d.denunciante.nome if d.denunciante else None,
+            'denunciado_id': d.denunciado_id,
+            'denunciado_nome': d.denunciado.nome if d.denunciado else None,
+            'campanha_id': d.campanha_id,
+            'motivo': d.motivo,
+            'descricao': (d.descricao[:200] + '...') if d.descricao and len(d.descricao) > 200 else d.descricao,
+            'status': d.status,
+            'data_denuncia': d.data_denuncia.strftime('%Y-%m-%d %H:%M:%S') if d.data_denuncia else None
+        }
+
+    return {
+        'total_ultimas_50': len(todas),
+        'ultimas_50': [to_dict(d) for d in todas],
+        'minhas_denuncias': [to_dict(d) for d in feitas],
+        'denuncias_recebidas_por_mim': [to_dict(d) for d in recebidas]
+    }
 @app.route('/remover_voluntario/<int:campanha_id>/<int:voluntario_id>')
 @login_required
 def remover_voluntario(campanha_id, voluntario_id):
@@ -2193,6 +2237,20 @@ def remover_voluntario(campanha_id, voluntario_id):
         flash(f'Erro ao remover voluntário: {str(e)}', 'error')
     
     return redirect(url_for('detalhes_campanha', campanha_id=campanha_id))
+
+@app.route('/marcar_advertencia_vista/<int:advertencia_id>', methods=['POST'])
+@login_required
+def marcar_advertencia_vista(advertencia_id):
+    from models import Advertencia
+    adv = Advertencia.query.get_or_404(advertencia_id)
+    if adv.usuario_id != current_user.id:
+        flash('Acesso negado.', 'error')
+        return redirect(url_for('perfil'))
+    adv.vista = True
+    adv.data_vista = datetime.utcnow()
+    db.session.commit()
+    flash('Advertência marcada como lida.', 'success')
+    return redirect(url_for('perfil'))
 
 if __name__ == '__main__':
     with app.app_context():

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Redefinição de Senha - SOS Comida</title>
+</head>
+<body style="font-family: Arial, sans-serif; background: #f7fafc; color: #222;">
+    <div style="max-width: 480px; margin: 2rem auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px #0001; padding: 2rem;">
+        <h2 style="color: #667eea;">Redefinição de Senha</h2>
+        <p>Olá, {{ usuario.nome }}!</p>
+        <p>Recebemos uma solicitação para redefinir a senha da sua conta no <strong>SOS Comida</strong>.</p>
+        <p>Para criar uma nova senha, clique no botão abaixo:</p>
+        <div style="text-align: center; margin: 2rem 0;">
+            <a href="{{ link }}" style="background: #667eea; color: #fff; padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none; font-weight: bold;">Redefinir Senha</a>
+        </div>
+        <p>Se você não solicitou essa alteração, pode ignorar este e-mail.</p>
+        <p style="color: #888; font-size: 0.95rem;">Este link é válido por 1 hora.</p>
+        <hr>
+        <p style="font-size: 0.9rem; color: #aaa;">Equipe SOS Comida</p>
+    </div>
+</body>
+</html>
